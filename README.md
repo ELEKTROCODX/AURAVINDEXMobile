@@ -1,0 +1,2 @@
+# AURAVINDEXMOBILE
+Android app for AURA VINDEX
