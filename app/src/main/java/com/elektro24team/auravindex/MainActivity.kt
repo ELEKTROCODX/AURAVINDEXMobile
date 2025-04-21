@@ -66,17 +66,17 @@ fun LoadingPage() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = CenterHorizontally
     )
-        {
-            Text(
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                text = "WELCOME TO AURA VINDEX!"
-            )
-            Image(
-                painter = painterResource(id = R.mipmap.ic_launcher_foreground),
-                contentDescription = "App logo",
-                modifier = Modifier.size(250.dp)
-            )
-        }
+    {
+        Text(
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            text = "WELCOME TO AURA VINDEX!"
+        )
+        Image(
+            painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+            contentDescription = "App logo",
+            modifier = Modifier.size(250.dp)
+        )
+    }
 }
