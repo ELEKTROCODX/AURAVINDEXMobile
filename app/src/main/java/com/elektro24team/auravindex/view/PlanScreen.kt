@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -19,13 +20,19 @@ import com.elektro24team.auravindex.ui.theme.MediumPadding
 import kotlinx.coroutines.launch
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.Plan
+import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.PlanCard
+import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlanScreen(navController: NavController ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val showTermsDialog = remember { mutableStateOf(false) }
+    val showPrivacyDialog = remember { mutableStateOf(false) }
+    val showTeamDialog = remember { mutableStateOf(false) }
     /* List of temp plans, later we'll use the API */
     val planList = listOf(
         Plan("1", "Plan 1", 10.0f, 20.0f, 3, 15, 2),
@@ -38,11 +45,20 @@ fun PlanScreen(navController: NavController ) {
 
     ModalNavigationDrawer(
         drawerContent = {
-            DrawerMenu(onItemSelected = {
+            DrawerMenu(onItemSelected = { route ->
+                when(route) {
+                    Routes.TERMS -> showTermsDialog.value = true
+                    Routes.PRIVACY -> showPrivacyDialog.value = true
+                    Routes.TEAM -> showTeamDialog.value = true
+                    else -> navController.navigate(route)
+                }
             })
         },
         drawerState = drawerState
     ) {
+        ShowExternalLinkDialog(showTermsDialog, context, "https://auravindex.me/tos/")
+        ShowExternalLinkDialog(showPrivacyDialog, context, "https://auravindex.me/privacy/")
+        ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
                 TopAppBar(

@@ -1,9 +1,14 @@
 package com.elektro24team.auravindex.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
+import com.elektro24team.auravindex.utils.openLink
 import com.elektro24team.auravindex.view.*
 
 
@@ -47,15 +52,6 @@ fun NavGraph(startDestination: String = Routes.MAIN) {
         }*/
         /*composable(Routes.NOTIFICATIONS) {
             NotificationsScreen(navController = navController)
-        }*/
-        /*composable(Routes.TERMS) {
-            TermsScreen(navController = navController)
-        }*/
-        /*composable(Routes.PRIVACY) {
-            PrivacyScreen(navController = navController)
-        }*/
-        /*composable(Routes.TEAM) {
-            TeamScreen(navController = navController)
         }*/
 
     }
