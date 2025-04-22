@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
+import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,12 +31,13 @@ fun SearchScreen(navController: NavController ) {
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->
-                when(route) {
-                    Routes.TERMS -> showTermsDialog.value = true
-                    Routes.PRIVACY -> showPrivacyDialog.value = true
-                    Routes.TEAM -> showTeamDialog.value = true
-                    else -> navController.navigate(route)
-                }
+                hamburguerMenuNavigator(
+                    route,
+                    navController,
+                    showTermsDialog,
+                    showPrivacyDialog,
+                    showTeamDialog
+                )
             })
         },
         drawerState = drawerState
