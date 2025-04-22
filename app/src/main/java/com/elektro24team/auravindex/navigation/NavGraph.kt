@@ -17,7 +17,7 @@ object Routes {
     const val MAIN = "main"
     const val SEARCH = "search"
     const val WRAPS = "wraps"
-    const val PLAN = "plan"
+    const val PLANS = "plans"
     const val SETTINGS = "settings"
     const val PROFILE = "profile"
     const val NOTIFICATIONS = "notifications"
@@ -38,10 +38,10 @@ fun NavGraph(startDestination: String = Routes.MAIN) {
         composable(Routes.SEARCH) {
             SearchScreen(navController = navController)
         }
-        composable(Routes.WRAPS) {
+        /*composable(Routes.WRAPS) {
             WrapsScreen(navController = navController)
-        }
-        composable(Routes.PLAN) {
+        }*/
+        composable(Routes.PLANS) {
             PlanScreen(navController = navController)
         }
         /*composable(Routes.SETTINGS) {
