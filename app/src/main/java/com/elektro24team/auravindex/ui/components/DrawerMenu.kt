@@ -39,7 +39,8 @@ fun DrawerMenu(onItemSelected: (String) -> Unit) {
             "Profile" to "profile",
             "Notifications" to "notifications",
             "Terms & services" to "terms",
-            "Privacy" to "privacy",
+            "Privacy Policy" to "privacy",
+            "Team" to "team",
             "Settings" to "settings"
         )
 

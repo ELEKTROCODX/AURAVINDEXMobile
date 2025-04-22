@@ -9,7 +9,7 @@ data class LocalSetting(
     val id: Int = 0,
     val userId: String,
     val userEmail: String,
-    val lastLoggedIn: String,
+    val lastLoggedIn: Long,
     val language: String,
     val darkMode: Boolean,
     val creationDate: Long = System.currentTimeMillis()

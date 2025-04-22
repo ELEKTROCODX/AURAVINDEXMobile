@@ -30,7 +30,7 @@ fun WrapsScreen(navController: NavController ) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("AuraVindex") },
+                    title = { Text("AURA VINDEX") },
                     navigationIcon = {
                         IconButton(
                             onClick = {

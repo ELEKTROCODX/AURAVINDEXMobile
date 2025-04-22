@@ -31,7 +31,7 @@ fun MainScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("AuraVindex") },
+                    title = { Text("AURA VINDEX") },
                     navigationIcon = {
                         IconButton(
                             onClick = {
