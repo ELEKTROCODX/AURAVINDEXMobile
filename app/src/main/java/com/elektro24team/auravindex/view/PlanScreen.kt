@@ -3,6 +3,8 @@ package com.elektro24team.auravindex.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
@@ -27,7 +30,7 @@ import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlanScreen(navController: NavController ) {
+fun PlanScreen(navController: NavController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -98,22 +101,16 @@ fun PlanScreen(navController: NavController ) {
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
                         modifier = Modifier.padding(MediumPadding)
                     )
-                    Spacer(modifier = Modifier.height(18.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(MediumPadding),
+                            .padding(20.dp)
                     ) {
-                        /*Text(
-                            text = "¡PLAN SCREEN!",
-                            style = MaterialTheme.typography.headlineSmall
-                        )*/
                         items(planList.size) { index ->
                             PlanCard(plan = planList[index])
                         }
-
                     }
-
                 }
             }
         )

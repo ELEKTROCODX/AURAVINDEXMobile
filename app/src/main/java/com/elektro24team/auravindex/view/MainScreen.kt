@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
@@ -85,10 +86,17 @@ fun MainScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "¡HOME SCREEN!",
-                            style = MaterialTheme.typography.headlineSmall
-                        )
+                        /*
+                        * Recommendations
+                        * */
+                        
+                        /*
+                        * New books
+                        * */
+
+                        /*
+                        * Recent books
+                        * */
                     }
                 }
             }

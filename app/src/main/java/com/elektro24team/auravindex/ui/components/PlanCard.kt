@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.ui.components
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,8 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elektro24team.auravindex.model.Plan
@@ -35,11 +40,17 @@ fun PlanCard(plan: Plan) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = plan.name,
                 style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                color = colors.onPrimary
+            )
+            Text(
+                text = "$${plan.fixedPrice} once and $${plan.monthlyPrice} monthly",
+                style = TextStyle(fontStyle = FontStyle.Italic),
                 color = colors.onPrimary
             )
         }
@@ -54,23 +65,33 @@ fun PlanCard(plan: Plan) {
                 color = colors.onPrimary
             )
             Text(
-                text = "Fixed Price: ${plan.fixedPrice}",
+                text = buildAnnotatedString {
+                    append("You can have up to ")
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = colors.secondary)) {
+                        append("${plan.maxSimultaneousLoans} loans")
+                    }
+
+                    append(" at the same time")
+                },
                 color = colors.onPrimary
             )
             Text(
-                text = "Monthly Price: ${plan.monthlyPrice}",
+                text = buildAnnotatedString {
+                    append("You can return the book within ")
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = colors.secondary)) {
+                        append("${plan.maxReturnDays} days")
+                    }
+                },
                 color = colors.onPrimary
             )
             Text(
-                text = "You can have up to ${plan.maxSimultaneousLoans} loans at the same time",
-                color = colors.onPrimary
-            )
-            Text(
-                text = "You can return the book within ${plan.maxReturnDays} days",
-                color = colors.onPrimary
-            )
-            Text(
-                text = "You can renovate up to ${plan.maxRenovationsPerLoan} times per loan",
+                text = buildAnnotatedString {
+                    append("You can renovate up to ")
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = colors.secondary)) {
+                        append("${plan.maxRenovationsPerLoan} times")
+                    }
+                    append(" per loan")
+                },
                 color = colors.onPrimary
             )
         }
@@ -85,7 +106,7 @@ fun PlanCard(plan: Plan) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "GET NOW!",
+                    text = "SUBSCRIBE",
                     color = colors.onPrimary
                 )
             }
