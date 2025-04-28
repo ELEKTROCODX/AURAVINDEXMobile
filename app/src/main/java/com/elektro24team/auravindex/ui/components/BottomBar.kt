@@ -2,8 +2,9 @@ package com.elektro24team.auravindex.ui.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.
 import androidx.compose.material.icons.outlined.Book
-import androidx.compose.material.icons.outlined.Diamond
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
@@ -23,7 +24,7 @@ fun BottomNavBar(
         Icons.Outlined.Home,
         Icons.Outlined.Search,
         Icons.Outlined.Book,
-        Icons.Outlined.Diamond
+        Icons.Outlined.Star
     )
 
     // Rutas correspondientes
