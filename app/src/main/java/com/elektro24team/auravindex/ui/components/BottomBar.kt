@@ -2,9 +2,8 @@ package com.elektro24team.auravindex.ui.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-//import androidx.compose.material.icons.
 import androidx.compose.material.icons.outlined.Book
-import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.Diamond
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
@@ -24,14 +23,14 @@ fun BottomNavBar(
         Icons.Outlined.Home,
         Icons.Outlined.Search,
         Icons.Outlined.Book,
-        Icons.Outlined.Star
+        Icons.Outlined.Diamond
     )
 
     // Rutas correspondientes
     val routes = listOf("main", "search", "wraps", "plan")
 
     // Etiquetas bajo de los íconos
-    val labels = listOf("home", "search", "wraps", "plan")
+    val labels = listOf("home", "search", "lists", "premium")
 
     // Componente de barra del menu
     NavigationBar(modifier = modifier) {

@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun MainScreen(
     navController: NavController
