@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,7 +34,7 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun HomePageSection(title: String, books: List<Book>, seeMoreAction: () -> Unit, navController: NavController) {
+fun HomePageSection(title: String, books: MutableState<List<Book>>, seeMoreAction: () -> Unit, navController: NavController) {
     Column(
         modifier = Modifier.padding(8.dp).fillMaxWidth(),
     ) {
@@ -46,7 +47,7 @@ fun HomePageSection(title: String, books: List<Book>, seeMoreAction: () -> Unit,
             modifier = Modifier
                 .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
         ) {
-            items(books.size) { index ->
+            items(books.value.size) { index ->
                 Column(
                     modifier = Modifier
                         .padding(8.dp)
@@ -64,11 +65,11 @@ fun HomePageSection(title: String, books: List<Book>, seeMoreAction: () -> Unit,
                     )*/
                     /*val fullUrl = "https://api.auravindex.me${url}"*/
                     GlideImage(
-                        imageModel = {books[index].book_img},
+                        imageModel = {books.value[index].book_img},
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(150.dp)
-                            .clickable{ navController.navigate("book/${books[index].id}") },
+                            .clickable{ navController.navigate("book/${books.value[index]._id}") },
                         imageOptions = ImageOptions(
                             contentScale = ContentScale.Fit
                         ),
@@ -82,17 +83,17 @@ fun HomePageSection(title: String, books: List<Book>, seeMoreAction: () -> Unit,
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .clickable{
-                                        navController.navigate("book/${books[index].id}")
+                                        navController.navigate("book/${books.value[index]._id}")
                                     }
                             )
                         }
                     )
                     Text(
-                        text = books[index].title,
+                        text = books.value[index].title,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(top = 8.dp)
-                            .clickable{ navController.navigate("book/${books[index].id}") },
+                            .clickable{ navController.navigate("book/${books.value[index]._id}") },
                         style = TextStyle(fontWeight = FontWeight.Bold),
                         textAlign = TextAlign.Center
                     )
