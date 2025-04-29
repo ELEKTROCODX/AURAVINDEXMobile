@@ -27,7 +27,7 @@ fun BookList(books: List<Book>) {
                 Column(modifier = Modifier.width(120.dp)) {
                     Spacer(modifier = Modifier.height(SmallPadding))
                     Text(text = book.title)
-                    Text(text = book.author)
+                    Text(text = book.authors.size.toString())
                 }
             }
         }

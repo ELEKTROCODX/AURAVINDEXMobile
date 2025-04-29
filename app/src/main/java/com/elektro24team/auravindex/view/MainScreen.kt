@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
@@ -19,11 +20,15 @@ import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.openLink
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.elektro24team.auravindex.ui.components.getImageAPI
+import com.elektro24team.auravindex.view.viewmodels.BookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: BookViewModel = viewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -31,6 +36,7 @@ fun MainScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
+    val books = viewModel.posts
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->
@@ -89,7 +95,12 @@ fun MainScreen(
                         /*
                         * Recommendations
                         * */
-                        
+                        LazyRow {
+                                items(books.value){ book ->
+                                    Text(book.title)
+                                    getImageAPI(book.book_img)
+                                }
+                        }
                         /*
                         * New books
                         * */
