@@ -3,6 +3,7 @@ package com.elektro24team.auravindex.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
@@ -22,11 +23,15 @@ import com.elektro24team.auravindex.ui.components.HomePageSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.openLink
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.elektro24team.auravindex.ui.components.getImageAPI
+import com.elektro24team.auravindex.view.viewmodels.BookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: BookViewModel = viewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -34,6 +39,7 @@ fun MainScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
+    val books = viewModel.posts
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->
@@ -92,96 +98,15 @@ fun MainScreen(
                         /*
                         * Recommendations
                         * */
-                        HomePageSection(
-                            title = "Recommendations",
-                            books = listOf(
-                                Book(
-                                    id = "1",
-                                    title = "Libro 1",
-                                    isbn = "1234567890",
-                                    classification = "Fiction",
-                                    summary = "A summary of the book",
-                                    editorial = "Penguin Books",
-                                    language = "English",
-                                    edition = "1st",
-                                    sample = "1",
-                                    location = "Library A",
-                                    book_status = "Available",
-                                    genres = listOf("Fiction", "Fantasy"),
-                                    book_collection = "Collection X",
-                                    authors = listOf("Author 1", "Author 2"),
-                                    book_img = "https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png\n"
-                                ),
-                                Book(
-                                    id = "2",
-                                    title = "Libro 2",
-                                    isbn = "1234567890",
-                                    classification = "Fiction",
-                                    summary = "A summary of the book",
-                                    editorial = "Penguin Books",
-                                    language = "English",
-                                    edition = "1",
-                                    sample = "1",
-                                    location = "Library A",
-                                    book_status = "Available",
-                                    genres = listOf("Fiction", "Fantasy"),
-                                    book_collection = "Collection X",
-                                    authors = listOf("Author 1", "Author 2"),
-                                    book_img = "https://example.com/book1.jpg"
-                                ),
-                                Book(
-                                    id = "3",
-                                    title = "Libro 3",
-                                    isbn = "1234567890",
-                                    classification = "Fiction",
-                                    summary = "A summary of the book",
-                                    editorial = "Penguin Books",
-                                    language = "English",
-                                    edition = "1",
-                                    sample = "1",
-                                    location = "Library A",
-                                    book_status = "Available",
-                                    genres = listOf("Fiction", "Fantasy"),
-                                    book_collection = "Collection X",
-                                    authors = listOf("Author 1", "Author 2"),
-                                    book_img = "https://api.auravindex.me/images/books/810.55.1.png"
-                                ),
-                                Book(
-                                    id = "4",
-                                    title = "Libro 4",
-                                    isbn = "1234567890",
-                                    classification = "Fiction",
-                                    summary = "A summary of the book",
-                                    editorial = "Penguin Books",
-                                    language = "English",
-                                    edition = "1",
-                                    sample = "1",
-                                    location = "Library A",
-                                    book_status = "Available",
-                                    genres = listOf("Fiction", "Fantasy"),
-                                    book_collection = "Collection X",
-                                    authors = listOf("Author 1", "Author 2"),
-                                    book_img = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Logo_UCA_2015.jpg/1200px-Logo_UCA_2015.jpg"
-                                ),
-                                Book(
-                                    id = "5",
-                                    title = "Libro 5",
-                                    isbn = "1234567890",
-                                    classification = "Fiction",
-                                    summary = "A summary of the book",
-                                    editorial = "Penguin Books",
-                                    language = "English",
-                                    edition = "1",
-                                    sample = "1",
-                                    location = "Library A",
-                                    book_status = "Available",
-                                    genres = listOf("Fiction", "Fantasy"),
-                                    book_collection = "Collection X",
-                                    authors = listOf("Author 1", "Author 2"),
-                                    book_img = "https://auravindex.me/imgs/6.png"
-                                )
-                            ),
-                            seeMoreAction = {
+                        LazyRow {
+                                items(books.value){ book ->
+                                    Text(book.title)
+                                    getImageAPI(book.book_img)
+                                }
+                        }
+                        /*
+                        * New books
+                        * */
 
                             },
                             navController = navController

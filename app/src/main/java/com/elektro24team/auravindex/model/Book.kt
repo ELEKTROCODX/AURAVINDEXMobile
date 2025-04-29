@@ -1,19 +1,22 @@
 package com.elektro24team.auravindex.model
 
 data class Book(
-    val id: String,
-    val title: String,
-    val isbn: String,
+    val __v: Int,
+    val _id: String,
+    val authors: List<Author>,
+    val book_collection: BookCollection,
+    val book_img: String,
+    val book_status: BookStatus,
     val classification: String,
-    val summary: String,
-    val editorial: String,
-    val language: String,
+    val createdAt: String,
     val edition: String,
-    val sample: String,
-    val location: String,
-    val book_status: String,
+    val editorial: Editorial,
     val genres: List<String>,
-    val book_collection: String,
-    val authors: List<String>,
-    val book_img: String
+    val isbn: String,
+    val language: String,
+    val location: String,
+    val sample: String,
+    val summary: String,
+    val title: String,
+    val updatedAt: String
 )

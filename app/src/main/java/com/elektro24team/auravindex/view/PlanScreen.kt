@@ -3,6 +3,7 @@ package com.elektro24team.auravindex.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -17,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.theme.MediumPadding
@@ -27,24 +30,20 @@ import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.PlanCard
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
+import com.elektro24team.auravindex.view.viewmodels.PlanViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlanScreen(navController: NavController) {
+fun PlanScreen(navController: NavController, viewModel: PlanViewModel = viewModel()) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    /* List of temp plans, later we'll use the API */
-    val planList = listOf(
-        Plan("1", "Plan 1", 10.0f, 20.0f, 3, 15, 2),
-        Plan("2", "Plan 2", 15.0f, 25.0f, 2, 10, 1),
-        Plan("3", "Plan 3", 20.0f, 30.0f, 1, 5, 0),
-        Plan("4", "Plan 4", 25.0f, 35.0f, 4, 20, 3),
-        Plan("5", "Plan 5", 30.0f, 40.0f, 5, 25, 4)
-    )
+    //plans from the API
+    val plans = viewModel.posts
+
 
 
     ModalNavigationDrawer(
@@ -107,8 +106,8 @@ fun PlanScreen(navController: NavController) {
                             .fillMaxWidth()
                             .padding(20.dp)
                     ) {
-                        items(planList.size) { index ->
-                            PlanCard(plan = planList[index])
+                        items(plans.value){ plan ->
+                           PlanCard(plan)
                         }
                     }
                 }
