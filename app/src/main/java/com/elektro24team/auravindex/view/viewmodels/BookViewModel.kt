@@ -10,15 +10,14 @@ import kotlinx.coroutines.launch
 class BookViewModel: ViewModel(){
     var posts = mutableStateOf<List<Book>>(emptyList())
         private set
-
     init {
-        fetchBooks()
+        fetchBooks(showDuplicates = false, showLents = false, page = 1, limit = 10)
     }
 
-    private fun fetchBooks(){
+    private fun fetchBooks(showDuplicates: Boolean = true, showLents: Boolean = true, page: Int = 1, limit: Int = 10){
         viewModelScope.launch {
             try {
-                val response = BookClient.apiService.getBooks()
+                val response = BookClient.apiService.getBooks(showDuplicates = showDuplicates, showLents = showLents, page, limit)
                 posts.value = response.data
             }catch (e: Exception){
                 e.printStackTrace()

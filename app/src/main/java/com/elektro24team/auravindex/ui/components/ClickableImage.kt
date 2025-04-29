@@ -5,8 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Text
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -20,7 +18,7 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun ImageAPI(url: String, book: Book, navController: NavController){
+fun ClickableImage(url: String, book: Book, navController: NavController){
     val fullURL = IMG_url+url
     GlideImage(
         imageModel = {fullURL},
@@ -36,10 +34,11 @@ fun ImageAPI(url: String, book: Book, navController: NavController){
         },
         failure = {
             Image(
-                painter = painterResource(id = R.drawable.logo_app),
+                painter = painterResource(id = R.mipmap.ic_launcher),
                 contentDescription = "Default img",
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .height(150.dp)
                     .clickable{
                         navController.navigate("book/${book._id}")
                     }

@@ -6,10 +6,16 @@ import com.elektro24team.auravindex.utils.Constants.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface BookService{
     @GET("book")
-    suspend fun getBooks(): ApiResponse<List<Book>>
+    suspend fun getBooks(
+        @retrofit2.http.Query("show_duplicates") showDuplicates: Boolean = true,
+        @retrofit2.http.Query("show_lents") showLents: Boolean = true,
+        @retrofit2.http.Query("page") page: Int = 1,
+        @retrofit2.http.Query("limit") limit: Int = 10
+    ): ApiResponse<List<Book>>
 }
 
 object BookClient{
