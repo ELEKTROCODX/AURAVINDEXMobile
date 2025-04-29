@@ -63,31 +63,7 @@ fun HomePageSection(title: String, books: MutableState<List<Book>>, seeMoreActio
                         error = painterResource(id = R.drawable.logo_app),
                         placeholder = painterResource(id = R.drawable.logo_app),
                     )*/
-                    /*val fullUrl = "https://api.auravindex.me${url}"*/
-                    GlideImage(
-                        imageModel = {books.value[index].book_img},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp)
-                            .clickable{ navController.navigate("book/${books.value[index]._id}") },
-                        imageOptions = ImageOptions(
-                            contentScale = ContentScale.Fit
-                        ),
-                        loading = {
-                            CircularProgressIndicator()
-                        },
-                        failure = {
-                            Image(
-                                painter = painterResource(id = R.drawable.logo_app),
-                                contentDescription = "Default img",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clickable{
-                                        navController.navigate("book/${books.value[index]._id}")
-                                    }
-                            )
-                        }
-                    )
+                    ImageAPI(books.value[index].book_img, books.value[index], navController)
                     Text(
                         text = books.value[index].title,
                         modifier = Modifier

@@ -24,7 +24,7 @@ import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.openLink
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.elektro24team.auravindex.ui.components.getImageAPI
+import com.elektro24team.auravindex.ui.components.ImageAPI
 import com.elektro24team.auravindex.view.viewmodels.BookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

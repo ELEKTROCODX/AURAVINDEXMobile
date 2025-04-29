@@ -1,5 +1,8 @@
 package com.elektro24team.auravindex.ui.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Text
@@ -7,25 +10,40 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.elektro24team.auravindex.R
+import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.utils.Constants.IMG_url
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun getImageAPI(url: String){
+fun ImageAPI(url: String, book: Book, navController: NavController){
     val fullURL = IMG_url+url
     GlideImage(
         imageModel = {fullURL},
-        modifier = Modifier.fillMaxWidth().height(200.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp)
+            .clickable{ navController.navigate("book/${book._id}") },
         imageOptions = ImageOptions(
             contentScale = ContentScale.Fit
         ),
         loading = {
-            CircularProgressIndicator()
+            androidx.compose.material.CircularProgressIndicator()
         },
         failure = {
-            Text("Erro")
+            Image(
+                painter = painterResource(id = R.drawable.logo_app),
+                contentDescription = "Default img",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable{
+                        navController.navigate("book/${book._id}")
+                    }
+            )
         }
     )
 }
