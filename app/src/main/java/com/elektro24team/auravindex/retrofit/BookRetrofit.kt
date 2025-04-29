@@ -11,10 +11,15 @@ import retrofit2.http.Query
 interface BookService{
     @GET("book")
     suspend fun getBooks(
-        @retrofit2.http.Query("show_duplicates") showDuplicates: Boolean = true,
-        @retrofit2.http.Query("show_lents") showLents: Boolean = true,
-        @retrofit2.http.Query("page") page: Int = 1,
-        @retrofit2.http.Query("limit") limit: Int = 10
+        @Query("show_duplicates") showDuplicates: Boolean = true,
+        @Query("show_lents") showLents: Boolean = true,
+        @Query("page") page: Int = 1,
+        @Query("limit") limit: Int = 10
+    ): ApiResponse<List<Book>>
+
+    @GET("book/latest_releases")
+    suspend fun getLatestReleases(
+        @Query("limit") limit: Int = 10,
     ): ApiResponse<List<Book>>
 }
 

@@ -34,6 +34,7 @@ fun MainScreen(
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val books = viewModel.posts
+    val latestReleases = viewModel.latestReleases
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->
@@ -59,7 +60,7 @@ fun MainScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                scope.launch { drawerState.open() } // Abre el drawer
+                                scope.launch { drawerState.open() }
                             }
                         ) {
                             Icon(
@@ -100,7 +101,7 @@ fun MainScreen(
                         )
                         HomePageSection(
                             "New releases",
-                            books,
+                            latestReleases,
                             seeMoreAction = { navController.navigate(Routes.SEARCH) },
                             navController
                         )
