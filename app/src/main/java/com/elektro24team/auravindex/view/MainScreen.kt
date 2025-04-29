@@ -98,18 +98,11 @@ fun MainScreen(
                         /*
                         * Recommendations
                         * */
-                        LazyRow {
-                                items(books.value){ book ->
-                                    Text(book.title)
-                                    getImageAPI(book.book_img)
-                                }
-                        }
-                        /*
-                        * New books
-                        * */
-
-                            },
-                            navController = navController
+                        HomePageSection(
+                            "Recommendations",
+                            books,
+                            seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                            navController
                         )
                     }
                 }
