@@ -1,8 +1,11 @@
 package com.elektro24team.auravindex.view
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +21,7 @@ import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(navController: NavController ) {
@@ -84,10 +88,23 @@ fun SearchScreen(navController: NavController ) {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "¡SEARCH SCREEN!",
-                            style = MaterialTheme.typography.headlineSmall
+                        var searchText by remember { mutableStateOf("") }
+                        TextField(
+                            value = searchText,
+                            onValueChange = { searchText = it },
+                            label = { Text("Search") },
+                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                            modifier = Modifier.fillMaxWidth()
                         )
+                        val filteredItems = listOf("Berry", "Banana", "Cherry", "Apple").filter {
+                            it.contains(searchText, ignoreCase = true)
+                        }
+
+                        LazyColumn {
+                            items(filteredItems.size) { index ->
+                                Text(filteredItems[index])
+                            }
+                        }
                     }
                 }
             }
