@@ -17,6 +17,7 @@ import com.elektro24team.auravindex.view.*
 
 // RUTAS
 object Routes {
+    const val WELCOME = "welcome"
     const val MAIN = "main"
     const val SEARCH = "search"
     const val WRAPS = "wraps"
@@ -31,11 +32,13 @@ object Routes {
 }
 
 @Composable
-fun NavGraph(startDestination: String = Routes.MAIN) {
+fun NavGraph(startDestination: String = Routes.WELCOME) {
     val navController = rememberNavController()
 
-    //aun me falta añadir la antigua tap to continue
-    NavHost(navController = navController, startDestination = startDestination) { // aqui tambien defini que esta sea la principal
+    NavHost(navController = navController, startDestination = startDestination) {
+        composable(Routes.WELCOME) {
+            WelcomeScreen(navController = navController)
+        }
         composable(Routes.MAIN) {
             MainScreen(navController = navController)
         }
