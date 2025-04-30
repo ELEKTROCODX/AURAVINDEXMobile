@@ -6,6 +6,7 @@ import com.elektro24team.auravindex.utils.Constants.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface BookService{
@@ -21,6 +22,11 @@ interface BookService{
     suspend fun getLatestReleases(
         @Query("limit") limit: Int = 10,
     ): ApiResponse<List<Book>>
+
+    @GET("book/{id}")
+    suspend fun getBookById(
+        @Path("id") id: String
+    ): Book
 }
 
 object BookClient{

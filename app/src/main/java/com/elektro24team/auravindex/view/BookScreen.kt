@@ -23,6 +23,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,6 +37,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.R
@@ -60,7 +64,11 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    var book: Book? = viewModel.posts.value.find { it._id == bookId }
+    val book = viewModel.book.observeAsState().value
+    LaunchedEffect(bookId) {
+        viewModel.fetchBookById(bookId)
+    }
+
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->
@@ -146,6 +154,16 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                         )
                         Text(book?.book_status?.book_status ?: "Not available")
                         Text(book?.summary ?: "Summary")
+                        Text(book?.classification ?: "Classification")
+                        Text(book?.genres?.joinToString(", ") ?: "Genres")
+                        Text(book?.authors?.joinToString(", ") ?: "Authors")
+                        Text(book?.editorial?.name ?: "Editorial")
+                        Text(book?.edition ?: "Edition")
+                        Text(book?.language ?: "Language")
+                        Text(book?.location ?: "Location")
+                        Text(book?.isbn ?: "ISBN")
+                        Text(book?.book_collection?.name ?: "Book collection")
+                        Text(bookId ?: "ID")
 
                     }
                     Spacer(modifier = Modifier.height(20.dp))
