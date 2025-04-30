@@ -8,6 +8,8 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,7 +19,10 @@ import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import kotlinx.coroutines.launch
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.navigation.Routes
+import com.elektro24team.auravindex.ui.components.BookCollectionsSection
+import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 
@@ -83,11 +88,13 @@ fun SearchScreen(navController: NavController ) {
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(MediumPadding),
-                        verticalArrangement = Arrangement.Center,
+                            .fillMaxSize(),
+                        verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        val app = LocalContext.current.applicationContext as AuraVindexApp
+                        val isConnected by app.networkLiveData.observeAsState(true)
+                        ConnectionAlert(isConnected)
                         var searchText by remember { mutableStateOf("") }
                         TextField(
                             value = searchText,
@@ -96,7 +103,12 @@ fun SearchScreen(navController: NavController ) {
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                             modifier = Modifier.fillMaxWidth()
                         )
-                        val filteredItems = listOf("Berry", "Banana", "Cherry", "Apple").filter {
+                        if(searchText.isNotEmpty()){
+
+                        } else {
+                            BookCollectionsSection()
+                        }
+                        /*val filteredItems = listOf("Berry", "Banana", "Cherry", "Apple").filter {
                             it.contains(searchText, ignoreCase = true)
                         }
 
@@ -104,7 +116,7 @@ fun SearchScreen(navController: NavController ) {
                             items(filteredItems.size) { index ->
                                 Text(filteredItems[index])
                             }
-                        }
+                        }*/
                     }
                 }
             }

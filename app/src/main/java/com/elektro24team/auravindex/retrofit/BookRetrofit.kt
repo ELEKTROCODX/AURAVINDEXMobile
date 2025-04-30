@@ -6,10 +6,27 @@ import com.elektro24team.auravindex.utils.Constants.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface BookService{
     @GET("book")
-    suspend fun getBooks(): ApiResponse<List<Book>>
+    suspend fun getBooks(
+        @Query("show_duplicates") showDuplicates: Boolean = true,
+        @Query("show_lents") showLents: Boolean = true,
+        @Query("page") page: Int = 1,
+        @Query("limit") limit: Int = 10
+    ): ApiResponse<List<Book>>
+
+    @GET("book/latest_releases")
+    suspend fun getLatestReleases(
+        @Query("limit") limit: Int = 10,
+    ): ApiResponse<List<Book>>
+
+    @GET("book/{id}")
+    suspend fun getBookById(
+        @Path("id") id: String
+    ): Book
 }
 
 object BookClient{
