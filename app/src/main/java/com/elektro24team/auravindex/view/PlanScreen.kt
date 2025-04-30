@@ -10,6 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,8 +27,10 @@ import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import kotlinx.coroutines.launch
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.model.Plan
 import com.elektro24team.auravindex.navigation.Routes
+import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.PlanCard
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
@@ -95,19 +99,28 @@ fun PlanScreen(navController: NavController, viewModel: PlanViewModel = viewMode
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-                    Text(
-                        text = "Check out our plans",
-                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
-                        modifier = Modifier.padding(MediumPadding)
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp)
+                    Column(
+                      modifier = Modifier
+                          .fillMaxSize()
                     ) {
-                        items(plans.value){ plan ->
-                           PlanCard(plan)
+                        val app = LocalContext.current.applicationContext as AuraVindexApp
+                        val isConnected by app.networkLiveData.observeAsState(true)
+                        ConnectionAlert(isConnected)
+                        Text(
+                            text = "Check out our plans",
+                            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
+                            modifier = Modifier
+                                .padding(start = 8.dp, top = MediumPadding, bottom = 0.dp, end = MediumPadding)
+                                .align(Alignment.Start)
+                        )
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 0.dp, end = 20.dp)
+                        ) {
+                            items(plans.value){ plan ->
+                                PlanCard(plan)
+                            }
                         }
                     }
                 }
