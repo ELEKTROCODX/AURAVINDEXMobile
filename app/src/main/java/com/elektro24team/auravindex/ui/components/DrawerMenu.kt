@@ -36,11 +36,12 @@ fun DrawerMenu(onItemSelected: (String) -> Unit) {
         )
 
         val menuItems = listOf(
-            "Profile" to "profile",
-            "Notifications" to "notifications",
-            "Terms & services" to "terms",
-            "Privacy" to "privacy",
-            "Settings" to "settings"
+            /*"Profile" to "profile",
+            "Notifications" to "notifications",*/
+            "Terms of Services" to "terms",
+            "Privacy Policy" to "privacy",
+            "Team" to "team",
+           /* "Settings" to "settings"*/
         )
 
         menuItems.forEach { (label, action) ->
@@ -55,18 +56,22 @@ fun DrawerMenu(onItemSelected: (String) -> Unit) {
             )
         }
 
-        //espacio para que salga al fondo
         Spacer(modifier = Modifier.weight(1f))
 
-        // Cerrar sesión
-        Text(
-            text = "Log out",
-            color = colors.secondary,
-            fontSize = 18.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp)
-                .clickable { onItemSelected("signout") }
-        )
+
+        /*
+        * Check if user is logged in
+        * */
+        if(false) {
+            Text(
+                text = "Log out",
+                color = colors.secondary,
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp)
+                    .clickable { onItemSelected("signout") }
+            )
+        }
     }
 }

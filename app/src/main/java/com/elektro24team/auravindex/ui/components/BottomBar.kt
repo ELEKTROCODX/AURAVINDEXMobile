@@ -22,15 +22,15 @@ fun BottomNavBar(
     val items = listOf(
         Icons.Outlined.Home,
         Icons.Outlined.Search,
-        Icons.Outlined.Book,
+        /*Icons.Outlined.Book,*/
         Icons.Outlined.Diamond
     )
 
     // Rutas correspondientes
-    val routes = listOf("main", "search", "wraps", "plan")
+    val routes = listOf("main", "search", /*"lists", */"plans")
 
     // Etiquetas bajo de los íconos
-    val labels = listOf("home", "search", "lists", "premium")
+    val labels = listOf("home", "search", /*"lists", */"plans")
 
     // Componente de barra del menu
     NavigationBar(modifier = modifier) {
