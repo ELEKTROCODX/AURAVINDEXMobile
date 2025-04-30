@@ -49,7 +49,7 @@ fun PlanCard(plan: Plan) {
                 color = colors.onPrimary
             )
             Text(
-                text = "$${plan.fixed_price.`$numberDecimal`} once and $${plan.monthly_price.`$numberDecimal`} monthly",
+                text = "$${plan.fixed_price} once and $${plan.monthly_price} monthly",
                 style = TextStyle(fontStyle = FontStyle.Italic),
                 color = colors.onPrimary
             )
