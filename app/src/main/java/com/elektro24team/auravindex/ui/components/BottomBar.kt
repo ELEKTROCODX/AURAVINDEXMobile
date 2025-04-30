@@ -27,10 +27,10 @@ fun BottomNavBar(
     )
 
     // Rutas correspondientes
-    val routes = listOf("main", "search", /*"wraps", */"plans")
+    val routes = listOf("main", "search", /*"lists", */"plans")
 
     // Etiquetas bajo de los íconos
-    val labels = listOf("home", "search", /*"wraps", */"plans")
+    val labels = listOf("home", "search", /*"lists", */"plans")
 
     // Componente de barra del menu
     NavigationBar(modifier = modifier) {
