@@ -6,9 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.elektro24team.auravindex.model.LocalSetting
-import com.elektro24team.auravindex.ui.viemodels.LocalSettingViewModelFactory
-import com.elektro24team.auravindex.ui.viewmodels.LocalSettingViewModel
 
 private val LightColors = lightColorScheme(
     primary = Purple,

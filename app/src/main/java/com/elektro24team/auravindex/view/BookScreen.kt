@@ -152,11 +152,15 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                             style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
                             modifier = Modifier.padding(MediumPadding)
                         )
+                        var authors : List<String> = listOf()
+                        book?.authors?.forEach { author ->
+                            authors += author.name
+                        }
                         Text(book?.book_status?.book_status ?: "Not available")
                         Text(book?.summary ?: "Summary")
                         Text(book?.classification ?: "Classification")
                         Text(book?.genres?.joinToString(", ") ?: "Genres")
-                        Text(book?.authors?.joinToString(", ") ?: "Authors")
+                        Text(authors?.joinToString(", ") ?: "Authors")
                         Text(book?.editorial?.name ?: "Editorial")
                         Text(book?.edition ?: "Edition")
                         Text(book?.language ?: "Language")
