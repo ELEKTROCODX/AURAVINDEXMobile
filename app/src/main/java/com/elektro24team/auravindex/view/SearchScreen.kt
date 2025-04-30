@@ -18,6 +18,7 @@ import com.elektro24team.auravindex.ui.theme.MediumPadding
 import kotlinx.coroutines.launch
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.navigation.Routes
+import com.elektro24team.auravindex.ui.components.BookCollectionsSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 
@@ -85,7 +86,7 @@ fun SearchScreen(navController: NavController ) {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(MediumPadding),
-                        verticalArrangement = Arrangement.Center,
+                        verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         var searchText by remember { mutableStateOf("") }
@@ -96,7 +97,12 @@ fun SearchScreen(navController: NavController ) {
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                             modifier = Modifier.fillMaxWidth()
                         )
-                        val filteredItems = listOf("Berry", "Banana", "Cherry", "Apple").filter {
+                            if(searchText.isNotEmpty()){
+
+                        } else {
+                            BookCollectionsSection()
+                        }
+                        /*val filteredItems = listOf("Berry", "Banana", "Cherry", "Apple").filter {
                             it.contains(searchText, ignoreCase = true)
                         }
 
@@ -104,7 +110,7 @@ fun SearchScreen(navController: NavController ) {
                             items(filteredItems.size) { index ->
                                 Text(filteredItems[index])
                             }
-                        }
+                        }*/
                     }
                 }
             }
