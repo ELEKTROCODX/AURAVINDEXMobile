@@ -57,5 +57,5 @@ fun BookCollectionsSection(
             }
         }
     }
-    
+
 }
