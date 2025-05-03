@@ -1,11 +1,15 @@
 package com.elektro24team.auravindex.model
 
+//Plan Model
 data class Plan(
-    val id: String,
+    val __v: Int,
+    val _id: String,
+    val createdAt: String,
+    val fixed_price: String,
+    val max_renovations_per_loan: Int,
+    val max_return_days: Int,
+    val max_simultaneous_loans: Int,
+    val monthly_price: String,
     val name: String,
-    val fixedPrice: Float,
-    val monthlyPrice: Float,
-    val maxSimultaneousLoans: Int,
-    val maxReturnDays: Int,
-    val maxRenovationsPerLoan: Int
+    val updatedAt: String
 )

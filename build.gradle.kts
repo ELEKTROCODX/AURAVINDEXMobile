@@ -7,7 +7,7 @@ plugins {
 
 buildscript {
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.4")
+        classpath("com.android.tools.build:gradle:8.9.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10")
         classpath("com.google.devtools.ksp:symbol-processing-gradle-plugin:1.8.10-1.0.9")
     }

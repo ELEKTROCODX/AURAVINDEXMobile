@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -49,7 +49,7 @@ fun PlanCard(plan: Plan) {
                 color = colors.onPrimary
             )
             Text(
-                text = "$${plan.fixedPrice} once and $${plan.monthlyPrice} monthly",
+                text = "$${plan.fixed_price} once and $${plan.monthly_price} monthly",
                 style = TextStyle(fontStyle = FontStyle.Italic),
                 color = colors.onPrimary
             )
@@ -68,7 +68,7 @@ fun PlanCard(plan: Plan) {
                 text = buildAnnotatedString {
                     append("You can have up to ")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = colors.secondary)) {
-                        append("${plan.maxSimultaneousLoans} loans")
+                        append("${plan.max_simultaneous_loans} loans")
                     }
 
                     append(" at the same time")
@@ -79,7 +79,7 @@ fun PlanCard(plan: Plan) {
                 text = buildAnnotatedString {
                     append("You can return the book within ")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = colors.secondary)) {
-                        append("${plan.maxReturnDays} days")
+                        append("${plan.max_return_days} days")
                     }
                 },
                 color = colors.onPrimary
@@ -88,7 +88,7 @@ fun PlanCard(plan: Plan) {
                 text = buildAnnotatedString {
                     append("You can renovate up to ")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = colors.secondary)) {
-                        append("${plan.maxRenovationsPerLoan} times")
+                        append("${plan.max_renovations_per_loan} times")
                     }
                     append(" per loan")
                 },

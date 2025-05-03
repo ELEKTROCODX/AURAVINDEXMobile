@@ -1,12 +1,15 @@
 package com.elektro24team.auravindex.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.openLink
 import com.elektro24team.auravindex.view.*
@@ -14,6 +17,7 @@ import com.elektro24team.auravindex.view.*
 
 // RUTAS
 object Routes {
+    const val WELCOME = "welcome"
     const val MAIN = "main"
     const val SEARCH = "search"
     const val WRAPS = "wraps"
@@ -24,14 +28,17 @@ object Routes {
     const val TERMS = "terms"
     const val PRIVACY = "privacy"
     const val TEAM = "team"
+    const val BOOK = "book/{bookId}"
 }
 
 @Composable
-fun NavGraph(startDestination: String = Routes.MAIN) {
+fun NavGraph(startDestination: String = Routes.WELCOME) {
     val navController = rememberNavController()
 
-    //aun me falta añadir la antigua tap to continue
-    NavHost(navController = navController, startDestination = startDestination) { // aqui tambien defini que esta sea la principal
+    NavHost(navController = navController, startDestination = startDestination) {
+        composable(Routes.WELCOME) {
+            WelcomeScreen(navController = navController)
+        }
         composable(Routes.MAIN) {
             MainScreen(navController = navController)
         }
@@ -53,6 +60,13 @@ fun NavGraph(startDestination: String = Routes.MAIN) {
         /*composable(Routes.NOTIFICATIONS) {
             NotificationsScreen(navController = navController)
         }*/
+        composable(
+            Routes.BOOK,
+            arguments = listOf(navArgument("bookId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val bookId = backStackEntry.arguments?.getString("bookId")
+            BookScreen(navController = navController, bookId = bookId ?: "")
+        }
 
     }
 }

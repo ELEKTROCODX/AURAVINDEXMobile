@@ -5,6 +5,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -14,7 +16,9 @@ import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import kotlinx.coroutines.launch
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.navigation.Routes
+import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 
@@ -83,10 +87,9 @@ fun WrapsScreen(navController: NavController ) {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "¡WRAPS SCREEN!",
-                            style = MaterialTheme.typography.headlineSmall
-                        )
+                        val app = LocalContext.current.applicationContext as AuraVindexApp
+                        val isConnected by app.networkLiveData.observeAsState(true)
+                        ConnectionAlert(isConnected)
                     }
                 }
             }
