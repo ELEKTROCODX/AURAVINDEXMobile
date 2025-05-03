@@ -1,5 +1,7 @@
 package com.elektro24team.auravindex.ui.components
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,38 +18,44 @@ fun BookCollectionsSection(
     viewModel: BookCollectionViewModel = viewModel()
 ) {
     val bookCollections = viewModel.posts
-    /*
-    * Create two lazy columns with half max width
-    * First lazy column: Show even book collections
-    * Second lazy column: Show odd book collections
-    * */
-    LazyColumn(
+
+    Row(
         modifier = Modifier
             .fillMaxSize()
+            .padding(5.dp)
     ) {
-        items(bookCollections.value.size) { index ->
-            Button(
-                modifier = Modifier
-                    .padding(4.dp),
-                onClick = {/* Open search by book collection */}
-            ) {
-                Text(
-                    text = bookCollections.value[index].name
-                )
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+        ) {
+            items(bookCollections.value.size){
+                index ->
+                    if(index % 2 ==0){
+                        Button(
+                            onClick = {}
+                        ) {
+                            Text(bookCollections.value[index].name)
+                        }
+                    }
             }
         }
-        /*items(bookCollections.value.size) { index ->
-            if((index % 2) == 0) {
-                Button(
-                    onClick = { *//*TODO*//* }
-                ) {
-                    Text(text = bookCollections.value[index].name)
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+        ) {
+            items(bookCollections.value.size){
+                index ->
+                if(index % 2 != 0){
+                    Button(
+                        onClick = {}
+                    ) {
+                        Text(bookCollections.value[index].name)
+                    }
                 }
-                Button(
-                    onClick = { *//*TODO*//* }
-                ) {
-                    Text(text = bookCollections.value[index+1].name)
-                }
-        }*/
+            }
+        }
     }
+
 }

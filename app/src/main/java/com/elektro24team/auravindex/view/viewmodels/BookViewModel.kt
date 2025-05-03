@@ -17,9 +17,12 @@ class BookViewModel: ViewModel(){
         private set
     private val _book = MutableLiveData<Book?>()
     val book: LiveData<Book?> = _book
+    var filteredBooks = mutableStateOf<List<Book>>(emptyList())
+        private set
     init {
         fetchBooks(showDuplicates = false, showLents = false, page = 1, limit = 10)
         fetchLatestReleases()
+        fetchFilteredBooks(filter = "", value = "")
     }
 
 
@@ -39,6 +42,17 @@ class BookViewModel: ViewModel(){
                 val response = BookClient.apiService.getLatestReleases(limit)
                 latestReleases.value = response.data
             }catch (e: Exception){
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun fetchFilteredBooks(showDuplicates: Boolean = true, showLents: Boolean = true, filter: String, value: String){
+        viewModelScope.launch {
+            try {
+                val response = BookClient.apiService.getFilteredBooks(showDuplicates,showLents,filter,value)
+                filteredBooks.value = response.data
+            }catch (e:Exception){
                 e.printStackTrace()
             }
         }
