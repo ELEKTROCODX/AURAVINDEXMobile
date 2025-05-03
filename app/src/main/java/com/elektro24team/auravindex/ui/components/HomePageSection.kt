@@ -72,7 +72,7 @@ fun HomePageSection(title: String, books: MutableState<List<Book>>, seeMoreActio
                         error = painterResource(id = R.drawable.logo_app),
                         placeholder = painterResource(id = R.drawable.logo_app),
                     )*/
-                    ClickableImage(books.value[index].book_img, books.value[index], navController)
+                    ClickableImage(books.value[index], navController)
                     Text(
                         text = books.value[index].title,
                         modifier = Modifier

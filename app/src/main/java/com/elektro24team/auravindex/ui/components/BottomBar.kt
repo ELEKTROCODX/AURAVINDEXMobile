@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.elektro24team.auravindex.navigation.Routes
 
 @Composable
 fun BottomNavBar(
@@ -27,7 +28,7 @@ fun BottomNavBar(
     )
 
     // Rutas correspondientes
-    val routes = listOf("main", "search", /*"wraps", */"plans")
+    val routes = listOf(Routes.MAIN, Routes.SEARCH, /*Routes.WRAPS,*/ Routes.PLANS)
 
     // Etiquetas bajo de los íconos
     val labels = listOf("home", "search", /*"wraps", */"plans")

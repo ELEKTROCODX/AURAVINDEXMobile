@@ -18,8 +18,8 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun ClickableImage(url: String, book: Book, navController: NavController){
-    val fullURL = IMG_url+url
+fun ClickableImage(book: Book, navController: NavController){
+    val fullURL = IMG_url+book.book_img
     GlideImage(
         imageModel = {fullURL},
         modifier = Modifier
