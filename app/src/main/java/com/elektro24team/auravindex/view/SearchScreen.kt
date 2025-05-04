@@ -155,7 +155,7 @@ fun SearchScreen(navController: NavController ) {
 
                         // Filtrado de libros según el texto de búsqueda
                         if(searchText.isNotEmpty()){
-                            val filtered = bookViewModel.getDistinctBooksByTitle(bookViewModel.filteredBooks.value, searchText)
+                            val filtered = bookViewModel.getFirst5FilteredBooks(selectedFilter.lowercase(), searchText)
 
                             LazyColumn {
                                 items(filtered.size) { index ->

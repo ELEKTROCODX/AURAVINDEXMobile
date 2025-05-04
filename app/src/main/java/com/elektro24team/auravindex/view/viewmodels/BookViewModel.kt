@@ -75,5 +75,22 @@ class BookViewModel: ViewModel(){
             .distinctBy { it._id }
     }
 
+    fun getFirst5FilteredBooks(filter: String, query: String): List<Book> {
+        val cleanedQuery = query.trim().lowercase()
+
+        return filteredBooks.value
+            .distinctBy { it._id }
+            .filter {
+                when (filter) {
+                    "título" -> it.title.lowercase().contains(cleanedQuery)
+                    "autor" -> it.authors.any { author -> author.name.lowercase().contains(cleanedQuery) }
+                    "género" -> it.genres.any { genre -> genre.lowercase().contains(cleanedQuery) }
+                    else -> false
+                }
+            }
+            .take(5) // solo los 5 primeros
+    }
+
+
 
 }
