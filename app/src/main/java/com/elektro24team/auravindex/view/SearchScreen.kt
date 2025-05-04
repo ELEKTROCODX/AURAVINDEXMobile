@@ -117,6 +117,8 @@ fun SearchScreen(navController: NavController ) {
                                 searchText = it
                                 if (searchText.isNotBlank()) {
                                     bookViewModel.fetchFilteredBooks(
+                                        showDuplicates = false,
+                                        showLents = true,
                                         filter = selectedFilter.lowercase(),
                                         value = searchText
                                     )
@@ -143,6 +145,8 @@ fun SearchScreen(navController: NavController ) {
                                         selectedFilter = option
                                         if (searchText.isNotBlank()) {
                                             bookViewModel.fetchFilteredBooks(
+                                                showDuplicates = false,
+                                                showLents = true,
                                                 filter = selectedFilter.lowercase(),
                                                 value = searchText
                                             )
@@ -155,7 +159,15 @@ fun SearchScreen(navController: NavController ) {
 
                         // Filtrado de libros según el texto de búsqueda
                         if(searchText.isNotEmpty()){
-                            val filtered = bookViewModel.getFirst5FilteredBooks(selectedFilter.lowercase(), searchText)
+                            //se supone que es con la API
+                            val filtered1 = bookViewModel.filteredBooks.value
+                            //filtrado local
+                            val filtered = bookViewModel.getFirst5FilteredBooks(
+                                books = bookViewModel.filteredBooks.value,
+                                search = searchText,
+                                filter = selectedFilter
+                            )
+
 
                             LazyColumn {
                                 items(filtered.size) { index ->
@@ -196,7 +208,8 @@ fun SearchScreen(navController: NavController ) {
                                     }
                                 }
                             }
-                        } else {
+
+                        }else{
                             BookCollectionsSection()
                         }
                         /*val filteredItems = listOf("Berry", "Banana", "Cherry", "Apple").filter {

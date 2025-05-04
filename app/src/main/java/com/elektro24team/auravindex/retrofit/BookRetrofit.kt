@@ -33,7 +33,9 @@ interface BookService{
         @Query("show_duplicates") showDuplicates: Boolean = true,
         @Query("show_lents") showLents: Boolean = true,
         @Query("filter_field") filterField: String,
-        @Query("filter_value") filterValue: String
+        @Query("filter_value") filterValue: String,
+        @Query("page") page: Int = 1,
+        @Query("limit") limit: Int = 10
     ):ApiResponse<List<Book>>
 }
 

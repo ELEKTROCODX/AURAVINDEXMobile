@@ -20,7 +20,7 @@ class BookViewModel: ViewModel(){
     var filteredBooks = mutableStateOf<List<Book>>(emptyList())
         private set
     init {
-        fetchBooks(showDuplicates = false, showLents = false, page = 1, limit = 10)
+        fetchBooks(showDuplicates = false, showLents = false, page = 1, limit = 20)
         fetchLatestReleases()
         fetchFilteredBooks(filter = "", value = "")
     }
@@ -46,12 +46,12 @@ class BookViewModel: ViewModel(){
             }
         }
     }
-
-    fun fetchFilteredBooks(showDuplicates: Boolean = true, showLents: Boolean = true, filter: String, value: String){
+    //duplicados desactivados temporalmente para la search screen
+    fun fetchFilteredBooks(showDuplicates: Boolean = false, showLents: Boolean = true, filter: String, value: String){
         viewModelScope.launch {
             try {
                 val response = BookClient.apiService.getFilteredBooks(showDuplicates,showLents,filter,value)
-                filteredBooks.value = response.data
+                filteredBooks.value = response.data.distinctBy { it._id }
             }catch (e:Exception){
                 e.printStackTrace()
             }
@@ -75,20 +75,21 @@ class BookViewModel: ViewModel(){
             .distinctBy { it._id }
     }
 
-    fun getFirst5FilteredBooks(filter: String, query: String): List<Book> {
-        val cleanedQuery = query.trim().lowercase()
+    fun getFirst5FilteredBooks(books: List<Book>, search: String, filter: String = "título"): List<Book> {
+        val cleanedQuery = search.trim()
 
-        return filteredBooks.value
-            .distinctBy { it._id }
-            .filter {
-                when (filter) {
-                    "título" -> it.title.lowercase().contains(cleanedQuery)
-                    "autor" -> it.authors.any { author -> author.name.lowercase().contains(cleanedQuery) }
-                    "género" -> it.genres.any { genre -> genre.lowercase().contains(cleanedQuery) }
+        val filtered = books.filter { book ->
+                when (filter.lowercase()) {
+                    "título" -> book.title.contains(cleanedQuery, ignoreCase = true)
+                    "autor" -> book.authors.any { author -> author.name.contains(cleanedQuery, ignoreCase = true) }
+                    "género" -> book.genres.any { genre -> genre.contains(cleanedQuery, ignoreCase = true) }
                     else -> false
                 }
             }
-            .take(5) // solo los 5 primeros
+        val distinct = filtered.distinctBy { it._id }
+        return distinct.take(5)
+
+
     }
 
 
