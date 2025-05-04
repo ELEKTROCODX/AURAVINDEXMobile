@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -31,7 +32,12 @@ import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.view.viewmodels.BookViewModel
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.clickable
-import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.elektro24team.auravindex.R
+import com.elektro24team.auravindex.utils.Constants.IMG_url
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.glide.GlideImage
 
 
 @SuppressLint("UnrememberedMutableState")
@@ -185,12 +191,29 @@ fun SearchScreen(navController: NavController ) {
                                                 .padding(8.dp)
                                                 .fillMaxWidth()
                                         ) {
-                                            AsyncImage(
-                                                model = book.book_img,
-                                                contentDescription = "Imagen del libro",
+                                            GlideImage(
+                                                imageModel = {IMG_url.trimEnd('/') + "/" + book.book_img.trimStart('/')},
                                                 modifier = Modifier
-                                                    .size(100.dp)
-                                                    .padding(end = 8.dp)
+                                                    .height(125.dp)
+                                                    .padding(end = 4.dp),
+                                                imageOptions = ImageOptions(
+                                                    contentScale = ContentScale.Fit
+                                                ),
+                                                loading = {
+                                                    CircularProgressIndicator()
+                                                },
+                                                failure = {
+                                                    Image(
+                                                        painter = painterResource(id = R.mipmap.ic_launcher),
+                                                        contentDescription = "Default img",
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .height(150.dp)
+                                                            .clickable{
+                                                                navController.navigate("book/${book._id}")
+                                                            }
+                                                    )
+                                                }
                                             )
                                             Column(modifier = Modifier.fillMaxWidth()) {
                                                 Text(text = book.title, style = MaterialTheme.typography.titleMedium)
