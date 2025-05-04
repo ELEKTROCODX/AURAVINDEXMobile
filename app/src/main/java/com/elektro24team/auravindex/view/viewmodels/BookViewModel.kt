@@ -26,7 +26,7 @@ class BookViewModel: ViewModel(){
     }
 
 
-    private fun fetchBooks(showDuplicates: Boolean = true, showLents: Boolean = true, page: Int = 1, limit: Int = 10){
+    private fun fetchBooks(showDuplicates: Boolean = true, showLents: Boolean = true, page: Int = 1, limit: Int = 100){
         viewModelScope.launch {
             try {
                 val response = BookClient.apiService.getBooks(showDuplicates = showDuplicates, showLents = showLents, page, limit)
