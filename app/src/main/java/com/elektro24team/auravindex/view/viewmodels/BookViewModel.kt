@@ -47,7 +47,7 @@ class BookViewModel: ViewModel(){
         }
     }
 
-    private fun fetchFilteredBooks(showDuplicates: Boolean = true, showLents: Boolean = true, filter: String, value: String){
+    fun fetchFilteredBooks(showDuplicates: Boolean = true, showLents: Boolean = true, filter: String, value: String){
         viewModelScope.launch {
             try {
                 val response = BookClient.apiService.getFilteredBooks(showDuplicates,showLents,filter,value)
@@ -68,4 +68,12 @@ class BookViewModel: ViewModel(){
             }
         }
     }
+
+    fun getDistinctBooksByTitle(books: List<Book>, query: String): List<Book> {
+        return books
+            .filter { it.title.contains(query, ignoreCase = true) }
+            .distinctBy { it._id }
+    }
+
+
 }
