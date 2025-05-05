@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elektro24team.auravindex.model.ApiResponse
 import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.retrofit.BookClient
 import kotlinx.coroutines.launch
@@ -74,13 +73,13 @@ class BookViewModel: ViewModel(){
     }
 
     fun applyLocalFilter(filter: String, search: String) {
-        val result = getFirst5FilteredBooks(posts.value, search, filter)
+        val result = getFirstFiveFilteredBooks(posts.value, search, filter)
         filteredBooks.value = result
         Log.d("DEBUG", "Filtrando con '$search' usando '$filter': ${result.size} resultados")
 
     }
 
-    fun getFirst5FilteredBooks(books: List<Book>, search: String, filter: String = "título"): List<Book> {
+    fun getFirstFiveFilteredBooks(books: List<Book>, search: String, filter: String = "título"): List<Book> {
         val cleanedQuery = search.trim()
 
         val filtered = books.filter { book ->
@@ -117,7 +116,7 @@ class BookViewModel: ViewModel(){
     }
 
     fun filterBooksLocally(books: List<Book>, filter: String, search: String): List<Book> {
-        return getFirst5FilteredBooks(books, search, filter)
+        return getFirstFiveFilteredBooks(books, search, filter)
     }
 
     fun getRecommendations(filter: String, value: String): List<Book> {

@@ -20,18 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
-import com.elektro24team.auravindex.ui.theme.MediumPadding
 import kotlinx.coroutines.launch
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import androidx.navigation.compose.rememberNavController
-import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.BookCollectionsSection
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.view.viewmodels.BookViewModel
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -180,7 +177,7 @@ fun SearchScreen(navController: NavController ) {
                             //se supone que es con la API
                             val filtered1 = bookViewModel.filteredBooks.value
                             //filtrado local
-                            val filtered = bookViewModel.getFirst5FilteredBooks(
+                            val filtered = bookViewModel.getFirstFiveFilteredBooks(
                                 books = bookViewModel.filteredBooks.value,
                                 search = searchText,
                                 filter = selectedFilter
