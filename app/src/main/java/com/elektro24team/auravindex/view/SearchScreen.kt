@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -140,6 +141,7 @@ fun SearchScreen(navController: NavController ) {
                                         else -> selectedFilter.lowercase()
                                     }
                                     if (searchText.isNotBlank()) {
+                                        Log.d("SearchDebug", "Filter: $selectedFilter, RouteFilter: $routeFilter, Text: $searchText")
                                         navController.navigate("search_results/${routeFilter}/${searchText}")
                                     }
                                 }

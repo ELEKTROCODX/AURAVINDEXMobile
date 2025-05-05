@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.view.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -31,9 +32,12 @@ class BookViewModel: ViewModel(){
             try {
                 val response = BookClient.apiService.getBooks(showDuplicates = showDuplicates, showLents = showLents, page, limit)
                 posts.value = response.data
+                Log.d("DEBUG", "Se obtuvieron ${response.data.size} libros")
+
             }catch (e: Exception){
                 e.printStackTrace()
             }
+
         }
     }
     private fun fetchLatestReleases(limit: Int = 10){
@@ -69,10 +73,11 @@ class BookViewModel: ViewModel(){
         }
     }
 
-    fun getDistinctBooksByTitle(books: List<Book>, query: String): List<Book> {
-        return books
-            .filter { it.title.contains(query, ignoreCase = true) }
-            .distinctBy { it._id }
+    fun applyLocalFilter(filter: String, search: String) {
+        val result = getFirst5FilteredBooks(posts.value, search, filter)
+        filteredBooks.value = result
+        Log.d("DEBUG", "Filtrando con '$search' usando '$filter': ${result.size} resultados")
+
     }
 
     fun getFirst5FilteredBooks(books: List<Book>, search: String, filter: String = "título"): List<Book> {
@@ -80,9 +85,9 @@ class BookViewModel: ViewModel(){
 
         val filtered = books.filter { book ->
                 when (filter.lowercase()) {
-                    "título" -> book.title.contains(cleanedQuery, ignoreCase = true)
-                    "autor" -> book.authors.any { author -> author.name.contains(cleanedQuery, ignoreCase = true) }
-                    "género" -> book.genres.any { genre -> genre.contains(cleanedQuery, ignoreCase = true) }
+                    "título" , "title" -> book.title.contains(cleanedQuery, ignoreCase = true)
+                    "autor" , "author" -> book.authors.any { author -> author.name.contains(cleanedQuery, ignoreCase = true) }
+                    "género" , "genre"-> book.genres.any { genre -> genre.contains(cleanedQuery, ignoreCase = true) }
                     else -> false
                 }
             }
@@ -108,11 +113,5 @@ class BookViewModel: ViewModel(){
             }
         }.take(10)
     }
-
-
-
-
-
-
 
 }

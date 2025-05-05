@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.view
 
 
 import android.annotation.SuppressLint
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.DefaultTab.PhotosTab.value
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,19 +55,19 @@ fun SearchResultsScreen(
 ) {
     val context = LocalContext.current
     val allBooks = bookViewModel.filteredBooks.value
-
     var currentQuery by remember { mutableStateOf(query) }
     var currentPage by remember { mutableStateOf(1) }
     val booksPerPage = 5
-
     val filteredBooks = remember(currentQuery, filter, allBooks) {
         bookViewModel.filterBooksLocally(allBooks, filter, currentQuery)
     }
-
     val pagedBooks = filteredBooks.chunked(booksPerPage)
     val totalPages = pagedBooks.size
-
     val currentBooks = pagedBooks.getOrNull(currentPage - 1) ?: emptyList()
+
+    LaunchedEffect(key1 = filter, key2 = query) {
+        bookViewModel.applyLocalFilter(filter, query)
+    }
 
     Scaffold(
         topBar = {
@@ -97,12 +98,12 @@ fun SearchResultsScreen(
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(8.dp), singleLine = true
             )
 
             // Recomendaciones según el filtro
             Text(
-                text = "Recomendaciones relacionadas a \"$filter\"",
+                text = "Recomendaciones relacionadas a \"$query\"",
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.padding(start = 8.dp, top = 4.dp)
             )
@@ -122,11 +123,16 @@ fun SearchResultsScreen(
             Divider(modifier = Modifier.padding(horizontal = 8.dp))
 
             // Resultados filtrados
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(currentBooks) { book ->
-                    BookCard(book, navController)
+            if (filteredBooks.isEmpty()) {
+                Text("No se encontraron resultados.")
+            } else {
+                LazyColumn(modifier = Modifier.weight(1f)) {
+                    items(filteredBooks) { book ->
+                        BookCard(book, navController)
+                    }
                 }
             }
+
 
             // Paginación
             Row(
