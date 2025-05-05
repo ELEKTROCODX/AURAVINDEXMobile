@@ -8,14 +8,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 private val LightColors = lightColorScheme(
-    primary = Purple,
-    secondary = Orange,
-    background = White,
-    surface = White,
-    onPrimary = White,
-    onSecondary = Black,
-    onBackground = Black,
-    onSurface = Black
+    primary = PurpleC,
+    secondary = OrangeC,
+    background = WhiteC,
+    surface = WhiteC,
+    onPrimary = WhiteC,
+    onSecondary = BrownC,
+    onBackground = BlackC,
+    onSurface = BlackC
 )
 private val DarkColorScheme = darkColorScheme(
     primary = Purple,
