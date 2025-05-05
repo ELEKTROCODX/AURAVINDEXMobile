@@ -86,7 +86,7 @@ fun SearchScreen(navController: NavController ) {
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Menu,
-                                contentDescription = "Menú"
+                                contentDescription = "Menu"
                             )
                         }
                     }
@@ -118,7 +118,7 @@ fun SearchScreen(navController: NavController ) {
                         val filteredBooks by bookViewModel.filteredBooks
 
                         var searchText by remember { mutableStateOf("") }
-                        val filterOptions = listOf("Título", "Autor", "Género")
+                        val filterOptions = listOf("Title", "Author", "Genre")
                         var selectedFilter by remember { mutableStateOf(filterOptions[0]) }
 
                         TextField(
@@ -126,7 +126,7 @@ fun SearchScreen(navController: NavController ) {
                             onValueChange = {
                                 searchText = it
                             },
-                            label = { Text("Buscar libro") },
+                            label = { Text("Search book") },
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -135,9 +135,9 @@ fun SearchScreen(navController: NavController ) {
                             keyboardActions = KeyboardActions(
                                 onSearch = {
                                     val routeFilter = when (selectedFilter) {
-                                        "Título" -> "title"
-                                        "Autor" -> "author"
-                                        "Género" -> "genre"
+                                        "Title" -> "title"
+                                        "Author" -> "author"
+                                        "Genre" -> "genre"
                                         else -> selectedFilter.lowercase()
                                     }
                                     if (searchText.isNotBlank()) {
@@ -232,11 +232,11 @@ fun SearchScreen(navController: NavController ) {
                                                 Text(text = book.title, style = MaterialTheme.typography.titleMedium)
                                                 Text(text = book.summary, style = MaterialTheme.typography.bodyMedium)
                                                 Text(
-                                                    text = "Autor(es): ${book.authors.joinToString { it.name }}",
+                                                    text = "Author(s): ${book.authors.joinToString { it.name }}",
                                                     style = MaterialTheme.typography.bodySmall
                                                 )
                                                 Text(
-                                                    text = "Géneros: ${book.genres.joinToString()}",
+                                                    text = "Genres: ${book.genres.joinToString()}",
                                                     style = MaterialTheme.typography.bodySmall
                                                 )
                                             }

@@ -25,7 +25,7 @@ fun BookCard(book: Book, navController: NavController) {
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                navController.navigate("${Routes.BOOK}/${book._id}")
+                navController.navigate("book/${book._id}")
             }
     ) {
         Row(
@@ -54,11 +54,11 @@ fun BookCard(book: Book, navController: NavController) {
                 Text(text = book.title, style = MaterialTheme.typography.titleMedium)
                 Text(text = book.summary, style = MaterialTheme.typography.bodyMedium)
                 Text(
-                    text = "Autor(es): ${book.authors.joinToString { it.name }}",
+                    text = "Author(s): ${book.authors.joinToString { it.name }}",
                     style = MaterialTheme.typography.bodySmall
                 )
                 Text(
-                    text = "Géneros: ${book.genres.joinToString()}",
+                    text = "Genres: ${book.genres.joinToString()}",
                     style = MaterialTheme.typography.bodySmall
                 )
             }

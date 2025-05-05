@@ -72,10 +72,10 @@ fun SearchResultsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Resultados de búsqueda") },
+                title = { Text("Results") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -94,7 +94,7 @@ fun SearchResultsScreen(
                     currentQuery = it
                     currentPage = 1
                 },
-                label = { Text("Buscar dentro de resultados") },
+                label = { Text("Search results") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -103,7 +103,7 @@ fun SearchResultsScreen(
 
             // Recomendaciones según el filtro
             Text(
-                text = "Recomendaciones relacionadas a \"$query\"",
+                text = "Results from \"$query\"",
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.padding(start = 8.dp, top = 4.dp)
             )
@@ -124,7 +124,7 @@ fun SearchResultsScreen(
 
             // Resultados filtrados
             if (filteredBooks.isEmpty()) {
-                Text("No se encontraron resultados.")
+                Text("No results found.")
             } else {
                 LazyColumn(modifier = Modifier.weight(1f)) {
                     items(filteredBooks) { book ->
