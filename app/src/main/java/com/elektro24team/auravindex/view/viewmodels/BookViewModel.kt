@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.retrofit.BookClient
+import com.elektro24team.auravindex.utils.normalize
 import kotlinx.coroutines.launch
 
 class BookViewModel: ViewModel(){
@@ -84,7 +85,7 @@ class BookViewModel: ViewModel(){
 
         val filtered = books.filter { book ->
                 when (filter.lowercase()) {
-                    "título" , "title" -> book.title.contains(cleanedQuery, ignoreCase = true)
+                    "título" , "title" -> book.title.normalize().contains(cleanedQuery, ignoreCase = true)
                     "autor" , "author" -> book.authors.any { author -> author.name.contains(cleanedQuery, ignoreCase = true) }
                     "género" , "genre"-> book.genres.any { genre -> genre.contains(cleanedQuery, ignoreCase = true) }
                     else -> false
@@ -101,7 +102,7 @@ class BookViewModel: ViewModel(){
 
         val filtered = books.filter { book ->
             when (filter.lowercase()) {
-                "título", "title" -> book.title.contains(cleanedQuery, ignoreCase = true)
+                "título", "title" -> book.title.normalize().contains(cleanedQuery, ignoreCase = true)
                 "autor", "author" -> book.authors.any { author -> author.name.contains(cleanedQuery, ignoreCase = true) }
                 "género", "genre" -> book.genres.any { genre -> genre.contains(cleanedQuery, ignoreCase = true) }
                 else -> false

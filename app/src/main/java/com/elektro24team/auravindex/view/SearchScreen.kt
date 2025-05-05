@@ -37,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.utils.Constants.IMG_url
+import com.elektro24team.auravindex.utils.normalize
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -163,7 +164,7 @@ fun SearchScreen(navController: NavController ) {
                                                 showDuplicates = false,
                                                 showLents = true,
                                                 filter = selectedFilter.lowercase(),
-                                                value = searchText
+                                                value = searchText.normalize()
                                             )
                                         }
                                     },
@@ -179,7 +180,7 @@ fun SearchScreen(navController: NavController ) {
                             //filtrado local
                             val filtered = bookViewModel.getFirstFiveFilteredBooks(
                                 books = bookViewModel.filteredBooks.value,
-                                search = searchText,
+                                search = searchText.normalize(),
                                 filter = selectedFilter
                             )
 
@@ -243,7 +244,7 @@ fun SearchScreen(navController: NavController ) {
                             }
 
                         }else{
-                            BookCollectionsSection()
+                            BookCollectionsSection(navController)
                         }
                         /*val filteredItems = listOf("Berry", "Banana", "Cherry", "Apple").filter {
                             it.contains(searchText, ignoreCase = true)
