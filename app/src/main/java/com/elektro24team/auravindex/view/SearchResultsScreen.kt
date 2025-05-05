@@ -79,80 +79,87 @@ fun SearchResultsScreen(
                     }
                 }
             )
-        }
-    ) { paddingValues ->
-
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-        ) {
-            // Barra de búsqueda local (filtra entre los resultados previos)
-            TextField(
-                value = currentQuery,
-                onValueChange = {
-                    currentQuery = it
-                    currentPage = 1
-                },
-                label = { Text("Search results") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp), singleLine = true
+        },
+        bottomBar = {
+            BottomNavBar(
+                currentRoute = navController.currentBackStackEntry?.destination?.route ?: "search",
+                onItemClick = { route -> navController.navigate(route) }
             )
+        },
+        content = { paddingValues ->
 
-            // Recomendaciones según el filtro
-            Text(
-                text = "Results from \"$query\"",
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
-            )
-
-            val recommendations = bookViewModel.getRecommendations(filter, currentQuery)
-
-            LazyRow(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(paddingValues)
+                    .fillMaxSize()
             ) {
-                items(recommendations) { book ->
-                    BookCard(book, navController)
+                // Barra de búsqueda local (filtra entre los resultados previos)
+                TextField(
+                    value = currentQuery,
+                    onValueChange = {
+                        currentQuery = it
+                        currentPage = 1
+                    },
+                    label = { Text("Search results") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp), singleLine = true
+                )
+
+                val recommendations = bookViewModel.getRecommendations(filter, currentQuery)
+
+                // Recomendaciones según el filtro
+                if(filteredBooks.isNotEmpty()) {
+                    Text(
+                        text = "${filteredBooks.size} Results from \"$currentQuery\"",
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                    )   
                 }
-            }
-
-            Divider(modifier = Modifier.padding(horizontal = 8.dp))
-
-            // Resultados filtrados
-            if (filteredBooks.isEmpty()) {
-                Text("No results found.")
-            } else {
-                LazyColumn(modifier = Modifier.weight(1f)) {
-                    items(filteredBooks) { book ->
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    items(recommendations) { book ->
                         BookCard(book, navController)
                     }
                 }
-            }
+
+                Divider(modifier = Modifier.padding(horizontal = 8.dp))
+
+                // Resultados filtrados
+                if (filteredBooks.isEmpty()) {
+                    Text("No results found.")
+                } else {
+                    LazyColumn(modifier = Modifier.weight(1f)) {
+                        items(filteredBooks) { book ->
+                            BookCard(book, navController)
+                        }
+                    }
+                }
 
 
-            // Paginación
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                repeat(totalPages) { pageIndex ->
-                    Button(
-                        onClick = { currentPage = pageIndex + 1 },
-                        modifier = Modifier.padding(4.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (pageIndex + 1 == currentPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
-                        )
-                    ) {
-                        Text(text = "${pageIndex + 1}")
+                // Paginación
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(totalPages) { pageIndex ->
+                        Button(
+                            onClick = { currentPage = pageIndex + 1 },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (pageIndex + 1 == currentPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+                            )
+                        ) {
+                            Text(text = "${pageIndex + 1}")
+                        }
                     }
                 }
             }
         }
-    }
+    )
+
 }

@@ -54,7 +54,7 @@ fun BookCard(book: Book, navController: NavController) {
                 Text(text = book.title, style = MaterialTheme.typography.titleMedium)
                 Text(text = book.summary, style = MaterialTheme.typography.bodyMedium)
                 Text(
-                    text = "Author(s): ${book.authors.joinToString { it.name }}",
+                    text = "Author(s): ${book.authors.joinToString { it.name + " " + it.last_name }}",
                     style = MaterialTheme.typography.bodySmall
                 )
                 Text(
