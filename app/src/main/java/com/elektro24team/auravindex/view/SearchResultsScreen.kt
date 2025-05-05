@@ -57,13 +57,16 @@ fun SearchResultsScreen(
     val allBooks = bookViewModel.filteredBooks.value
     var currentQuery by remember { mutableStateOf(query) }
     var currentPage by remember { mutableStateOf(1) }
-    val booksPerPage = 5
     val filteredBooks = remember(currentQuery, filter, allBooks) {
-        bookViewModel.filterBooksLocally(allBooks, filter, currentQuery)
+        bookViewModel.filterAllBooksLocally(allBooks, filter, currentQuery)
     }
-    val pagedBooks = filteredBooks.chunked(booksPerPage)
-    val totalPages = pagedBooks.size
-    val currentBooks = pagedBooks.getOrNull(currentPage - 1) ?: emptyList()
+    val itemsPerPage = 8
+    val paginatedBooks = filteredBooks
+        .drop((currentPage - 1) * itemsPerPage)
+        .take(itemsPerPage)
+    val totalPages = (filteredBooks.size + itemsPerPage - 1) / itemsPerPage
+
+
 
     LaunchedEffect(key1 = filter, key2 = query) {
         bookViewModel.applyLocalFilter(filter, query)
@@ -134,7 +137,7 @@ fun SearchResultsScreen(
                     Text("No results found.")
                 } else {
                     LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(filteredBooks) { book ->
+                        items(paginatedBooks) { book ->
                             BookCard(book, navController)
                         }
                     }
@@ -147,17 +150,35 @@ fun SearchResultsScreen(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    repeat(totalPages) { pageIndex ->
-                        Button(
+                    //repeat(totalPages) { pageIndex ->
+                     /*   Button(
                             onClick = { currentPage = pageIndex + 1 },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = if (pageIndex + 1 == currentPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
                             )
                         ) {
                             Text(text = "${pageIndex + 1}")
+                        } */
+                        (1..totalPages).forEach { page ->
+                            Button(onClick = { currentPage = page },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (page == currentPage)
+                                        MaterialTheme.colorScheme.primary
+                                    else
+                                        MaterialTheme.colorScheme.secondaryContainer,
+                                    contentColor = if (page == currentPage)
+                                        MaterialTheme.colorScheme.onPrimary
+                                    else
+                                        MaterialTheme.colorScheme.onSecondaryContainer
+                                ),
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp)
+                            ) {
+                                Text(text = "$page")
+                            }
                         }
                     }
-                }
+
             }
         }
     )

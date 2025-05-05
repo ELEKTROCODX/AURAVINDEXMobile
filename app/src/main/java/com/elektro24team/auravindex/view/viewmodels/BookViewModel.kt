@@ -97,6 +97,25 @@ class BookViewModel: ViewModel(){
 
     }
 
+    fun getAllFilteredBooks(books: List<Book>, search: String, filter: String = "título"): List<Book> {
+        val cleanedQuery = search.trim()
+
+        val filtered = books.filter { book ->
+            when (filter.lowercase()) {
+                "título", "title" -> book.title.contains(cleanedQuery, ignoreCase = true)
+                "autor", "author" -> book.authors.any { author -> author.name.contains(cleanedQuery, ignoreCase = true) }
+                "género", "genre" -> book.genres.any { genre -> genre.contains(cleanedQuery, ignoreCase = true) }
+                else -> false
+            }
+        }
+        val distinct = filtered.distinctBy { it._id }
+        return distinct.take(10)
+    }
+
+    fun filterAllBooksLocally(books: List<Book>, filter: String, search: String): List<Book> {
+        return getAllFilteredBooks(books, search, filter)
+    }
+
     fun filterBooksLocally(books: List<Book>, filter: String, search: String): List<Book> {
         return getFirst5FilteredBooks(books, search, filter)
     }
