@@ -113,7 +113,7 @@ fun SearchResultsScreen(
                 val recommendations = bookViewModel.getRecommendations(filter, currentQuery)
 
                 // Recomendaciones según el filtro
-                if(filteredBooks.isNotEmpty()) {
+              /*  if(filteredBooks.isNotEmpty()) {
                     Text(
                         text = "${filteredBooks.size} Results from \"$currentQuery\"",
                         style = MaterialTheme.typography.titleSmall,
@@ -129,6 +129,8 @@ fun SearchResultsScreen(
                         BookCard(book, navController)
                     }
                 }
+                
+               */
 
                 Divider(modifier = Modifier.padding(horizontal = 8.dp))
 

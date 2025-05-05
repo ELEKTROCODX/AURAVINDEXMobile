@@ -125,9 +125,9 @@ class BookViewModel: ViewModel(){
 
         return allBooks.filter {
             when (filter.lowercase()) {
-                "título" -> !it.title.contains(value, ignoreCase = true)
-                "autor" -> !it.authors.any { a -> a.name.contains(value, ignoreCase = true) }
-                "género" -> !it.genres.any { g -> g.contains(value, ignoreCase = true) }
+                "título", "title"  -> !it.title.contains(value, ignoreCase = true)
+                "autor", "author" -> !it.authors.any { a -> a.name.contains(value, ignoreCase = true) }
+                "género", "genre" -> !it.genres.any { g -> g.contains(value, ignoreCase = true) }
                 else -> false
             }
         }.take(10)
