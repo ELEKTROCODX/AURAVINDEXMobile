@@ -30,6 +30,7 @@ object Routes {
     const val PRIVACY = "privacy"
     const val TEAM = "team"
     const val BOOK = "book/{bookId}"
+    const val COLLECTION_BOOKS = "collection_books/{collectionName}/{collectionId}"
 }
 
 @Composable
@@ -78,6 +79,18 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             val filter = backStackEntry.arguments?.getString("filter") ?: ""
             val query = backStackEntry.arguments?.getString("query") ?: ""
             SearchResultsScreen(navController, filter = filter, query = query)
+        }
+
+        composable(
+            Routes.COLLECTION_BOOKS,
+            arguments = listOf(
+                navArgument("collectionName"){type = NavType.StringType},
+                navArgument("collectionId"){type = NavType.StringType}
+            )){
+                backStackEntry ->
+            val collectionName = backStackEntry.arguments?.getString("collectionName") ?: ""
+            val collectionId = backStackEntry.arguments?.getString("collectionId") ?: ""
+            BooksCollectionScreen(navController, bookCollectionName = collectionName, collectionId = collectionId)
         }
 
     }
