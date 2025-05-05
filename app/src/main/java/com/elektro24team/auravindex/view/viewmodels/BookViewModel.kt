@@ -92,6 +92,27 @@ class BookViewModel: ViewModel(){
 
     }
 
+    fun filterBooksLocally(books: List<Book>, filter: String, search: String): List<Book> {
+        return getFirst5FilteredBooks(books, search, filter)
+    }
+
+    fun getRecommendations(filter: String, value: String): List<Book> {
+        val allBooks = posts.value
+
+        return allBooks.filter {
+            when (filter.lowercase()) {
+                "título" -> !it.title.contains(value, ignoreCase = true)
+                "autor" -> !it.authors.any { a -> a.name.contains(value, ignoreCase = true) }
+                "género" -> !it.genres.any { g -> g.contains(value, ignoreCase = true) }
+                else -> false
+            }
+        }.take(10)
+    }
+
+
+
+
+
 
 
 }

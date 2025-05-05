@@ -32,8 +32,11 @@ import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.view.viewmodels.BookViewModel
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.utils.Constants.IMG_url
 import com.skydoves.landscapist.ImageOptions
@@ -121,20 +124,27 @@ fun SearchScreen(navController: NavController ) {
                             value = searchText,
                             onValueChange = {
                                 searchText = it
-                                if (searchText.isNotBlank()) {
-                                    bookViewModel.fetchFilteredBooks(
-                                        showDuplicates = false,
-                                        showLents = true,
-                                        filter = selectedFilter.lowercase(),
-                                        value = searchText
-                                    )
-                                }
                             },
                             label = { Text("Buscar libro") },
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
+                                .padding(8.dp),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                            keyboardActions = KeyboardActions(
+                                onSearch = {
+                                    val routeFilter = when (selectedFilter) {
+                                        "Título" -> "title"
+                                        "Autor" -> "author"
+                                        "Género" -> "genre"
+                                        else -> selectedFilter.lowercase()
+                                    }
+                                    if (searchText.isNotBlank()) {
+                                        navController.navigate("search_results/${routeFilter}/${searchText}")
+                                    }
+                                }
+                            ),  singleLine = true
+
                         )
 
                         // Chips de filtro
@@ -183,7 +193,8 @@ fun SearchScreen(navController: NavController ) {
                                             .fillMaxWidth()
                                             .padding(8.dp)
                                             .clickable {
-                                                navController.navigate("${Routes.BOOK}/${book._id}")
+                                                //navController.navigate("${Routes.BOOK}/${book._id}")
+                                                navController.navigate("BOOK/ID")
                                             }
                                     ) {
                                         Row(

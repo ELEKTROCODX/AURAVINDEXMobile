@@ -13,7 +13,7 @@ import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.ui.theme.SmallPadding
 
 
-//lista de obejtos tipo libro
+//lista de objetos tipo libro
 @Composable
 fun BookList(books: List<Book>) {
     LazyRow(
