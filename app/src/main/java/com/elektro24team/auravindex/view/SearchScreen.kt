@@ -196,7 +196,7 @@ fun SearchScreen(navController: NavController ) {
                                             .padding(8.dp)
                                             .clickable {
                                                 //navController.navigate("${Routes.BOOK}/${book._id}")
-                                                navController.navigate("BOOK/ID")
+                                                navController.navigate("book/${book._id}")
                                             }
                                     ) {
                                         Row(
