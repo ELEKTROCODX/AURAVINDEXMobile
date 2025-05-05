@@ -20,6 +20,7 @@ object Routes {
     const val WELCOME = "welcome"
     const val MAIN = "main"
     const val SEARCH = "search"
+    const val SEARCH_RESULTS = "search_results/{filter}/{query}"
     const val WRAPS = "wraps"
     const val PLANS = "plans"
     const val SETTINGS = "settings"
@@ -66,6 +67,17 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments?.getString("bookId")
             BookScreen(navController = navController, bookId = bookId ?: "")
+        }
+
+        composable(
+            Routes.SEARCH_RESULTS,
+            arguments = listOf(
+                navArgument("filter") { type = NavType.StringType },
+                navArgument("query") { type = NavType.StringType })
+            ) { backStackEntry ->
+            val filter = backStackEntry.arguments?.getString("filter") ?: ""
+            val query = backStackEntry.arguments?.getString("query") ?: ""
+            SearchResultsScreen(navController, filter = filter, query = query)
         }
 
     }
