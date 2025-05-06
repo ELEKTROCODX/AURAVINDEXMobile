@@ -1,7 +1,6 @@
 package com.elektro24team.auravindex.retrofit
 
 import com.elektro24team.auravindex.model.ApiResponse
-import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.model.BookCollection
 import com.elektro24team.auravindex.utils.Constants.BASE_URL
 import retrofit2.Retrofit

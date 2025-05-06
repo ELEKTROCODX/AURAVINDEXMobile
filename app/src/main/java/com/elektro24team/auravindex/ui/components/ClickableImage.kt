@@ -2,13 +2,15 @@ package com.elektro24team.auravindex.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -27,6 +29,7 @@ fun ClickableImage(url: String, book: Book, navController: NavController){
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min=150.dp, max = 150.dp)
+            .clip(RoundedCornerShape(25.dp))
             .clickable{ navController.navigate("book/${book._id}") },
         imageOptions = ImageOptions(
             contentScale = ContentScale.Fit
@@ -41,7 +44,8 @@ fun ClickableImage(url: String, book: Book, navController: NavController){
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
-                    .clickable{
+                    .clip(RoundedCornerShape(25.dp))
+                    .clickable {
                         navController.navigate("book/${book._id}")
                     }
             )

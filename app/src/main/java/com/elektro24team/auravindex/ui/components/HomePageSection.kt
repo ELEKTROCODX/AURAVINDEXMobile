@@ -84,18 +84,18 @@ fun HomePageSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
-                .height(240.dp),
+                .heightIn(max=240.dp, min=240.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             items(books.value.size) { index ->
                 Row(
-                    modifier = Modifier.heightIn(min = 250.dp)
+                    modifier = Modifier.heightIn(min = 250.dp, max = 250.dp)
                 ) {
                     Column(
                         modifier = Modifier
-                            .width(140.dp)
+                            .width(175.dp)
                             .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
-                            .heightIn(min = 220.dp)
+                            .heightIn(min = 250.dp, max = 250.dp )
                             .padding(8.dp)
                             .clickable { navController.navigate("book/${books.value[index]._id}") },
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -121,7 +121,7 @@ fun HomePageSection(
                         )
 
                         Text(
-                            text = book.authors.joinToString(", ") { it.name + it.last_name},
+                            text = book.authors.joinToString(", ") { it.name +" "+ it.last_name},
                             modifier = Modifier
                                 .padding(top = 4.dp)
                                 .width(120.dp),

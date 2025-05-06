@@ -1,9 +1,7 @@
 package com.elektro24team.auravindex.ui.components
 
-import android.R.attr.name
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,7 +46,6 @@ fun BookCollectionsSection(
                     name = name,
                     id = id,
                     onClick = {
-                        val _id = ""
                         navController.navigate("collection_books/${name}/${id}")
                     }
                 )
