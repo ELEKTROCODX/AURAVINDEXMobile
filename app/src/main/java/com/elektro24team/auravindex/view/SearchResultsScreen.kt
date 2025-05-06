@@ -1,49 +1,23 @@
 package com.elektro24team.auravindex.view
 
 
-import android.annotation.SuppressLint
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.DefaultTab.PhotosTab.value
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.ui.components.BottomNavBar
-import com.elektro24team.auravindex.ui.components.DrawerMenu
-import com.elektro24team.auravindex.ui.theme.MediumPadding
-import kotlinx.coroutines.launch
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.AuraVindexApp
-import androidx.navigation.compose.rememberNavController
-import com.elektro24team.auravindex.navigation.Routes
-import com.elektro24team.auravindex.ui.components.BookCollectionsSection
-import com.elektro24team.auravindex.ui.components.ConnectionAlert
-import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
-import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
-import com.elektro24team.auravindex.view.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.ui.components.BookCard
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import com.elektro24team.auravindex.R
-import com.elektro24team.auravindex.utils.Constants.IMG_url
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.glide.GlideImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

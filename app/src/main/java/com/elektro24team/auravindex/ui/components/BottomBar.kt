@@ -1,52 +1,70 @@
 package com.elektro24team.auravindex.ui.components
 
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Book
+import androidx.compose.material.icons.filled.Diamond
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Diamond
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.elektro24team.auravindex.ui.theme.PurpleC
 
 @Composable
 fun BottomNavBar(
     modifier: Modifier = Modifier,
-    currentRoute: String, // Ruta actual para
-    onItemClick: (String) -> Unit // se pasan las rutas
+    currentRoute: String,
+    onItemClick: (String) -> Unit
 ) {
-    // Lista de íconos para el menú inferior
-    //con ayuda de ChatGPT para conseguir los adecuados
-    val items = listOf(
+    val outlinedIcons = listOf(
         Icons.Outlined.Home,
         Icons.Outlined.Search,
-        /*Icons.Outlined.Book,*/
         Icons.Outlined.Diamond
     )
 
-    // Rutas correspondientes
-    val routes = listOf("main", "search", /*"lists", */"plans")
+    val filledIcons = listOf(
+        Icons.Filled.Home,
+        Icons.Filled.Search,
+        Icons.Filled.Diamond
+    )
 
-    // Etiquetas bajo de los íconos
-    val labels = listOf("home", "search", /*"lists", */"plans")
+    val routes = listOf("main", "search", "plans")
+    val labels = listOf("Home", "Search", "Plans")
 
-    // Componente de barra del menu
-    NavigationBar(modifier = modifier) {
-        // Por cada ítem de la barra  . . . .
-        items.forEachIndexed { index, icon ->
+    NavigationBar(
+        modifier = modifier,
+        containerColor = Color.White.copy(alpha = 0.85f) // Blanco semitransparente
+    ) {
+        routes.forEachIndexed { index, route ->
+            val isSelected = currentRoute == route
+
             NavigationBarItem(
+                selected = isSelected,
+                onClick = { onItemClick(route) },
                 icon = {
                     Icon(
-                        imageVector = icon,
+                        imageVector = if (isSelected) filledIcons[index] else outlinedIcons[index],
                         contentDescription = labels[index],
-                        modifier = Modifier.size(30.dp) // Tamaño del ícono (ver en otros modelos)
+                        modifier = Modifier.size(35.dp),
+                        tint = if (isSelected) PurpleC else Color.Gray
                     )
                 },
-                label = { Text(labels[index]) }, // Texto debajo del ícono
-                selected = currentRoute == routes[index], // Marca si está activo
-                onClick = { onItemClick(routes[index]) }
+                        label = {
+                    Text(
+                        text = labels[index],
+                        fontSize = 12.sp,
+                        color = if (isSelected) PurpleC else Color.Gray
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = Color.Transparent
+                )
             )
         }
     }

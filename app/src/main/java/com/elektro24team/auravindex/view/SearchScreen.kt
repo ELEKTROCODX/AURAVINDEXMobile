@@ -28,14 +28,22 @@ import com.elektro24team.auravindex.ui.components.BookCollectionsSection
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
-import com.elektro24team.auravindex.view.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import com.elektro24team.auravindex.R
+import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.ui.theme.BlackC
+import com.elektro24team.auravindex.ui.theme.BrownC
+import com.elektro24team.auravindex.ui.theme.OrangeC
+import com.elektro24team.auravindex.ui.theme.PurpleC
+import com.elektro24team.auravindex.ui.theme.WhiteC
 import com.elektro24team.auravindex.utils.Constants.IMG_url
 import com.elektro24team.auravindex.utils.normalize
 import com.skydoves.landscapist.ImageOptions
@@ -72,23 +80,7 @@ fun SearchScreen(navController: NavController ) {
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = { Text("AURA VINDEX ") },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                scope.launch {
-                                    drawerState.open()
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Menu,
-                                contentDescription = "Menu"
-                            )
-                        }
-                    }
-                )
+                TopBar(navController = navController, drawerState = drawerState)
             },
             bottomBar = {
                 BottomNavBar(
@@ -100,6 +92,7 @@ fun SearchScreen(navController: NavController ) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(horizontal = 10.dp)
                         .padding(paddingValues)
                 ) {
                     Column(
@@ -119,39 +112,31 @@ fun SearchScreen(navController: NavController ) {
                         val filterOptions = listOf("Title", "Author", "Genre")
                         var selectedFilter by remember { mutableStateOf(filterOptions[0]) }
 
-                        TextField(
+                        // Barra de búsqueda
+                        OutlinedTextField(
                             value = searchText,
-                            onValueChange = {
-                                searchText = it
-                            },
-                            label = { Text("Search book") },
-                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                            onValueChange = { searchText = it },
+                            label = { Text("Search a book...") },
+                            leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
+                            singleLine = true,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp),
+                                .padding(vertical = 8.dp),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                             keyboardActions = KeyboardActions(
                                 onSearch = {
-                                    val routeFilter = when (selectedFilter) {
-                                        "Title" -> "title"
-                                        "Author" -> "author"
-                                        "Genre" -> "genre"
-                                        else -> selectedFilter.lowercase()
-                                    }
+                                    val routeFilter = selectedFilter.lowercase()
                                     if (searchText.isNotBlank()) {
-                                        Log.d("SearchDebug", "Filter: $selectedFilter, RouteFilter: $routeFilter, Text: $searchText")
                                         navController.navigate("search_results/${routeFilter}/${searchText}")
                                     }
                                 }
-                            ),  singleLine = true
-
+                            )
                         )
 
                         // Chips de filtro
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             filterOptions.forEach { option ->
@@ -168,7 +153,17 @@ fun SearchScreen(navController: NavController ) {
                                             )
                                         }
                                     },
-                                    label = { Text(option) }
+                                    label = {
+                                        Text(
+                                            option,
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
+                                    },
+                                    shape = MaterialTheme.shapes.small,
+                                    colors = FilterChipDefaults.filterChipColors(
+                                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                                        selectedLabelColor = MaterialTheme.colorScheme.primary
+                                    )
                                 )
                             }
                         }
@@ -184,58 +179,80 @@ fun SearchScreen(navController: NavController ) {
                                 filter = selectedFilter
                             )
 
-
+                            //LIBROS BUSCADOS POR EL FILTRO DE 3 Y SEARCHBAR
                             LazyColumn {
                                 items(filtered.size) { index ->
                                     val book = filtered[index]
                                     Card(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(8.dp)
+                                            .padding(horizontal = 12.dp, vertical = 6.dp)
                                             .clickable {
-                                                //navController.navigate("${Routes.BOOK}/${book._id}")
                                                 navController.navigate("book/${book._id}")
-                                            }
+                                            },
+                                        colors = CardDefaults.cardColors(containerColor = WhiteC),
+                                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                        shape = RoundedCornerShape(16.dp)
                                     ) {
                                         Row(
                                             modifier = Modifier
-                                                .padding(8.dp)
+                                                .padding(12.dp)
                                                 .fillMaxWidth()
                                         ) {
                                             GlideImage(
-                                                imageModel = {IMG_url.trimEnd('/') + "/" + book.book_img.trimStart('/')},
+                                                imageModel = { IMG_url.trimEnd('/') + "/" + book.book_img.trimStart('/') },
                                                 modifier = Modifier
-                                                    .height(125.dp)
-                                                    .padding(end = 4.dp),
+                                                    .height(130.dp)
+                                                    .width(95.dp)
+                                                    .clip(RoundedCornerShape(12.dp)),
                                                 imageOptions = ImageOptions(
-                                                    contentScale = ContentScale.Fit
+                                                    contentScale = ContentScale.Crop
                                                 ),
                                                 loading = {
-                                                    CircularProgressIndicator()
+                                                    CircularProgressIndicator(color = PurpleC, strokeWidth = 2.dp)
                                                 },
                                                 failure = {
                                                     Image(
                                                         painter = painterResource(id = R.mipmap.ic_launcher),
                                                         contentDescription = "Default img",
                                                         modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .height(150.dp)
-                                                            .clickable{
-                                                                navController.navigate("book/${book._id}")
-                                                            }
+                                                            .height(130.dp)
+                                                            .width(95.dp)
+                                                            .clip(RoundedCornerShape(12.dp))
                                                     )
                                                 }
                                             )
-                                            Column(modifier = Modifier.fillMaxWidth()) {
-                                                Text(text = book.title, style = MaterialTheme.typography.titleMedium)
-                                                Text(text = book.summary, style = MaterialTheme.typography.bodyMedium)
+
+                                            Spacer(modifier = Modifier.width(12.dp))
+
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .align(Alignment.CenterVertically)
+                                            ) {
+                                                Text(
+                                                    text = book.title,
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    color = PurpleC,
+                                                    maxLines = 2
+                                                )
+                                                Spacer(modifier = Modifier.height(4.dp))
+                                                Text(
+                                                    text = book.summary,
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    color = BlackC,
+                                                    maxLines = 3
+                                                )
+                                                Spacer(modifier = Modifier.height(6.dp))
                                                 Text(
                                                     text = "Author(s): ${book.authors.joinToString { it.name + " " + it.last_name }}",
-                                                    style = MaterialTheme.typography.bodySmall
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    color = BrownC
                                                 )
                                                 Text(
-                                                    text = "Genres: ${book.genres.joinToString()}",
-                                                    style = MaterialTheme.typography.bodySmall
+                                                        text = "Genre: ${book.genres.joinToString()}",
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    color = OrangeC
                                                 )
                                             }
                                         }
@@ -243,18 +260,10 @@ fun SearchScreen(navController: NavController ) {
                                 }
                             }
 
+
                         }else{
                             BookCollectionsSection(navController)
                         }
-                        /*val filteredItems = listOf("Berry", "Banana", "Cherry", "Apple").filter {
-                            it.contains(searchText, ignoreCase = true)
-                        }
-
-                        LazyColumn {
-                            items(filteredItems.size) { index ->
-                                Text(filteredItems[index])
-                            }
-                        }*/
                     }
                 }
             }

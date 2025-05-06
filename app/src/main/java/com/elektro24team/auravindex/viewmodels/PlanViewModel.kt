@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.view.viewmodels
+package com.elektro24team.auravindex.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

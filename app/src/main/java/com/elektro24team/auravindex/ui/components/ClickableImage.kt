@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,7 +26,7 @@ fun ClickableImage(url: String, book: Book, navController: NavController){
         imageModel = {fullURL},
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .heightIn(min=150.dp, max = 150.dp)
             .clickable{ navController.navigate("book/${book._id}") },
         imageOptions = ImageOptions(
             contentScale = ContentScale.Fit

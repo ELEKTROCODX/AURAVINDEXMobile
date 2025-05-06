@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.view.viewmodels
+package com.elektro24team.auravindex.viewmodels
 
 import com.elektro24team.auravindex.retrofit.BookCollectionClient
 import androidx.compose.runtime.mutableStateOf

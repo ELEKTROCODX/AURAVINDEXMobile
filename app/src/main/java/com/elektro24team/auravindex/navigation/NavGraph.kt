@@ -21,11 +21,10 @@ object Routes {
     const val MAIN = "main"
     const val SEARCH = "search"
     const val SEARCH_RESULTS = "search_results/{filter}/{query}"
-    const val WRAPS = "wraps"
     const val PLANS = "plans"
-    const val SETTINGS = "settings"
-    const val PROFILE = "profile"
-    const val NOTIFICATIONS = "notifications"
+    //const val SETTINGS = "settings"
+    //const val PROFILE = "profile"
+    //const val NOTIFICATIONS = "notifications"
     const val TERMS = "terms"
     const val PRIVACY = "privacy"
     const val TEAM = "team"
@@ -47,9 +46,6 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.SEARCH) {
             SearchScreen(navController = navController)
         }
-        /*composable(Routes.WRAPS) {
-            WrapsScreen(navController = navController)
-        }*/
         composable(Routes.PLANS) {
             PlanScreen(navController = navController)
         }
@@ -92,6 +88,5 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             val collectionId = backStackEntry.arguments?.getString("collectionId") ?: ""
             BooksCollectionScreen(navController, bookCollectionName = collectionName, collectionId = collectionId)
         }
-
     }
 }

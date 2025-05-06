@@ -23,10 +23,10 @@ val AppTypography = Typography(
     ),
     titleLarge = TextStyle(
         fontFamily = Oswald,
-        fontSize = 22.sp
+        fontSize = 26.sp
     ),
     labelLarge = TextStyle(
         fontFamily = Rubik,
-        fontSize = 14.sp
+        fontSize = 16.sp
     )
 )

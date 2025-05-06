@@ -13,36 +13,13 @@ private val LightColors = lightColorScheme(
     background = WhiteC,
     surface = WhiteC,
     onPrimary = WhiteC,
-    onSecondary = BrownC,
+    onSecondary = OrangeC,
     onBackground = BlackC,
     onSurface = BlackC
-)
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple,
-    secondary = Orange,
-    background = Black,
-    surface = Black,
-    onPrimary = White,
 )
 
 @Composable
 fun AppTheme(content: @Composable () -> Unit) {
-    /*
-    * Get local settings from local database
-    * */
-    /*val viewModel: LocalSettingViewModel = viewModel(factory = LocalSettingViewModelFactory(LocalContext.current.applicationContext as Application))
-    val localsettings = viewModel.allLocalSettings.observeAsState(initial = emptyList())
-    var localsetting = localsettings.value.firstOrNull()
-    var localColorScheme: ColorScheme? = null
-    if (localsetting != null) {
-        viewModel.insert(LocalSetting(userId = "", userEmail = "", lastLoggedIn = System.currentTimeMillis().toLong(), language = "EN", darkMode = false))
-    }
-    localsetting = localsettings.value.firstOrNull()
-    if(localsetting != null && localsetting.darkMode) {
-        localColorScheme = DarkColorScheme
-    } else {
-        localColorScheme = LightColors
-    }*/
     var localColorScheme = LightColors
     MaterialTheme(
         colorScheme = localColorScheme,
