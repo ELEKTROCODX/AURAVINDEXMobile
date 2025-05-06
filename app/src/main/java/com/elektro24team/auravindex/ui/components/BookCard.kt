@@ -88,13 +88,13 @@ fun BookCard(book: Book, navController: NavController) {
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = "Autor(es): ${book.authors.joinToString { "${it.name} ${it.last_name}" }}",
+                    text = "Authors: ${book.authors.joinToString { "${it.name} ${it.last_name}" }}",
                     style = MaterialTheme.typography.bodySmall,
                     color = PurpleC
                 )
 
                 Text(
-                    text = "Géneros: ${book.genres.joinToString()}",
+                    text = "Genres: ${book.genres.joinToString()}",
                     style = MaterialTheme.typography.bodySmall,
                     color = OrangeC
                 )

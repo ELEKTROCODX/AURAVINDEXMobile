@@ -54,14 +54,14 @@ fun PlanCard(plan: Plan) {
             // Beneficios
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    text = "Suscription: $${plan.fixed_price}",
+                    text = "Inscription fee: $${plan.fixed_price}",
                     fontStyle = FontStyle.Italic,
                     fontSize = 14.sp,
                     color = colors.primary
                 )
 
                 Text(
-                    text = "Monthly: $${plan.monthly_price}",
+                    text = "Monthly price: $${plan.monthly_price}",
                     fontStyle = FontStyle.Italic,
                     fontSize = 14.sp,
                     color = colors.primary
