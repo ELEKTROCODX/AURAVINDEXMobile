@@ -40,7 +40,7 @@ fun DrawerMenu(onItemSelected: (String) -> Unit) {
             "Terms of Services" to "terms",
             "Privacy Policy" to "privacy",
             "Team" to "team",
-           /* "Settings" to "settings"*/
+            "Settings" to "settings"
         )
 
         menuItems.forEach { (label, action) ->

@@ -16,7 +16,7 @@ object Routes {
     const val SEARCH = "search"
     const val SEARCH_RESULTS = "search_results/{filter}/{query}"
     const val PLANS = "plans"
-    //const val SETTINGS = "settings"
+    const val SETTINGS = "settings"
     //const val PROFILE = "profile"
     //const val NOTIFICATIONS = "notifications"
     const val TERMS = "terms"
@@ -43,9 +43,9 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.PLANS) {
             PlanScreen(navController = navController)
         }
-        /*composable(Routes.SETTINGS) {
+        composable(Routes.SETTINGS) {
             SettingsScreen(navController = navController)
-        }*/
+        }
         /*composable(Routes.PROFILE) {
             ProfileScreen(navController = navController)
         }*/
