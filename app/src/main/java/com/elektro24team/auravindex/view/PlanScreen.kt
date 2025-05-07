@@ -27,6 +27,7 @@ import com.elektro24team.auravindex.ui.components.PlanCard
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.rememberPlanViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.factories.PlanViewModelFactory
 
@@ -36,20 +37,16 @@ import com.elektro24team.auravindex.viewmodels.factories.PlanViewModelFactory
 fun PlanScreen(navController: NavController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    val db = remember { AuraVindexDatabase.getInstance(context) }
-    val repository = remember { PlanRepository(db.planDao()) }
-    val factory = remember { PlanViewModelFactory(repository) }
-    val viewModel: PlanViewModel = viewModel(factory = factory)
+    val viewModel: PlanViewModel = rememberPlanViewModel()
     val plans by viewModel.plans.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
         viewModel.loadPlans()
     }
-    Log.d("PlanScreen", "Plans: $plans")
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->

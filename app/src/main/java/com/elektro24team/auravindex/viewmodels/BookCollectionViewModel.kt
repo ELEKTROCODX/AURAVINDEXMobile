@@ -1,29 +1,24 @@
 package com.elektro24team.auravindex.viewmodels
 
-import com.elektro24team.auravindex.retrofit.BookCollectionClient
-import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elektro24team.auravindex.model.BookCollection
+import com.elektro24team.auravindex.data.repository.BookCollectionRepository
+import com.elektro24team.auravindex.model.local.BookCollectionEntity
 import kotlinx.coroutines.launch
 
-class BookCollectionViewModel: ViewModel(){
-    var posts = mutableStateOf<List<BookCollection>>(emptyList())
-        private set
-    init {
-        fetchBookCollections()
+class BookCollectionViewModel(
+    private val repository: BookCollectionRepository
+) : ViewModel() {
 
-    }
+    private val _bookCollections = MutableLiveData<List<BookCollectionEntity>>()
+    val bookCollections: LiveData<List<BookCollectionEntity>> = _bookCollections
 
-
-    private fun fetchBookCollections(){
+    fun loadBookCollections() {
         viewModelScope.launch {
-            try {
-                val response = BookCollectionClient.apiService.getBookCollections()
-                posts.value = response.data
-            }catch (e: Exception){
-                e.printStackTrace()
-            }
+            val result = repository.getBookCollections()
+            _bookCollections.postValue(result)
         }
     }
 }

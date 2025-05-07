@@ -1,7 +1,7 @@
 package com.elektro24team.auravindex.data.repository
 
 import android.util.Log
-import com.elektro24team.auravindex.data.local.PlanDao
+import com.elektro24team.auravindex.data.local.dao.PlanDao
 import com.elektro24team.auravindex.model.Plan
 import com.elektro24team.auravindex.model.local.PlanEntity
 import com.elektro24team.auravindex.retrofit.PlanClient
@@ -13,7 +13,7 @@ class PlanRepository(
     private val planDao: PlanDao
 ) {
     private val CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000L // 1 día
-
+    @Volatile
     private var lastCacheTime: Long = 0
 
     suspend fun getPlans(): List<PlanEntity> {
@@ -29,8 +29,6 @@ class PlanRepository(
                 lastCacheTime = currentTime
                 planEntities
             } catch (e: Exception) {
-                e.printStackTrace()
-                Log.e("PlanRepository", "Error fetching plans: ${e.message}")
                 // Fall back to local data if API fails
                 planDao.getAllPlans()
             }
