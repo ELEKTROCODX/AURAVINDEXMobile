@@ -76,7 +76,6 @@ class BookViewModel: ViewModel(){
     fun applyLocalFilter(filter: String, search: String) {
         val result = getFirstFiveFilteredBooks(posts.value, search, filter)
         filteredBooks.value = result
-        Log.d("DEBUG", "Filtrando con '$search' usando '$filter': ${result.size} resultados")
 
     }
 

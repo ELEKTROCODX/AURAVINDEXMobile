@@ -15,8 +15,8 @@ android {
         applicationId = "com.elektro24team.auravindex"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 1 // Reminder: Always increment this when updating the version
+        versionName = "1.0.0" // X.Y.Z; X = Major, Y = minor, Z = Patch level
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -59,9 +59,9 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
-    implementation (libs.kotlinx.coroutines.android)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.kotlinx.coroutines.android)
     kapt("androidx.room:room-compiler:2.7.1")
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
