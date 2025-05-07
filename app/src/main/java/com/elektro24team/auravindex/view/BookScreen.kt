@@ -355,7 +355,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                             Divider(color = Color.LightGray, thickness = 1.dp)
                         }
 
-                        Row(
+                        /*Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp),
@@ -364,7 +364,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                         ) {
                             // Botón "Loan"
                             Button(
-                                onClick = { /* Acción para "Loan" */ },
+                                onClick = { *//* Acción para "Loan" *//* },
                                 modifier = Modifier
                                     .height(48.dp)
                                     .weight(1f),
@@ -386,7 +386,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
 
                             // Botón "Cancel"
                             Button(
-                                onClick = { /* Acción para "Cancel" */ },
+                                onClick = { *//* Acción para "Cancel" *//* },
                                 modifier = Modifier
                                     .height(48.dp)
                                     .weight(1f),
@@ -405,9 +405,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                 )
                             }
-                        }
-
-
+                        }*/
                     }
                 }
             }

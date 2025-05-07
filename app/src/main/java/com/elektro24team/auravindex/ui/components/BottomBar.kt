@@ -25,17 +25,17 @@ fun BottomNavBar(
     val outlinedIcons = listOf(
         Icons.Outlined.Home,
         Icons.Outlined.Search,
-        Icons.Outlined.Diamond
+        /*Icons.Outlined.Diamond*/
     )
 
     val filledIcons = listOf(
         Icons.Filled.Home,
         Icons.Filled.Search,
-        Icons.Filled.Diamond
+       /* Icons.Filled.Diamond*/
     )
 
-    val routes = listOf("main", "search", "plans")
-    val labels = listOf("Home", "Search", "Plans")
+    val routes = listOf("main", "search"/*, "plans"*/)
+    val labels = listOf("Home", "Search"/*, "Plans"*/)
 
     NavigationBar(
         modifier = modifier,

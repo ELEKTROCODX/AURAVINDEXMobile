@@ -87,7 +87,7 @@ fun SearchResultsScreen(
                 val recommendations = bookViewModel.getRecommendations(filter, currentQuery)
                 if(filteredBooks.isNotEmpty()) {
                     Text(
-                        text = "${filteredBooks.size} Results from \"$currentQuery\"",
+                        text = "${filteredBooks.size} results for \"$currentQuery\"",
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )

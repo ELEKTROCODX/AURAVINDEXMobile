@@ -242,12 +242,12 @@ fun SearchScreen(navController: NavController ) {
                                                 )
                                                 Spacer(modifier = Modifier.height(6.dp))
                                                 Text(
-                                                    text = "Author(s): ${book.authors.joinToString { it.name + " " + it.last_name }}",
+                                                    text = "Authors: ${book.authors.joinToString { it.name + " " + it.last_name }}",
                                                     style = MaterialTheme.typography.labelSmall,
                                                     color = BrownC
                                                 )
                                                 Text(
-                                                        text = "Genre: ${book.genres.joinToString()}",
+                                                    text = "Genres: ${book.genres.joinToString()}",
                                                     style = MaterialTheme.typography.labelSmall,
                                                     color = OrangeC
                                                 )
@@ -266,12 +266,4 @@ fun SearchScreen(navController: NavController ) {
             }
         )
     }
-}
-
-//función sin parámetro navController para usar preview
-@Preview(showBackground = true)
-@Composable
-fun previewSearchScreen(){
-    val navController = rememberNavController()
-    SearchScreen(navController)
 }

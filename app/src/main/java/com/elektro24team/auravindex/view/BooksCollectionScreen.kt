@@ -39,14 +39,14 @@ fun BooksCollectionScreen(
             TopAppBar(
                 title = {
                     Text(
-                        "Colección: $bookCollectionName",
+                        "Collection: $bookCollectionName",
                         color = WhiteC,
                         style = MaterialTheme.typography.titleLarge
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver", tint = WhiteC)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = WhiteC)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -70,7 +70,7 @@ fun BooksCollectionScreen(
                     .background(WhiteC)
             ) {
                 Text(
-                    text = "${books.size} resultados encontrados en \"$bookCollectionName\"",
+                    text = "${books.size} results for \"$bookCollectionName\"",
                     style = MaterialTheme.typography.titleMedium,
                     color = PurpleC,
                     modifier = Modifier.padding(start = 16.dp, top = 12.dp, bottom = 8.dp)
