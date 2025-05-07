@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elektro24team.auravindex.model.ApiResponse
 import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.retrofit.BookClient
 import com.elektro24team.auravindex.utils.normalize
@@ -32,7 +33,6 @@ class BookViewModel: ViewModel(){
             try {
                 val response = BookClient.apiService.getBooks(showDuplicates = showDuplicates, showLents = showLents, page, limit)
                 posts.value = response.data
-                Log.d("DEBUG", "Se obtuvieron ${response.data.size} libros")
 
             }catch (e: Exception){
                 e.printStackTrace()

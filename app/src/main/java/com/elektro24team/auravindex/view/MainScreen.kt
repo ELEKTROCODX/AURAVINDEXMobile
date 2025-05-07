@@ -18,6 +18,7 @@ import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.AuraVindexApp
+import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.viewmodels.BookViewModel
@@ -91,8 +92,8 @@ fun MainScreen(
                         }
                         item {
                             HomePageSection(
-                                "More Recommendations",
-                                books,
+                                "Most read",
+                                viewModel.filteredBooks,
                                 seeMoreAction = { navController.navigate(Routes.SEARCH) },
                                 navController
                             )
