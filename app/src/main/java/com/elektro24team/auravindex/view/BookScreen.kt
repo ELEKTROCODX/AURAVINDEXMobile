@@ -183,83 +183,6 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                             )
 
                             Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para ISBN
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "ISBN: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
-                                )
-                                Text(
-                                    text = book?.isbn ?: "ISBN",
-                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                )
-                            }
-
-                            Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para Status
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Status: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
-                                )
-                                Text(
-                                    text = book?.book_status?.book_status ?: "Not available",
-                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                )
-                            }
-
-                            Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para Classification
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Classification: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
-                                )
-                                Text(
-                                    text = book?.classification ?: "Not available",
-                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                )
-                            }
-
-                            Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para Genres
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Genres: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
-                                )
-                                Text(
-                                    text = book?.genres?.joinToString(", ") ?: "Not available",
-                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                )
-                            }
-
-                            Divider(color = Color.LightGray, thickness = 1.dp)
-
                             // Fila para Authors
                             Row(
                                 modifier = Modifier
@@ -292,6 +215,44 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                 )
                                 Text(
                                     text = book?.editorial?.name ?: "Not available",
+                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                )
+                            }
+
+                            Divider(color = Color.LightGray, thickness = 1.dp)
+
+                            // Fila para Collection
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Collection: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                                )
+                                Text(
+                                    text = book?.book_collection?.name ?: "Not available",
+                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                )
+                            }
+
+                            Divider(color = Color.LightGray, thickness = 1.dp)
+
+                            // Fila para Genres
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Genres: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                                )
+                                Text(
+                                    text = book?.genres?.joinToString(", ") ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -333,6 +294,65 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
+
+                            Divider(color = Color.LightGray, thickness = 1.dp)
+
+                            // Fila para Status
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Status: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                                )
+                                Text(
+                                    text = book?.book_status?.book_status?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } ?: "Not available",
+                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                )
+                            }
+
+                            Divider(color = Color.LightGray, thickness = 1.dp)
+
+                            // Fila para Classification
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Classification: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                                )
+                                Text(
+                                    text = book?.classification ?: "Not available",
+                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                )
+                            }
+
+                            Divider(color = Color.LightGray, thickness = 1.dp)
+
+                            // Fila para ISBN
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "ISBN: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                                )
+                                Text(
+                                    text = book?.isbn ?: "ISBN",
+                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                )
+                            }
+
+                            Divider(color = Color.LightGray, thickness = 1.dp)
                         }
 
                         Row(
