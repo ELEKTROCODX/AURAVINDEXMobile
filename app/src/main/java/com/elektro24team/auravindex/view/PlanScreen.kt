@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.view
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +18,9 @@ import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
+import com.elektro24team.auravindex.data.local.AuraVindexDatabase
+import com.elektro24team.auravindex.data.repository.PlanRepository
+import com.elektro24team.auravindex.model.local.PlanEntity
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.PlanCard
@@ -24,19 +28,28 @@ import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
+import com.elektro24team.auravindex.viewmodels.factories.PlanViewModelFactory
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlanScreen(navController: NavController, viewModel: PlanViewModel = viewModel()) {
+fun PlanScreen(navController: NavController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val plans = viewModel.posts
+    val context = LocalContext.current
+    val db = remember { AuraVindexDatabase.getInstance(context) }
+    val repository = remember { PlanRepository(db.planDao()) }
+    val factory = remember { PlanViewModelFactory(repository) }
+    val viewModel: PlanViewModel = viewModel(factory = factory)
+    val plans by viewModel.plans.observeAsState(emptyList())
 
+    LaunchedEffect(Unit) {
+        viewModel.loadPlans()
+    }
+    Log.d("PlanScreen", "Plans: $plans")
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->
@@ -92,8 +105,8 @@ fun PlanScreen(navController: NavController, viewModel: PlanViewModel = viewMode
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             contentPadding = PaddingValues(bottom = 80.dp)
                         ) {
-                            items(plans.value) { plan ->
-                                PlanCard(plan)
+                            items(plans.size) { index ->
+                                PlanCard(plan = plans[index])
                             }
                         }
                     }
