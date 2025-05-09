@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.utils
+package com.elektro24team.auravindex.utils.enums
 
 enum class SettingKey(val keySetting: String) {
     ID("userId"),
