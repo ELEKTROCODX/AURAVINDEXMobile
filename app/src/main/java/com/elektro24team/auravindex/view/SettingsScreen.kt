@@ -1,5 +1,7 @@
 package com.elektro24team.auravindex.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,9 +45,14 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -120,7 +127,8 @@ fun SettingsScreen(
                             ) {
                                 Text(
                                     text = "Dark mode: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold)
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
                                 )
                                 Switch(
                                     checked = localSettings.getOrDefault(SettingKey.DARK_MODE.keySetting, "false").toBoolean(),
@@ -136,7 +144,8 @@ fun SettingsScreen(
                             ) {
                                 Text(
                                     text = "Language: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold)
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
                                 )
                                 Text(
                                     text = localSettings.getOrDefault(SettingKey.LANGUAGE.keySetting, "English")
@@ -149,17 +158,23 @@ fun SettingsScreen(
                             ) {
                                 Text(
                                     text = "Last login: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold)
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
                                 )
-                                Text(
-                                    text = localSettings.getOrDefault(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis()).toString()
-                                )
-
-                                /*val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
                                 formatter.timeZone = TimeZone.getTimeZone("UTC-6")
+
+                                val lastLoginMillis = localSettings.getOrDefault(
+                                    SettingKey.LAST_LOGIN.keySetting,
+                                    System.currentTimeMillis().toString()
+                                ).toLongOrNull() ?: System.currentTimeMillis()
+
+                                val formattedDate = Instant.ofEpochMilli(lastLoginMillis)
+                                    .atZone(ZoneId.of("America/El_Salvador"))
+                                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
                                 Text(
-                                    text = formatter.format(localSettings.getOrDefault(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis()))
-                                )*/
+                                    text = formattedDate,
+                                )
 
                             }
                         }
