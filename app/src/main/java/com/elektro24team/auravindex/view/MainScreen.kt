@@ -9,6 +9,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
@@ -71,40 +72,45 @@ fun MainScreen(
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-
-                    val app = LocalContext.current.applicationContext as AuraVindexApp
-                    val isConnected by app.networkLiveData.observeAsState(true)
-                    ConnectionAlert(isConnected)
-                    LazyColumn(
+                    Column(
                         modifier = Modifier
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp)
                     ) {
-                        //Recommendations
-                        item {
-                            HomePageSection(
-                                "Recommendations",
-                                books,
-                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                navController
-                            )
-                        }
-                        item {
-                            HomePageSection(
-                                "Most read",
-                                viewModel.filteredBooks,
-                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                navController
-                            )
-                        }
-                        item {
-                            HomePageSection(
-                                "New releases",
-                                latestReleases,
-                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                navController
-                            )
+                        val app = LocalContext.current.applicationContext as AuraVindexApp
+                        val isConnected by app.networkLiveData.observeAsState(true)
+                        ConnectionAlert(isConnected)
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            verticalArrangement = Arrangement.Top,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            //Recommendations
+                            item {
+                                HomePageSection(
+                                    "Recommendations",
+                                    books,
+                                    seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                                    navController
+                                )
+                            }
+                            item {
+                                HomePageSection(
+                                    "Most read",
+                                    viewModel.filteredBooks,
+                                    seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                                    navController
+                                )
+                            }
+                            item {
+                                HomePageSection(
+                                    "New releases",
+                                    latestReleases,
+                                    seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                                    navController
+                                )
+                            }
                         }
                     }
                 }

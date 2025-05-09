@@ -16,7 +16,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 2 // Reminder: Always increment this when updating the version
-        versionName = "1.0.0" // X.Y.Z; X = Major, Y = minor, Z = Patch level
+        versionName = "1.0.0" // X.Y.Z; X = Major, Y = Minor, Z = Patch level
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

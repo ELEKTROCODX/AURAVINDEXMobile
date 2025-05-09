@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -9,22 +10,35 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CollectionsBookmark
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.data.local.AuraVindexDatabase
+import com.elektro24team.auravindex.data.repository.BookCollectionRepository
 import com.elektro24team.auravindex.ui.theme.PurpleC
+import com.elektro24team.auravindex.utils.rememberBookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
+import com.elektro24team.auravindex.viewmodels.factories.BookCollectionViewModelFactory
 
 @Composable
 fun BookCollectionsSection(
-    navController: NavController,
-    viewModel: BookCollectionViewModel = viewModel()
+    navController: NavController
 ) {
-    val bookCollections = viewModel.posts
+    val viewModel: BookCollectionViewModel = rememberBookCollectionViewModel()
+    val bookCollections by viewModel.bookCollections.observeAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        viewModel.loadBookCollections()
+    }
 
     Row(
         modifier = Modifier
@@ -39,9 +53,9 @@ fun BookCollectionsSection(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(bookCollections.value.size) { index ->
-                var name = bookCollections.value[index].name
-                var id = bookCollections.value[index]._id
+            items(bookCollections.size) { index ->
+                var name = bookCollections[index].name
+                var id = bookCollections[index]._id
                 CollectionCard(
                     name = name,
                     id = id,

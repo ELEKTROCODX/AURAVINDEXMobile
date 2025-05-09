@@ -15,10 +15,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elektro24team.auravindex.model.Plan
+import com.elektro24team.auravindex.model.local.PlanEntity
 import com.elektro24team.auravindex.ui.theme.PurpleC
 
 @Composable
-fun PlanCard(plan: Plan) {
+fun PlanCard(plan: PlanEntity) {
     val colors = MaterialTheme.colorScheme
 
     Card(
