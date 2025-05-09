@@ -70,6 +70,12 @@ fun SettingsScreen(
         localSettingsViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.ID.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
+
     }
     ModalNavigationDrawer(
         drawerContent = {
@@ -115,12 +121,15 @@ fun SettingsScreen(
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
 
-                        // Settings
-                        Text("Settings: ", style = MaterialTheme.typography.titleLarge)
-                        Spacer(modifier = Modifier.padding(16.dp))
                         Column(
                             modifier = Modifier.padding(16.dp).fillMaxSize()
                         ) {
+                            // Settings
+                            Text(
+                                text = "Settings: ",
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
                             Row(
                                 modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -148,9 +157,59 @@ fun SettingsScreen(
                                     modifier = Modifier.align(Alignment.CenterVertically)
                                 )
                                 Text(
-                                    text = localSettings.getOrDefault(SettingKey.LANGUAGE.keySetting, "English")
+                                    text = localSettings.getOrDefault(
+                                        SettingKey.LANGUAGE.keySetting,
+                                        "English"
+                                    )
                                 )
-
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Receive push notifications: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Switch(
+                                    checked = localSettings.getOrDefault(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, "false").toBoolean(),
+                                    onCheckedChange = {
+                                        localSettingsViewModel.saveSetting(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, it.toString())
+                                    }
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Receive email notifications: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Switch(
+                                    checked = localSettings.getOrDefault(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, "false").toBoolean(),
+                                    onCheckedChange = {
+                                        localSettingsViewModel.saveSetting(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, it.toString())
+                                    }
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Receive SMS notifications: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Switch(
+                                    checked = localSettings.getOrDefault(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, "false").toBoolean(),
+                                    onCheckedChange = {
+                                        localSettingsViewModel.saveSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, it.toString())
+                                    }
+                                )
                             }
                             Row(
                                 modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
@@ -175,7 +234,39 @@ fun SettingsScreen(
                                 Text(
                                     text = formattedDate,
                                 )
-
+                            }
+                            // User local data (temporarily displayed for testing purposes)
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            Text(
+                                text = "User local data (temp): ",
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "User ID: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = if ((localSettings.containsKey(SettingKey.ID.keySetting)) && (localSettings[SettingKey.ID.keySetting] != "")) localSettings[SettingKey.ID.keySetting] ?: "N/A" else "N/A",
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "User email: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = if ((localSettings.containsKey(SettingKey.EMAIL.keySetting)) && (localSettings[SettingKey.EMAIL.keySetting] != "")) localSettings[SettingKey.EMAIL.keySetting] ?: "N/A" else "N/A",
+                                )
                             }
                         }
                     }

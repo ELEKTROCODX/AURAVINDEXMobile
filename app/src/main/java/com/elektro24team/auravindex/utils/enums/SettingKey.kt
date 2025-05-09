@@ -7,7 +7,10 @@ enum class SettingKey(val keySetting: String) {
     TOKEN("userToken"),
     LAST_LOGIN("lastLogin"),
     LANGUAGE("language"),
-    DARK_MODE("darkMode");
+    DARK_MODE("darkMode"),
+    RECEIVE_PUSH_NOTIFICATIONS("receivePushNotifications"),
+    RECEIVE_EMAIL_NOTIFICATIONS("receiveEmailNotifications"),
+    RECEIVE_SMS_NOTIFICATIONS("receiveSmsNotifications"),;
 
     companion object {
         fun fromKey(keySetting: String): SettingKey? =
