@@ -31,7 +31,6 @@ fun WelcomeScreen(
 ) {
     val colors = MaterialTheme.colorScheme
     val localSettingsViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
-    val localSettings by localSettingsViewModel.settings.collectAsState()
     var isReadyToNavigate by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -39,19 +38,30 @@ fun WelcomeScreen(
         localSettingsViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
     }
-    LaunchedEffect(localSettings) {
-        if (localSettings[SettingKey.DARK_MODE.keySetting].isNullOrBlank()) {
+    LaunchedEffect(Unit) {
+        val keys = arrayOf(
+            SettingKey.DARK_MODE.keySetting,
+            SettingKey.LANGUAGE.keySetting,
+            SettingKey.LAST_LOGIN.keySetting
+        )
+        val loaded = localSettingsViewModel.loadSettings(*keys)
+
+        if (loaded[SettingKey.DARK_MODE.keySetting].isNullOrBlank()) {
             localSettingsViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, "false")
         }
-        if (localSettings[SettingKey.LANGUAGE.keySetting].isNullOrBlank()) {
+
+        if (loaded[SettingKey.LANGUAGE.keySetting].isNullOrBlank()) {
             localSettingsViewModel.saveSetting(SettingKey.LANGUAGE.keySetting, "English")
         }
-        localSettingsViewModel.saveSetting(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis().toString())
-        /*if (localSettings[SettingKey.LAST_LOGIN.keySetting].isNullOrBlank()) {
-            localSettingsViewModel.saveSetting(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis().toString())
-        }*/
+
+        localSettingsViewModel.saveSetting(
+            SettingKey.LAST_LOGIN.keySetting,
+            System.currentTimeMillis().toString()
+        )
+
         isReadyToNavigate = true
     }
+
     Box(
         modifier = Modifier
             .clickable {

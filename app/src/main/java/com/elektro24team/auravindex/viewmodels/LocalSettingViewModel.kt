@@ -17,6 +17,16 @@ class LocalSettingViewModel(
     private val _settings = MutableStateFlow<Map<String, String>>(emptyMap())
     val settings: StateFlow<Map<String, String>> = _settings.asStateFlow()
 
+    suspend fun loadSettings(vararg keys: String): Map<String, String> {
+        val results = mutableMapOf<String, String>()
+        keys.forEach { key ->
+            val value = repository.getSetting(key) ?: ""
+            results[key] = value
+        }
+        _settings.update { it + results }
+        return results
+    }
+
     fun loadSetting(keySetting: String) {
         viewModelScope.launch {
             val result = repository.getSetting(keySetting)
