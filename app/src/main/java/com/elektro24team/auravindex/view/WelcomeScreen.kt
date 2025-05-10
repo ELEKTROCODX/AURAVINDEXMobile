@@ -66,7 +66,7 @@ fun WelcomeScreen(
         modifier = Modifier
             .clickable {
                 if(isReadyToNavigate) {
-                    navController.navigate(Routes.LOGIN) {
+                    navController.navigate(/*Routes.LOGIN*/ Routes.MAIN) {
                         popUpTo(Routes.WELCOME) {
                             inclusive = true
                         }
