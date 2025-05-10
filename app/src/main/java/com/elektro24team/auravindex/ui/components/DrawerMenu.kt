@@ -6,18 +6,28 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import com.elektro24team.auravindex.R
+import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
 
 //MENU HAMBURGUESA DE TIPO DRAWER O CAJON
 @Composable
 fun DrawerMenu(onItemSelected: (String) -> Unit) {
     val colors = MaterialTheme.colorScheme
-
+    val localSettingsViewModel = rememberLocalSettingViewModel()
+    val localSettings by localSettingsViewModel.settings.collectAsState()
+    LaunchedEffect(Unit) {
+        localSettingsViewModel.loadSetting(SettingKey.ID.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,12 +45,12 @@ fun DrawerMenu(onItemSelected: (String) -> Unit) {
         )
 
         val menuItems = listOf(
-            /*"Profile" to "profile",
-            "Notifications" to "notifications",*/
+            /*"Profile" to "profile",*/
+            /*"Notifications" to "notifications",*/
             "Terms of Services" to "terms",
             "Privacy Policy" to "privacy",
             "Team" to "team",
-           /* "Settings" to "settings"*/
+            /*"Settings" to "settings"*/
         )
 
         menuItems.forEach { (label, action) ->
@@ -56,12 +66,10 @@ fun DrawerMenu(onItemSelected: (String) -> Unit) {
         }
 
         Spacer(modifier = Modifier.weight(1f))
-
-
         /*
         * Check if user is logged in
         * */
-        if(false) {
+        if(localSettings.getOrDefault(SettingKey.ID.keySetting, "").isNotEmpty()) {
             Text(
                 text = "Log out",
                 color = colors.secondary,

@@ -1,0 +1,19 @@
+package com.elektro24team.auravindex.model.local
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "plans")
+data class PlanEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val __v: Int,
+    val _id: String,
+    val createdAt: String,
+    val fixed_price: String,
+    val max_renovations_per_loan: Int,
+    val max_return_days: Int,
+    val max_simultaneous_loans: Int,
+    val monthly_price: String,
+    val name: String,
+    val updatedAt: String
+)

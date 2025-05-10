@@ -1,52 +1,54 @@
 package com.elektro24team.auravindex.view
 
-import android.util.Log
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.elektro24team.auravindex.ui.components.BottomNavBar
-import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
-import com.elektro24team.auravindex.data.local.AuraVindexDatabase
-import com.elektro24team.auravindex.data.repository.PlanRepository
-import com.elektro24team.auravindex.model.local.PlanEntity
 import com.elektro24team.auravindex.navigation.Routes
+import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
-import com.elektro24team.auravindex.ui.components.PlanCard
+import com.elektro24team.auravindex.ui.components.DrawerMenu
+import com.elektro24team.auravindex.ui.components.HomePageSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
-import com.elektro24team.auravindex.utils.rememberPlanViewModel
-import com.elektro24team.auravindex.viewmodels.PlanViewModel
-import com.elektro24team.auravindex.viewmodels.factories.PlanViewModelFactory
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlanScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val viewModel: PlanViewModel = rememberPlanViewModel()
-    val plans by viewModel.plans.observeAsState(emptyList())
-
-    LaunchedEffect(Unit) {
-        viewModel.loadPlans()
-    }
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->
@@ -58,6 +60,7 @@ fun PlanScreen(navController: NavController) {
                     showTeamDialog
                 )
             })
+
         },
         drawerState = drawerState
     ) {
@@ -70,7 +73,7 @@ fun PlanScreen(navController: NavController) {
             },
             bottomBar = {
                 BottomNavBar(
-                    currentRoute = navController.currentBackStackEntry?.destination?.route ?: Routes.PLANS,
+                    currentRoute = navController.currentBackStackEntry?.destination?.route ?: "login",
                     onItemClick = { route -> navController.navigate(route) }
                 )
             },
@@ -88,23 +91,22 @@ fun PlanScreen(navController: NavController) {
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
-
                         Text(
-                            text = "Choose your subscription plan",
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                            modifier = Modifier
-                                .padding(vertical = 16.dp)
+                            text = "Login page",
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterHorizontally)
                         )
-
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            contentPadding = PaddingValues(bottom = 80.dp)
+                        Button(
+                            onClick = {
+                                navController.navigate(Routes.MAIN)
+                            },
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
                         ) {
-                            items(plans.size) { index ->
-                                PlanCard(plan = plans[index])
-                            }
+
+                            Text(
+                                text = "Skip login",
+                                modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterVertically)
+                            )
                         }
                     }
                 }
@@ -112,4 +114,3 @@ fun PlanScreen(navController: NavController) {
         )
     }
 }
-
