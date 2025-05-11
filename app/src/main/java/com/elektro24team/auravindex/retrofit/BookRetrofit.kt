@@ -20,7 +20,7 @@ interface BookService{
 
     @GET("book/latest_releases")
     suspend fun getLatestReleases(
-        @Query("limit") limit: Int = 10,
+        @Query("limit") limit: String = "10",
     ): ApiResponse<List<Book>>
 
     @GET("book/{id}")

@@ -38,7 +38,7 @@ class BookViewModelOld: ViewModel(){
 
         }
     }
-    private fun fetchLatestReleases(limit: Int = 10){
+    private fun fetchLatestReleases(limit: String = "10"){
         viewModelScope.launch {
             try {
                 val response = BookClient.apiService.getLatestReleases(limit)

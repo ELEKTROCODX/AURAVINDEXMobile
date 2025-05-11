@@ -41,7 +41,7 @@ import com.elektro24team.auravindex.ui.theme.PurpleC
 @Composable
 fun HomePageSection(
     title: String,
-    books: MutableState<List<Book>>,
+    books: List<Book>,
     seeMoreAction: () -> Unit,
     navController: NavController
 ) {
@@ -87,7 +87,7 @@ fun HomePageSection(
                 .heightIn(max=240.dp, min=240.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(books.value.size) { index ->
+            items(books.size) { index ->
                 Row(
                     modifier = Modifier.heightIn(min = 250.dp, max = 250.dp)
                 ) {
@@ -97,10 +97,10 @@ fun HomePageSection(
                             .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
                             .heightIn(min = 250.dp, max = 250.dp )
                             .padding(8.dp)
-                            .clickable { navController.navigate("book/${books.value[index]._id}") },
+                            .clickable { navController.navigate("book/${books[index]._id}") },
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        val book = books.value[index]
+                        val book = books[index]
 
                         // Imagen clickeable
                         ClickableImage(book.book_img, book, navController)
@@ -136,7 +136,7 @@ fun HomePageSection(
                     }
 
                     // Separador visual entre tarjetas
-                    if (index < books.value.lastIndex) {
+                    if (index < books.lastIndex) {
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()

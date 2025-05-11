@@ -78,7 +78,10 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             LoginScreen(navController = navController)
         }
         composable(Routes.MAIN) {
-            MainScreen(navController = navController)
+            MainScreen(
+                navController = navController,
+                bookViewModel = bookViewModel
+            )
         }
         /*composable(Routes.NOTIFICATIONS) {
             NotificationsScreen(navController = navController)

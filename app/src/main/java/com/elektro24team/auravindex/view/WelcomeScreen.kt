@@ -45,6 +45,7 @@ fun WelcomeScreen(
         localSettingsViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
 
         bookViewModel.loadBooks(showDuplicates = true, showLents = true)
+        bookViewModel.fetchLatestReleases()
         planViewModel.loadPlans()
         bookCollectionViewModel.loadBookCollections()
     }

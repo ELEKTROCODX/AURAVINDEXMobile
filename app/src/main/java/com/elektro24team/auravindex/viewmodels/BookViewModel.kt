@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.BookRepository
 import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.model.local.BookEntity
+import com.elektro24team.auravindex.retrofit.BookClient
 import com.elektro24team.auravindex.utils.normalize
 import kotlinx.coroutines.launch
 import kotlin.collections.filter
@@ -18,8 +19,10 @@ class BookViewModel(
 
     private val _books = MutableLiveData<List<Book>>()
     private val _filteredBooks = MutableLiveData<List<Book>>()
+    private val _latestReleases = MutableLiveData<List<Book>>()
     val books: LiveData<List<Book>> = _books
     val filteredBooks: LiveData<List<Book>> = _filteredBooks
+    val latestReleases: LiveData<List<Book>> = _latestReleases
 
     suspend fun loadBooks(showDuplicates: Boolean, showLents: Boolean) {
         val result = repository.getAllBooks(showDuplicates, showLents)
@@ -54,6 +57,17 @@ class BookViewModel(
             }
         }
         _filteredBooks.postValue(filtered ?: emptyList())
+    }
+
+     fun fetchLatestReleases(limit: String = "10"){
+        viewModelScope.launch {
+            try {
+                val response = BookClient.apiService.getLatestReleases(limit)
+                _latestReleases.value = response.data
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+        }
     }
 
     fun searchBook(filterValue: String) {

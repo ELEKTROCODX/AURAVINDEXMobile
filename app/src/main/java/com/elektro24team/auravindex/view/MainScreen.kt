@@ -19,15 +19,17 @@ import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.AuraVindexApp
+import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navController: NavController,
-    viewModel: BookViewModelOld = viewModel()
+    bookViewModel: BookViewModel,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -35,8 +37,12 @@ fun MainScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val books = viewModel.posts
-    val latestReleases = viewModel.latestReleases
+    val books by bookViewModel.books.observeAsState(emptyList())
+    val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
+    LaunchedEffect(Unit) {
+        bookViewModel.loadBooks(showDuplicates = false, showLents = true)
+        bookViewModel.fetchLatestReleases()
+    }
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->
@@ -85,23 +91,18 @@ fun MainScreen(
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            //Recommendations
+                            // Recent searches
+
+                            // Recommendations
                             item {
                                 HomePageSection(
                                     "Recommendations",
-                                    books,
+                                    books.take(10),
                                     seeMoreAction = { navController.navigate(Routes.SEARCH) },
                                     navController
                                 )
                             }
-                            item {
-                                HomePageSection(
-                                    "Most read",
-                                    viewModel.filteredBooks,
-                                    seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                    navController
-                                )
-                            }
+                            // New releases
                             item {
                                 HomePageSection(
                                     "New releases",
