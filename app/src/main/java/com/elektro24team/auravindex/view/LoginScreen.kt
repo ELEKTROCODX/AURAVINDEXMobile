@@ -1,11 +1,9 @@
 package com.elektro24team.auravindex.view
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,18 +22,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.DrawerMenu
-import com.elektro24team.auravindex.ui.components.HomePageSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
-import com.elektro24team.auravindex.viewmodels.BookViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)

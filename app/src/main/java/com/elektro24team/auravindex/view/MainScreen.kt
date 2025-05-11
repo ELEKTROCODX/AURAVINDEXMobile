@@ -19,16 +19,15 @@ import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.AuraVindexApp
-import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.TopBar
-import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navController: NavController,
-    viewModel: BookViewModel = viewModel()
+    viewModel: BookViewModelOld = viewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()

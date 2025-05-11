@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import com.elektro24team.auravindex.ui.components.BookCard
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.theme.*
-import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,14 +25,14 @@ fun BooksCollectionScreen(
     bookCollectionName: String,
     collectionId: String
 ) {
-    val bookViewModel: BookViewModel = viewModel()
-    bookViewModel.fetchFilteredBooks(
+    val bookViewModelOld: BookViewModelOld = viewModel()
+    bookViewModelOld.fetchFilteredBooks(
         showDuplicates = false,
         showLents = true,
         filter = "book_collection",
         value = collectionId
     )
-    val books = bookViewModel.filteredBooks.value
+    val books = bookViewModelOld.filteredBooks.value
 
     Scaffold(
         topBar = {

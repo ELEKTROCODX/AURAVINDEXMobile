@@ -8,7 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.elektro24team.auravindex.utils.rememberBookViewModel
 import com.elektro24team.auravindex.view.*
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 
 
 // RUTAS
@@ -33,6 +35,7 @@ object Routes {
 @Composable
 fun NavGraph(startDestination: String = Routes.WELCOME) {
     val navController = rememberNavController()
+    val bookViewModel: BookViewModel = rememberBookViewModel()
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(
@@ -40,7 +43,11 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             arguments = listOf(navArgument("bookId") { type = NavType.StringType })
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments?.getString("bookId")
-            BookScreen(navController = navController, bookId = bookId ?: "")
+            BookScreen(
+                navController = navController,
+                bookId = bookId ?: "",
+                bookViewModel = bookViewModel
+            )
         }
         composable(
             Routes.COLLECTION_BOOKS,
@@ -85,7 +92,10 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             SettingsScreen(navController = navController)
         }
         composable(Routes.WELCOME) {
-            WelcomeScreen(navController = navController)
+            WelcomeScreen(
+                navController = navController,
+                bookViewModel = bookViewModel
+            )
         }
 
     }

@@ -75,7 +75,6 @@ fun SettingsScreen(
         localSettingsViewModel.loadSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.ID.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
-
     }
     ModalNavigationDrawer(
         drawerContent = {

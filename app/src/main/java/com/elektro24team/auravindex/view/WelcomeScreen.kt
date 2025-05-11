@@ -22,12 +22,14 @@ import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeScreen(
-    navController: NavController
+    navController: NavController,
+    bookViewModel: BookViewModel
 ) {
     val colors = MaterialTheme.colorScheme
     val localSettingsViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
@@ -37,6 +39,8 @@ fun WelcomeScreen(
         localSettingsViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
+
+        bookViewModel.loadBooks()
     }
     LaunchedEffect(Unit) {
         val keys = arrayOf(

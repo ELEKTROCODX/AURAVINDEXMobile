@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import com.elektro24team.auravindex.ui.components.BookCard
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.ArrowBack
@@ -25,14 +25,14 @@ fun SearchResultsScreen(
     navController: NavController,
     filter: String,
     query: String,
-    bookViewModel: BookViewModel = viewModel()
+    bookViewModelOld: BookViewModelOld = viewModel()
 ) {
     val context = LocalContext.current
-    val allBooks = bookViewModel.filteredBooks.value
+    val allBooks = bookViewModelOld.filteredBooks.value
     var currentQuery by remember { mutableStateOf(query) }
     var currentPage by remember { mutableStateOf(1) }
     val filteredBooks = remember(currentQuery, filter, allBooks) {
-        bookViewModel.filterAllBooksLocally(allBooks, filter, currentQuery)
+        bookViewModelOld.filterAllBooksLocally(allBooks, filter, currentQuery)
     }
     val itemsPerPage = 8
     val paginatedBooks = filteredBooks
@@ -43,7 +43,7 @@ fun SearchResultsScreen(
 
 
     LaunchedEffect(key1 = filter, key2 = query) {
-        bookViewModel.applyLocalFilter(filter, query)
+        bookViewModelOld.applyLocalFilter(filter, query)
     }
 
     Scaffold(
@@ -84,7 +84,7 @@ fun SearchResultsScreen(
                         .padding(8.dp), singleLine = true
                 )
 
-                val recommendations = bookViewModel.getRecommendations(filter, currentQuery)
+                val recommendations = bookViewModelOld.getRecommendations(filter, currentQuery)
                 if(filteredBooks.isNotEmpty()) {
                     Text(
                         text = "${filteredBooks.size} results for \"$currentQuery\"",

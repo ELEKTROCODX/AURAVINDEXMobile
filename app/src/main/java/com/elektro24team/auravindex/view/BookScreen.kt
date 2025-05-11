@@ -15,17 +15,11 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.LibraryAdd
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -59,26 +53,29 @@ import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.ui.theme.MediumPadding
-import com.elektro24team.auravindex.ui.theme.OrangeC
-import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.Constants.IMG_url
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookScreen(navController: NavController, bookId: String, viewModel: BookViewModel = viewModel()) {
+fun BookScreen(
+    navController: NavController,
+    bookId: String,
+    bookViewModel: BookViewModel
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val book = viewModel.book.observeAsState().value
+    val book = remember { bookViewModel.books.value?.find { it._id == bookId } }
     LaunchedEffect(bookId) {
-        viewModel.fetchBookById(bookId)
+        bookViewModel.loadBook(bookId)
     }
 
     ModalNavigationDrawer(

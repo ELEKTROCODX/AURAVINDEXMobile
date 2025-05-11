@@ -13,19 +13,17 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
-import androidx.navigation.compose.rememberNavController
 import com.elektro24team.auravindex.ui.components.BookCollectionsSection
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
-import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -102,8 +100,8 @@ fun SearchScreen(navController: NavController ) {
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
 
-                        val bookViewModel: BookViewModel = viewModel()
-                        val filteredBooks by bookViewModel.filteredBooks
+                        val bookViewModelOld: BookViewModelOld = viewModel()
+                        val filteredBooks by bookViewModelOld.filteredBooks
 
                         var searchText by remember { mutableStateOf("") }
                         val filterOptions = listOf("Title", "Author", "Genre")
@@ -142,7 +140,7 @@ fun SearchScreen(navController: NavController ) {
                                     onClick = {
                                         selectedFilter = option
                                         if (searchText.isNotBlank()) {
-                                            bookViewModel.fetchFilteredBooks(
+                                            bookViewModelOld.fetchFilteredBooks(
                                                 showDuplicates = false,
                                                 showLents = true,
                                                 filter = selectedFilter.lowercase(),
@@ -168,10 +166,10 @@ fun SearchScreen(navController: NavController ) {
                         // Filtrado de libros según el texto de búsqueda
                         if(searchText.isNotEmpty()){
                             //se supone que es con la API
-                            val filtered1 = bookViewModel.filteredBooks.value
+                            val filtered1 = bookViewModelOld.filteredBooks.value
                             //filtrado local
-                            val filtered = bookViewModel.getFirstFiveFilteredBooks(
-                                books = bookViewModel.filteredBooks.value,
+                            val filtered = bookViewModelOld.getFirstFiveFilteredBooks(
+                                books = bookViewModelOld.filteredBooks.value,
                                 search = searchText.normalize(),
                                 filter = selectedFilter
                             )
