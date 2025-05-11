@@ -45,8 +45,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -188,6 +192,24 @@ fun BookScreen(
                                 modifier = Modifier.padding(bottom = 12.dp)
                             )
 
+                            Divider(color = Color.LightGray, thickness = 1.dp)
+                            // Fila para Summary
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = buildAnnotatedString {
+                                        append("Summary: ")
+                                        withStyle(SpanStyle(fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.Normal)) {
+                                            append(book.value?.summary?: "Not available")
+                                        }
+                                    },
+                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365), textAlign = TextAlign.Justify)
+                                )
+                            }
                             Divider(color = Color.LightGray, thickness = 1.dp)
                             // Fila para Authors
                             Row(
