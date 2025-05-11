@@ -18,21 +18,23 @@ import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import com.elektro24team.auravindex.ui.components.BookCard
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchResultsScreen(
     navController: NavController,
-    filter: String,
-    query: String,
-    bookViewModelOld: BookViewModelOld = viewModel()
+    bookViewModel: BookViewModel,
+    query: String
 ) {
     val context = LocalContext.current
-    val allBooks = bookViewModelOld.filteredBooks.value
     var currentQuery by remember { mutableStateOf(query) }
-    var currentPage by remember { mutableStateOf(1) }
-    val filteredBooks = remember(currentQuery, filter, allBooks) {
-        bookViewModelOld.filterAllBooksLocally(allBooks, filter, currentQuery)
+    var currentPage by remember { mutableIntStateOf(1) }
+    val filteredBooks by bookViewModel.filteredBooks.observeAsState(emptyList())
+    LaunchedEffect(Unit) {
+        bookViewModel.loadBooks(showDuplicates = false, showLents = true)
     }
     val itemsPerPage = 8
     val paginatedBooks = filteredBooks
@@ -40,11 +42,6 @@ fun SearchResultsScreen(
         .take(itemsPerPage)
     val totalPages = (filteredBooks.size + itemsPerPage - 1) / itemsPerPage
 
-
-
-    LaunchedEffect(key1 = filter, key2 = query) {
-        bookViewModelOld.applyLocalFilter(filter, query)
-    }
 
     Scaffold(
         topBar = {
@@ -76,6 +73,7 @@ fun SearchResultsScreen(
                     onValueChange = {
                         currentQuery = it
                         currentPage = 1
+                        bookViewModel.searchBook(it)
                     },
                     label = { Text("Search results") },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
@@ -84,57 +82,52 @@ fun SearchResultsScreen(
                         .padding(8.dp), singleLine = true
                 )
 
-                val recommendations = bookViewModelOld.getRecommendations(filter, currentQuery)
                 if(filteredBooks.isNotEmpty()) {
+                    if(currentQuery.isNotEmpty()) {
+                        Text(
+                            text = "${filteredBooks.size} results for \"$currentQuery\"",
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                        )
+                    } else {
+                        Text(
+                            text = "Displaying all books",
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                        )
+                    }
+                } else {
                     Text(
-                        text = "${filteredBooks.size} results for \"$currentQuery\"",
+                        text = "No results found.",
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
                 }
-                // Recomendaciones según el filtro
-              /*
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                ) {
-                    items(recommendations) { book ->
-                        BookCard(book, navController)
-                    }
-                }
-
-               */
 
                 Divider(modifier = Modifier.padding(horizontal = 8.dp))
 
                 // Resultados filtrados
-                if (filteredBooks.isEmpty()) {
-                    Text("No results found.")
-                } else {
+                if (filteredBooks.isNotEmpty()) {
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         items(paginatedBooks) { book ->
                             BookCard(book, navController)
                         }
                     }
-                }
-
-
-                // Paginación
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    //repeat(totalPages) { pageIndex ->
-                     /*   Button(
-                            onClick = { currentPage = pageIndex + 1 },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (pageIndex + 1 == currentPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
-                            )
-                        ) {
-                            Text(text = "${pageIndex + 1}")
-                        } */
+                    // Paginación
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        //repeat(totalPages) { pageIndex ->
+                        /*   Button(
+                               onClick = { currentPage = pageIndex + 1 },
+                               colors = ButtonDefaults.buttonColors(
+                                   containerColor = if (pageIndex + 1 == currentPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+                               )
+                           ) {
+                               Text(text = "${pageIndex + 1}")
+                           } */
                         (1..totalPages).forEach { page ->
                             Button(onClick = { currentPage = page },
                                 colors = ButtonDefaults.buttonColors(
@@ -154,7 +147,7 @@ fun SearchResultsScreen(
                             }
                         }
                     }
-
+                }
             }
         }
     )

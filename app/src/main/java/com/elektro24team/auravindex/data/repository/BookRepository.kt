@@ -11,6 +11,9 @@ import com.elektro24team.auravindex.retrofit.BookClient
 class BookRepository(
     private val bookDao: BookDao
 ) {
+    private val CACHE_EXPIRY_MS = 10 * 60 * 1000L // 10 min
+    @Volatile
+    private var lastCacheTime: Long = 0
 
     suspend fun getBookById(bookId: String): Book {
         val local = bookDao.getBookWithRelations(bookId)
@@ -28,15 +31,17 @@ class BookRepository(
         showDuplicates: Boolean,
         showLents: Boolean
     ): List<Book> {
+        val currentTime = System.currentTimeMillis()
+        val isCacheExpired = (currentTime - lastCacheTime) > CACHE_EXPIRY_MS
         val local = bookDao.getAllBooksWithRelations()
-        if (local.isNotEmpty()) {
-            return local.map { it.toDomain() }
-        } else {
+        return if (local.isEmpty() || isCacheExpired) {
             val remote = BookClient.apiService.getBooks(
                 showDuplicates,
                 showLents
             )
-            return remote.data.map { it }
+            remote.data.map { it }
+        } else {
+            local.map { it.toDomain() }
         }
     }
 

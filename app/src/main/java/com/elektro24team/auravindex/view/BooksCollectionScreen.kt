@@ -34,8 +34,7 @@ fun BooksCollectionScreen(
     val books by bookViewModel.filteredBooks.observeAsState(emptyList())
 
     LaunchedEffect(collectionId) {
-        bookViewModel.loadBooks(showDuplicates = false, showLents = true)
-        bookViewModel.filterBook("book_collection", collectionId, showDuplicates = false, showLents = true)
+        bookViewModel.loadBooksAndFilter(showDuplicates = false, showLents = true, filterField = "book_collection", filterValue = collectionId)
     }
     Scaffold(
         topBar = {

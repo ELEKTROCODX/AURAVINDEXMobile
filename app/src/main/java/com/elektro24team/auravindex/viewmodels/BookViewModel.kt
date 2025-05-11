@@ -29,6 +29,17 @@ class BookViewModel(
         _books.postValue(result)
     }
 
+    suspend fun loadBooksAndFilter(
+        showDuplicates: Boolean,
+        showLents: Boolean,
+        filterField: String,
+        filterValue: String
+    ) {
+        val result = repository.getAllBooks(showDuplicates, showLents)
+        _books.postValue(result)
+        filterBook(filterField, filterValue, showDuplicates, showLents)
+    }
+
     fun filterBook(filterField: String, filterValue: String, showDuplicates: Boolean, showLents: Boolean) {
         val filtered = _books.value?.filter { book ->
             when (filterField) {
@@ -71,7 +82,7 @@ class BookViewModel(
     }
 
     fun searchBook(filterValue: String) {
-        val filteredBooks = _books.value?.mapNotNull { book ->
+        val filtered = _books.value?.mapNotNull { book ->
             val nameMatch = book.title.contains(filterValue, ignoreCase = true)
             val authorNameMatch = book.authors.any { it.name.contains(filterValue, ignoreCase = true) }
             val authorLastNameMatch = book.authors.any { it.last_name.contains(filterValue, ignoreCase = true) }
@@ -99,7 +110,7 @@ class BookViewModel(
 
             if (score > 0) book to score else null
         }?.sortedByDescending { it.second }?.map { it.first }
-        _books.postValue(filteredBooks ?: emptyList())
+        _filteredBooks.postValue(filtered ?: emptyList())
     }
 
     fun loadBook(bookId: String) {
