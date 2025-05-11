@@ -8,12 +8,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.data.local.AuraVindexDatabase
 import com.elektro24team.auravindex.data.repository.BookCollectionRepository
+import com.elektro24team.auravindex.data.repository.BookRepository
 import com.elektro24team.auravindex.data.repository.LocalSettingRepository
 import com.elektro24team.auravindex.data.repository.PlanRepository
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.factories.BookCollectionViewModelFactory
+import com.elektro24team.auravindex.viewmodels.factories.BookViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.LocalSettingViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.PlanViewModelFactory
 
@@ -32,6 +35,15 @@ fun rememberBookCollectionViewModel(): BookCollectionViewModel {
     val db = remember { AuraVindexDatabase.getInstance(context) }
     val repository = remember { BookCollectionRepository(db.bookCollectionDao()) }
     val factory = remember { BookCollectionViewModelFactory(repository) }
+    return viewModel(factory = factory)
+}
+
+@Composable
+fun rememberBookViewModel(): BookViewModel {
+    val context = LocalContext.current
+    val db = remember { AuraVindexDatabase.getInstance(context) }
+    val repository = remember { BookRepository(db.bookDao()) }
+    val factory = remember { BookViewModelFactory(repository) }
     return viewModel(factory = factory)
 }
 

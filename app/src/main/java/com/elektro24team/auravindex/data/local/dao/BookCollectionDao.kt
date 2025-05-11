@@ -16,4 +16,8 @@ interface BookCollectionDao {
 
     @Query("DELETE FROM bookcollections")
     suspend fun clearBookCollections()
+
+    @Query("SELECT * FROM bookcollections WHERE _id = :bookCollectionId LIMIT 1")
+    suspend fun getBookCollectionById(bookCollectionId: String): BookCollectionEntity?
+
 }

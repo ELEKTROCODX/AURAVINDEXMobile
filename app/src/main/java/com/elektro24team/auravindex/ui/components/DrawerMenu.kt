@@ -45,12 +45,12 @@ fun DrawerMenu(onItemSelected: (String) -> Unit) {
         )
 
         val menuItems = listOf(
-            "Profile" to "profile",
+           /* "Profile" to "profile",*/
             /*"Notifications" to "notifications",*/
             "Terms of Services" to "terms",
             "Privacy Policy" to "privacy",
             "Team" to "team",
-            "Settings" to "settings"
+           /* "Settings" to "settings"*/
         )
 
         menuItems.forEach { (label, action) ->

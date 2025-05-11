@@ -13,14 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
-import com.elektro24team.auravindex.data.local.AuraVindexDatabase
-import com.elektro24team.auravindex.data.repository.PlanRepository
-import com.elektro24team.auravindex.model.local.PlanEntity
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.PlanCard
@@ -29,23 +25,24 @@ import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.rememberPlanViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
-import com.elektro24team.auravindex.viewmodels.factories.PlanViewModelFactory
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlanScreen(navController: NavController) {
+fun PlanScreen(
+    navController: NavController,
+    planViewModel: PlanViewModel
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val viewModel: PlanViewModel = rememberPlanViewModel()
-    val plans by viewModel.plans.observeAsState(emptyList())
+    val plans by planViewModel.plans.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
-        viewModel.loadPlans()
+        planViewModel.loadPlans()
     }
     ModalNavigationDrawer(
         drawerContent = {

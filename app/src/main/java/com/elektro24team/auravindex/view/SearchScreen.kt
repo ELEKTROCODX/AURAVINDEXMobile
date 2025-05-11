@@ -13,19 +13,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
-import androidx.navigation.compose.rememberNavController
 import com.elektro24team.auravindex.ui.components.BookCollectionsSection
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
-import com.elektro24team.auravindex.viewmodels.BookViewModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -43,6 +39,8 @@ import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.ui.theme.WhiteC
 import com.elektro24team.auravindex.utils.Constants.IMG_url
 import com.elektro24team.auravindex.utils.normalize
+import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -50,13 +48,21 @@ import com.skydoves.landscapist.glide.GlideImage
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(navController: NavController ) {
+fun SearchScreen(
+    navController: NavController,
+    bookViewModel: BookViewModel,
+    bookCollectionViewModel: BookCollectionViewModel
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
+    val filteredBooks by bookViewModel.filteredBooks.observeAsState(emptyList())
+    LaunchedEffect(Unit) {
+        bookViewModel.loadBooks(showDuplicates = false, showLents = true)
+    }
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -102,17 +108,15 @@ fun SearchScreen(navController: NavController ) {
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
 
-                        val bookViewModel: BookViewModel = viewModel()
-                        val filteredBooks by bookViewModel.filteredBooks
-
-                        var searchText by remember { mutableStateOf("") }
-                        val filterOptions = listOf("Title", "Author", "Genre")
-                        var selectedFilter by remember { mutableStateOf(filterOptions[0]) }
+                        var bookQuery by remember { mutableStateOf("") }
 
                         // Barra de búsqueda
                         OutlinedTextField(
-                            value = searchText,
-                            onValueChange = { searchText = it },
+                            value = bookQuery,
+                            onValueChange = {
+                                bookQuery = it
+                                bookViewModel.searchBook(it)
+                                            },
                             label = { Text("Search a book...") },
                             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
                             singleLine = true,
@@ -122,64 +126,20 @@ fun SearchScreen(navController: NavController ) {
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                             keyboardActions = KeyboardActions(
                                 onSearch = {
-                                    val routeFilter = selectedFilter.lowercase()
-                                    if (searchText.isNotBlank()) {
-                                        navController.navigate("search_results/${routeFilter}/${searchText}")
+                                    if (bookQuery.isNotBlank()) {
+                                        navController.navigate("search_results/${bookQuery}")
                                     }
                                 }
                             )
                         )
 
-                        // Chips de filtro
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            filterOptions.forEach { option ->
-                                FilterChip(
-                                    selected = selectedFilter == option,
-                                    onClick = {
-                                        selectedFilter = option
-                                        if (searchText.isNotBlank()) {
-                                            bookViewModel.fetchFilteredBooks(
-                                                showDuplicates = false,
-                                                showLents = true,
-                                                filter = selectedFilter.lowercase(),
-                                                value = searchText.normalize()
-                                            )
-                                        }
-                                    },
-                                    label = {
-                                        Text(
-                                            option,
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
-                                    },
-                                    shape = MaterialTheme.shapes.small,
-                                    colors = FilterChipDefaults.filterChipColors(
-                                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                                        selectedLabelColor = MaterialTheme.colorScheme.primary
-                                    )
-                                )
-                            }
-                        }
-
                         // Filtrado de libros según el texto de búsqueda
-                        if(searchText.isNotEmpty()){
-                            //se supone que es con la API
-                            val filtered1 = bookViewModel.filteredBooks.value
-                            //filtrado local
-                            val filtered = bookViewModel.getFirstFiveFilteredBooks(
-                                books = bookViewModel.filteredBooks.value,
-                                search = searchText.normalize(),
-                                filter = selectedFilter
-                            )
+                        if(bookQuery.isNotEmpty()){
 
                             //LIBROS BUSCADOS POR EL FILTRO DE 3 Y SEARCHBAR
                             LazyColumn {
-                                items(filtered.size) { index ->
-                                    val book = filtered[index]
+                                items(filteredBooks.size) { index ->
+                                    val book = filteredBooks[index]
                                     Card(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -259,7 +219,7 @@ fun SearchScreen(navController: NavController ) {
 
 
                         }else{
-                            BookCollectionsSection(navController)
+                            BookCollectionsSection(navController, bookCollectionViewModel)
                         }
                     }
                 }
