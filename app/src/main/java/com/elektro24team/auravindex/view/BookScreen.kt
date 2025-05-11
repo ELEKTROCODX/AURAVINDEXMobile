@@ -15,11 +15,17 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.LibraryAdd
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -47,12 +53,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
+import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.ui.theme.MediumPadding
+import com.elektro24team.auravindex.ui.theme.OrangeC
+import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.Constants.IMG_url
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.BookViewModel
@@ -73,7 +82,7 @@ fun BookScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val book = remember { bookViewModel.books.value?.find { it._id == bookId } }
+    val book = remember { mutableStateOf<Book?>(bookViewModel.books.value?.find { it._id == bookId }) }
     LaunchedEffect(bookId) {
         bookViewModel.loadBook(bookId)
     }
@@ -122,9 +131,9 @@ fun BookScreen(
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
 
-                        val imageUrl = IMG_url.trimEnd('/') + "/" + book?.book_img?.trimStart('/')
+                        val imageUrl = IMG_url.trimEnd('/') + "/" + book.value?.book_img?.trimStart('/')
                         Text(
-                            text = book?.title ?: "Title",
+                            text = book.value?.title ?: "Title",
                             style = TextStyle(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 25.sp,
@@ -192,7 +201,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.authors?.joinToString(", ") { it.name + " " + it.last_name } ?: "Not available",
+                                    text = book.value?.authors?.joinToString(", ") { it.name + " " + it.last_name } ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -211,7 +220,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.editorial?.name ?: "Not available",
+                                    text = book.value?.editorial?.name ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -230,7 +239,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.book_collection?.name ?: "Not available",
+                                    text = book.value?.book_collection?.name ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -249,7 +258,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.genres?.joinToString(", ") ?: "Not available",
+                                    text = book.value?.genres?.joinToString(", ") ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -268,7 +277,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.edition ?: "Not available",
+                                    text = book.value?.edition ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -287,7 +296,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.language ?: "Not available",
+                                    text = book.value?.language ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -306,7 +315,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.book_status?.book_status?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } ?: "Not available",
+                                    text = book.value?.book_status?.book_status?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -325,7 +334,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.classification ?: "Not available",
+                                    text = book.value?.classification ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -344,7 +353,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.isbn ?: "ISBN",
+                                    text = book.value?.isbn ?: "ISBN",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -352,7 +361,7 @@ fun BookScreen(
                             Divider(color = Color.LightGray, thickness = 1.dp)
                         }
 
-                        /*Row(
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp),
@@ -361,11 +370,11 @@ fun BookScreen(
                         ) {
                             // Botón "Loan"
                             Button(
-                                onClick = { *//* Acción para "Loan" *//* },
+                                onClick = {  /* Acción para "Loan" */ },
                                 modifier = Modifier
                                     .height(48.dp)
                                     .weight(1f),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC), // Cambiar containerColor por backgroundColor
+                                colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
                                 shape = RoundedCornerShape(12.dp),
                             ) {
                                 Icon(
@@ -381,13 +390,12 @@ fun BookScreen(
                                 )
                             }
 
-                            // Botón "Cancel"
                             Button(
-                                onClick = { *//* Acción para "Cancel" *//* },
+                                onClick = { /* Acción para "Cancel"*/  },
                                 modifier = Modifier
                                     .height(48.dp)
                                     .weight(1f),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = OrangeC), // Cambiar containerColor por backgroundColor
+                                colors = ButtonDefaults.buttonColors(backgroundColor = OrangeC),
                                 shape = RoundedCornerShape(12.dp),
                             ) {
                                 Icon(
@@ -402,7 +410,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                 )
                             }
-                        }*/
+                        }
                     }
                 }
             }

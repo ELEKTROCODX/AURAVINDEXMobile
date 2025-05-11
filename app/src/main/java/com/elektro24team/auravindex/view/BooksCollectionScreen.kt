@@ -8,6 +8,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -16,24 +20,23 @@ import androidx.navigation.NavController
 import com.elektro24team.auravindex.ui.components.BookCard
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.theme.*
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BooksCollectionScreen(
     navController: NavController,
+    bookViewModel: BookViewModel,
     bookCollectionName: String,
-    collectionId: String
+    collectionId: String,
 ) {
-    val bookViewModelOld: BookViewModelOld = viewModel()
-    bookViewModelOld.fetchFilteredBooks(
-        showDuplicates = false,
-        showLents = true,
-        filter = "book_collection",
-        value = collectionId
-    )
-    val books = bookViewModelOld.filteredBooks.value
+    val books by bookViewModel.filteredBooks.observeAsState(emptyList())
 
+    LaunchedEffect(collectionId) {
+        bookViewModel.loadBooks(showDuplicates = false, showLents = true)
+        bookViewModel.filterBook("book_collection", collectionId, showDuplicates = false, showLents = true)
+    }
     Scaffold(
         topBar = {
             TopAppBar(

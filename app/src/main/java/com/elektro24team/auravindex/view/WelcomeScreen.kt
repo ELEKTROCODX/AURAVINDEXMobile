@@ -40,7 +40,7 @@ fun WelcomeScreen(
         localSettingsViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
 
-        bookViewModel.loadBooks()
+        bookViewModel.loadBooks(showDuplicates = true, showLents = true)
     }
     LaunchedEffect(Unit) {
         val keys = arrayOf(

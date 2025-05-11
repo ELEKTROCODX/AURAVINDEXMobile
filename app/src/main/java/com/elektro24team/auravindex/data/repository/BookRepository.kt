@@ -24,12 +24,18 @@ class BookRepository(
         return remote
     }
 
-    suspend fun getAllBooks(): List<Book> {
+    suspend fun getAllBooks(
+        showDuplicates: Boolean,
+        showLents: Boolean
+    ): List<Book> {
         val local = bookDao.getAllBooksWithRelations()
         if (local.isNotEmpty()) {
             return local.map { it.toDomain() }
         } else {
-            val remote = BookClient.apiService.getBooks(limit = "none")
+            val remote = BookClient.apiService.getBooks(
+                showDuplicates,
+                showLents
+            )
             return remote.data.map { it }
         }
     }

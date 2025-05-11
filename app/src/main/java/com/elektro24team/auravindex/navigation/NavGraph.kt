@@ -58,7 +58,12 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 backStackEntry ->
             val collectionName = backStackEntry.arguments?.getString("collectionName") ?: ""
             val collectionId = backStackEntry.arguments?.getString("collectionId") ?: ""
-            BooksCollectionScreen(navController, bookCollectionName = collectionName, collectionId = collectionId)
+            BooksCollectionScreen(
+                navController,
+                bookViewModel,
+                bookCollectionName = collectionName,
+                collectionId = collectionId
+            )
         }
         composable(Routes.LOGIN) {
             LoginScreen(navController = navController)
