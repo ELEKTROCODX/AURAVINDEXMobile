@@ -8,9 +8,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.elektro24team.auravindex.utils.rememberBookCollectionViewModel
 import com.elektro24team.auravindex.utils.rememberBookViewModel
+import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.utils.rememberPlanViewModel
 import com.elektro24team.auravindex.view.*
+import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.PlanViewModel
 
 
 // RUTAS
@@ -36,6 +42,9 @@ object Routes {
 fun NavGraph(startDestination: String = Routes.WELCOME) {
     val navController = rememberNavController()
     val bookViewModel: BookViewModel = rememberBookViewModel()
+    val planViewModel: PlanViewModel = rememberPlanViewModel()
+    val bookCollectionViewModel: BookCollectionViewModel = rememberBookCollectionViewModel()
+    val localSettingsViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(
@@ -75,13 +84,19 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             NotificationsScreen(navController = navController)
         }*/
         composable(Routes.PLANS) {
-            PlanScreen(navController = navController)
+            PlanScreen(
+                navController = navController,
+                planViewModel = planViewModel
+            )
         }
         composable(Routes.PROFILE) {
             ProfileScreen(navController = navController)
         }
         composable(Routes.SEARCH) {
-            SearchScreen(navController = navController)
+            SearchScreen(
+                navController = navController,
+                bookCollectionViewModel = bookCollectionViewModel,
+            )
         }
         composable(
             Routes.SEARCH_RESULTS,
@@ -94,12 +109,18 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             SearchResultsScreen(navController, filter = filter, query = query)
         }
         composable(Routes.SETTINGS) {
-            SettingsScreen(navController = navController)
+            SettingsScreen(
+                navController = navController,
+                localSettingsViewModel = localSettingsViewModel
+            )
         }
         composable(Routes.WELCOME) {
             WelcomeScreen(
                 navController = navController,
-                bookViewModel = bookViewModel
+                bookViewModel = bookViewModel,
+                planViewModel = planViewModel,
+                bookCollectionViewModel = bookCollectionViewModel,
+                localSettingsViewModel = localSettingsViewModel
             )
         }
 

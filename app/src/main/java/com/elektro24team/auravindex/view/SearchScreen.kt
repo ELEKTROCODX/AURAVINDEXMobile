@@ -41,6 +41,7 @@ import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.ui.theme.WhiteC
 import com.elektro24team.auravindex.utils.Constants.IMG_url
 import com.elektro24team.auravindex.utils.normalize
+import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -48,7 +49,10 @@ import com.skydoves.landscapist.glide.GlideImage
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(navController: NavController ) {
+fun SearchScreen(
+    navController: NavController,
+    bookCollectionViewModel: BookCollectionViewModel
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -257,7 +261,7 @@ fun SearchScreen(navController: NavController ) {
 
 
                         }else{
-                            BookCollectionsSection(navController)
+                            BookCollectionsSection(navController, bookCollectionViewModel)
                         }
                     }
                 }

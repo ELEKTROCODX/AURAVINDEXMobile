@@ -22,17 +22,21 @@ import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.PlanViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeScreen(
     navController: NavController,
-    bookViewModel: BookViewModel
+    bookViewModel: BookViewModel,
+    planViewModel: PlanViewModel,
+    bookCollectionViewModel: BookCollectionViewModel,
+    localSettingsViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
-    val localSettingsViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
     var isReadyToNavigate by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -41,6 +45,8 @@ fun WelcomeScreen(
         localSettingsViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
 
         bookViewModel.loadBooks(showDuplicates = true, showLents = true)
+        planViewModel.loadPlans()
+        bookCollectionViewModel.loadBookCollections()
     }
     LaunchedEffect(Unit) {
         val keys = arrayOf(
