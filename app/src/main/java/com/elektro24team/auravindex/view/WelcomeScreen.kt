@@ -22,21 +22,32 @@ import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.PlanViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeScreen(
-    navController: NavController
+    navController: NavController,
+    bookViewModel: BookViewModel,
+    planViewModel: PlanViewModel,
+    bookCollectionViewModel: BookCollectionViewModel,
+    localSettingsViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
-    val localSettingsViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
     var isReadyToNavigate by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         localSettingsViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
+
+        bookViewModel.loadBooks(showDuplicates = true, showLents = true)
+        bookViewModel.fetchLatestReleases()
+        planViewModel.loadPlans()
+        bookCollectionViewModel.loadBookCollections()
     }
     LaunchedEffect(Unit) {
         val keys = arrayOf(
@@ -66,7 +77,7 @@ fun WelcomeScreen(
         modifier = Modifier
             .clickable {
                 if(isReadyToNavigate) {
-                    navController.navigate(/*Routes.LOGIN*/ Routes.MAIN) {
+                    navController.navigate(Routes.MAIN) {
                         popUpTo(Routes.WELCOME) {
                             inclusive = true
                         }

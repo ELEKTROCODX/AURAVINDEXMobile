@@ -3,11 +3,11 @@ package com.elektro24team.auravindex.model.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "bookcollections")
-data class BookCollectionEntity(
+@Entity(tableName = "bookstatuses")
+class BookStatusEntity (
     val __v: Int,
     @PrimaryKey val _id: String,
+    val book_status: String,
     val createdAt: String,
-    val name: String,
     val updatedAt: String
 )

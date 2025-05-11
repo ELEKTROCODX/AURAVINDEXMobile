@@ -45,14 +45,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
+import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
@@ -64,21 +69,26 @@ import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.Constants.IMG_url
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookScreen(navController: NavController, bookId: String, viewModel: BookViewModel = viewModel()) {
+fun BookScreen(
+    navController: NavController,
+    bookId: String,
+    bookViewModel: BookViewModel
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val book = viewModel.book.observeAsState().value
+    val book = remember { mutableStateOf<Book?>(bookViewModel.books.value?.find { it._id == bookId }) }
     LaunchedEffect(bookId) {
-        viewModel.fetchBookById(bookId)
+        bookViewModel.loadBook(bookId)
     }
 
     ModalNavigationDrawer(
@@ -125,9 +135,9 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
 
-                        val imageUrl = IMG_url.trimEnd('/') + "/" + book?.book_img?.trimStart('/')
+                        val imageUrl = IMG_url.trimEnd('/') + "/" + book.value?.book_img?.trimStart('/')
                         Text(
-                            text = book?.title ?: "Title",
+                            text = book.value?.title ?: "Title",
                             style = TextStyle(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 25.sp,
@@ -183,6 +193,24 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                             )
 
                             Divider(color = Color.LightGray, thickness = 1.dp)
+                            // Fila para Summary
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = buildAnnotatedString {
+                                        append("Summary: ")
+                                        withStyle(SpanStyle(fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.Normal)) {
+                                            append(book.value?.summary?: "Not available")
+                                        }
+                                    },
+                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365), textAlign = TextAlign.Justify)
+                                )
+                            }
+                            Divider(color = Color.LightGray, thickness = 1.dp)
                             // Fila para Authors
                             Row(
                                 modifier = Modifier
@@ -195,7 +223,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.authors?.joinToString(", ") { it.name + " " + it.last_name } ?: "Not available",
+                                    text = book.value?.authors?.joinToString(", ") { it.name + " " + it.last_name } ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -214,7 +242,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.editorial?.name ?: "Not available",
+                                    text = book.value?.editorial?.name ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -233,7 +261,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.book_collection?.name ?: "Not available",
+                                    text = book.value?.book_collection?.name ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -252,7 +280,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.genres?.joinToString(", ") ?: "Not available",
+                                    text = book.value?.genres?.joinToString(", ") ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -271,7 +299,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.edition ?: "Not available",
+                                    text = book.value?.edition ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -290,7 +318,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.language ?: "Not available",
+                                    text = book.value?.language ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -309,7 +337,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.book_status?.book_status?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } ?: "Not available",
+                                    text = book.value?.book_status?.book_status?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -328,7 +356,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.classification ?: "Not available",
+                                    text = book.value?.classification ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -347,7 +375,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book?.isbn ?: "ISBN",
+                                    text = book.value?.isbn ?: "ISBN",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -355,7 +383,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                             Divider(color = Color.LightGray, thickness = 1.dp)
                         }
 
-                        /*Row(
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp),
@@ -364,11 +392,11 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                         ) {
                             // Botón "Loan"
                             Button(
-                                onClick = { *//* Acción para "Loan" *//* },
+                                onClick = {  /* Acción para "Loan" */ },
                                 modifier = Modifier
                                     .height(48.dp)
                                     .weight(1f),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC), // Cambiar containerColor por backgroundColor
+                                colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
                                 shape = RoundedCornerShape(12.dp),
                             ) {
                                 Icon(
@@ -384,13 +412,12 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                 )
                             }
 
-                            // Botón "Cancel"
                             Button(
-                                onClick = { *//* Acción para "Cancel" *//* },
+                                onClick = { /* Acción para "Cancel"*/  },
                                 modifier = Modifier
                                     .height(48.dp)
                                     .weight(1f),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = OrangeC), // Cambiar containerColor por backgroundColor
+                                colors = ButtonDefaults.buttonColors(backgroundColor = OrangeC),
                                 shape = RoundedCornerShape(12.dp),
                             ) {
                                 Icon(
@@ -405,7 +432,7 @@ fun BookScreen(navController: NavController, bookId: String, viewModel: BookView
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                 )
                             }
-                        }*/
+                        }
                     }
                 }
             }

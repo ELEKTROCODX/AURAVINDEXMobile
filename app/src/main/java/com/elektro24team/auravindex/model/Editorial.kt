@@ -1,5 +1,7 @@
 package com.elektro24team.auravindex.model
 
+import com.elektro24team.auravindex.model.local.EditorialEntity
+
 data class Editorial(
     val __v: Int,
     val _id: String,

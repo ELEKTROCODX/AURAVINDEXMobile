@@ -1,135 +1,126 @@
 package com.elektro24team.auravindex.viewmodels
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elektro24team.auravindex.model.ApiResponse
+import com.elektro24team.auravindex.data.repository.BookRepository
 import com.elektro24team.auravindex.model.Book
+import com.elektro24team.auravindex.model.local.BookEntity
 import com.elektro24team.auravindex.retrofit.BookClient
 import com.elektro24team.auravindex.utils.normalize
 import kotlinx.coroutines.launch
+import kotlin.collections.filter
+import kotlin.text.contains
 
-class BookViewModel: ViewModel(){
-    var posts = mutableStateOf<List<Book>>(emptyList())
-        private set
-    var latestReleases = mutableStateOf<List<Book>>(emptyList())
-        private set
-    private val _book = MutableLiveData<Book?>()
-    val book: LiveData<Book?> = _book
-    var filteredBooks = mutableStateOf<List<Book>>(emptyList())
-        private set
-    init {
-        fetchBooks(showDuplicates = false, showLents = false, page = 1, limit = 20)
-        fetchLatestReleases()
-        fetchFilteredBooks(filter = "", value = "")
+class BookViewModel(
+    private val repository: BookRepository
+) : ViewModel() {
+
+    private val _books = MutableLiveData<List<Book>>()
+    private val _filteredBooks = MutableLiveData<List<Book>>()
+    private val _latestReleases = MutableLiveData<List<Book>>()
+    val books: LiveData<List<Book>> = _books
+    val filteredBooks: LiveData<List<Book>> = _filteredBooks
+    val latestReleases: LiveData<List<Book>> = _latestReleases
+
+    suspend fun loadBooks(showDuplicates: Boolean, showLents: Boolean) {
+        val result = repository.getAllBooks(showDuplicates, showLents)
+        _books.postValue(result)
     }
 
+    suspend fun loadBooksAndFilter(
+        showDuplicates: Boolean,
+        showLents: Boolean,
+        filterField: String,
+        filterValue: String
+    ) {
+        val result = repository.getAllBooks(showDuplicates, showLents)
+        _books.postValue(result)
+        filterBook(filterField, filterValue, showDuplicates, showLents)
+    }
 
-    private fun fetchBooks(showDuplicates: Boolean = true, showLents: Boolean = true, page: Int = 1, limit: Int = 100){
-        viewModelScope.launch {
-            try {
-                val response = BookClient.apiService.getBooks(showDuplicates = showDuplicates, showLents = showLents, page, limit)
-                posts.value = response.data
-
-            }catch (e: Exception){
-                e.printStackTrace()
+    fun filterBook(filterField: String, filterValue: String, showDuplicates: Boolean, showLents: Boolean) {
+        val filtered = _books.value?.filter { book ->
+            when (filterField) {
+                "title" -> book.title.contains(filterValue, ignoreCase = true)
+                "author" -> book.authors.any {
+                    it._id.contains(filterValue, ignoreCase = true) ||
+                            it.name.contains(filterValue, ignoreCase = true) ||
+                            it.last_name.contains(filterValue, ignoreCase = true) ||
+                            it.birthdate.contains(filterValue, ignoreCase = true) ||
+                            it.gender.contains(filterValue, ignoreCase = true)
+                }
+                "genre" -> book.genres.any { it.contains(filterValue, ignoreCase = true) }
+                "book_collection" -> book.book_collection._id.contains(filterValue, ignoreCase = true) ||
+                        book.book_collection.name.contains(filterValue, ignoreCase = true)
+                "book_status" -> book.book_status._id.contains(filterValue, ignoreCase = true) ||
+                        book.book_status.book_status.contains(filterValue, ignoreCase = true)
+                "editorial" -> book.editorial._id.contains(filterValue, ignoreCase = true) ||
+                        book.editorial.name.contains(filterValue, ignoreCase = true) ||
+                        book.editorial.email.contains(filterValue, ignoreCase = true) ||
+                        book.editorial.address.contains(filterValue, ignoreCase = true)
+                "language" -> book.language.contains(filterValue, ignoreCase = true)
+                "summary" -> book.summary.contains(filterValue, ignoreCase = true)
+                "classification" -> book.classification.contains(filterValue, ignoreCase = true)
+                "isbn" -> book.isbn.contains(filterValue, ignoreCase = true)
+                else -> false
             }
-
         }
+        _filteredBooks.postValue(filtered ?: emptyList())
     }
-    private fun fetchLatestReleases(limit: Int = 10){
+
+     fun fetchLatestReleases(limit: String = "10"){
         viewModelScope.launch {
             try {
                 val response = BookClient.apiService.getLatestReleases(limit)
-                latestReleases.value = response.data
+                _latestReleases.value = response.data
             }catch (e: Exception){
                 e.printStackTrace()
             }
         }
     }
-    //duplicados desactivados temporalmente para la search screen
-    fun fetchFilteredBooks(showDuplicates: Boolean = false, showLents: Boolean = true, filter: String, value: String){
+
+    fun searchBook(filterValue: String) {
+        val filtered = _books.value?.mapNotNull { book ->
+            val nameMatch = book.title.contains(filterValue, ignoreCase = true)
+            val authorNameMatch = book.authors.any { it.name.contains(filterValue, ignoreCase = true) }
+            val authorLastNameMatch = book.authors.any { it.last_name.contains(filterValue, ignoreCase = true) }
+            val genreMatch = book.genres.any { it.contains(filterValue, ignoreCase = true) }
+            val bookCollectionMatch = book.book_collection.name.contains(filterValue, ignoreCase = true)
+            val editorialMatch = book.editorial.name.contains(filterValue, ignoreCase = true)
+            val languageMatch = book.language.contains(filterValue, ignoreCase = true)
+            val summaryMatch = book.summary.contains(filterValue, ignoreCase = true)
+            val classificationMatch = book.classification.contains(filterValue, ignoreCase = true)
+            val isbnMatch = book.isbn.contains(filterValue, ignoreCase = true)
+
+            val score = when {
+                nameMatch -> 10
+                authorNameMatch -> 9
+                authorLastNameMatch -> 8
+                genreMatch -> 7
+                bookCollectionMatch -> 6
+                editorialMatch -> 5
+                languageMatch -> 4
+                summaryMatch -> 3
+                classificationMatch -> 2
+                isbnMatch -> 1
+                else -> 0
+            }
+
+            if (score > 0) book to score else null
+        }?.sortedByDescending { it.second }?.map { it.first }
+        _filteredBooks.postValue(filtered ?: emptyList())
+    }
+
+    fun loadBook(bookId: String) {
         viewModelScope.launch {
-            try {
-                val response = BookClient.apiService.getFilteredBooks(showDuplicates,showLents,filter,value)
-                filteredBooks.value = response.data.distinctBy { it._id }
-            }catch (e:Exception){
-                e.printStackTrace()
+            if( _books.value?.find{ it._id == bookId } == null) {
+                val result = repository.getBookById(bookId)
+                _books.postValue(listOf(result))
             }
         }
-    }
-
-    fun fetchBookById(id: String) {
-        viewModelScope.launch {
-            try {
-                val result = BookClient.apiService.getBookById(id)
-                _book.postValue(result)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun applyLocalFilter(filter: String, search: String) {
-        val result = getFirstFiveFilteredBooks(posts.value, search, filter)
-        filteredBooks.value = result
 
     }
-
-    fun getFirstFiveFilteredBooks(books: List<Book>, search: String, filter: String = "título"): List<Book> {
-        val cleanedQuery = search.trim()
-
-        val filtered = books.filter { book ->
-                when (filter.lowercase()) {
-                    "título" , "title" -> book.title.normalize().contains(cleanedQuery, ignoreCase = true)
-                    "autor" , "author" -> book.authors.any { author -> author.name.contains(cleanedQuery, ignoreCase = true) }
-                    "género" , "genre"-> book.genres.any { genre -> genre.contains(cleanedQuery, ignoreCase = true) }
-                    else -> false
-                }
-            }
-        val distinct = filtered.distinctBy { it._id }
-        return distinct.take(5)
-
-
-    }
-
-    fun getAllFilteredBooks(books: List<Book>, search: String, filter: String = "título"): List<Book> {
-        val cleanedQuery = search.trim()
-
-        val filtered = books.filter { book ->
-            when (filter.lowercase()) {
-                "título", "title" -> book.title.normalize().contains(cleanedQuery, ignoreCase = true)
-                "autor", "author" -> book.authors.any { author -> author.name.contains(cleanedQuery, ignoreCase = true) }
-                "género", "genre" -> book.genres.any { genre -> genre.contains(cleanedQuery, ignoreCase = true) }
-                else -> false
-            }
-        }
-        val distinct = filtered.distinctBy { it._id }
-        return distinct.take(10)
-    }
-
-    fun filterAllBooksLocally(books: List<Book>, filter: String, search: String): List<Book> {
-        return getAllFilteredBooks(books, search, filter)
-    }
-
-    fun filterBooksLocally(books: List<Book>, filter: String, search: String): List<Book> {
-        return getFirstFiveFilteredBooks(books, search, filter)
-    }
-
-    fun getRecommendations(filter: String, value: String): List<Book> {
-        val allBooks = posts.value
-
-        return allBooks.filter {
-            when (filter.lowercase()) {
-                "título", "title"  -> !it.title.contains(value, ignoreCase = true)
-                "autor", "author" -> !it.authors.any { a -> a.name.contains(value, ignoreCase = true) }
-                "género", "genre" -> !it.genres.any { g -> g.contains(value, ignoreCase = true) }
-                else -> false
-            }
-        }.take(10)
-    }
-
+    
 }

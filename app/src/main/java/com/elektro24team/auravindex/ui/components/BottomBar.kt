@@ -31,7 +31,7 @@ fun BottomNavBar(
     val filledIcons = listOf(
         Icons.Filled.Home,
         Icons.Filled.Search,
-        /*Icons.Filled.Diamond*/
+        Icons.Filled.Diamond
     )
 
     val routes = listOf("main", "search", /*"plans"*/)

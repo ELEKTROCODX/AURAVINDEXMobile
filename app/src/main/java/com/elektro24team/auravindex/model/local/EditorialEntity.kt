@@ -2,17 +2,15 @@ package com.elektro24team.auravindex.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.elektro24team.auravindex.model.Editorial
 
-@Entity(tableName = "plans")
-data class PlanEntity(
+@Entity(tableName = "editorials")
+class EditorialEntity (
     val __v: Int,
     @PrimaryKey val _id: String,
+    val address: String,
     val createdAt: String,
-    val fixed_price: String,
-    val max_renovations_per_loan: Int,
-    val max_return_days: Int,
-    val max_simultaneous_loans: Int,
-    val monthly_price: String,
+    val email: String,
     val name: String,
     val updatedAt: String
 )

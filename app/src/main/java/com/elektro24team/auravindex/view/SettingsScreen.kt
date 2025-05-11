@@ -44,6 +44,7 @@ import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
@@ -56,7 +57,8 @@ import java.util.TimeZone
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    navController: NavController
+    navController: NavController,
+    localSettingsViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -64,7 +66,6 @@ fun SettingsScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val localSettingsViewModel = rememberLocalSettingViewModel()
     val localSettings by localSettingsViewModel.settings.collectAsState()
     LaunchedEffect(Unit) {
         localSettingsViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
@@ -75,7 +76,6 @@ fun SettingsScreen(
         localSettingsViewModel.loadSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.ID.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
-
     }
     ModalNavigationDrawer(
         drawerContent = {
