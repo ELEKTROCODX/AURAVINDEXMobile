@@ -3,11 +3,16 @@ package com.elektro24team.auravindex.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
+import com.elektro24team.auravindex.utils.enums.AppAction
+import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.rememberBookCollectionViewModel
 import com.elektro24team.auravindex.utils.rememberBookViewModel
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
@@ -46,6 +51,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val planViewModel: PlanViewModel = rememberPlanViewModel()
     val bookCollectionViewModel: BookCollectionViewModel = rememberBookCollectionViewModel()
     val localSettingsViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
+    val localSettings by localSettingsViewModel.settings.collectAsState()
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(
@@ -86,7 +92,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.MAIN) {
             MainScreen(
                 navController = navController,
-                bookViewModel = bookViewModel
+                bookViewModel = bookViewModel,
+                localSettingsViewModel = localSettingsViewModel
             )
         }
         /*composable(Routes.NOTIFICATIONS) {
