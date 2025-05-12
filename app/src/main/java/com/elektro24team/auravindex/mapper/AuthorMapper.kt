@@ -10,7 +10,8 @@ fun Author.toEntity(): AuthorEntity {
         birthdate = this.birthdate,
         createdAt = this.createdAt,
         gender = this.gender,
-        fullName = this.name + " " + this.last_name,
+        last_name = this.last_name,
+        name = this.name,
         updatedAt = this.updatedAt
     )
 }
@@ -21,8 +22,8 @@ fun AuthorEntity.toDomain(): Author {
         birthdate = this.birthdate,
         createdAt = this.createdAt,
         gender = this.gender,
-        name = this.fullName.split(" ")[0],
-        last_name = this.fullName.split(" ")[1],
+        last_name = this.last_name,
+        name = this.name,
         updatedAt = this.updatedAt
     )
 }

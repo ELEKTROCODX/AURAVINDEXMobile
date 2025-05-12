@@ -86,8 +86,7 @@ class BookViewModel(
         var filteredValue = filterValue.trim()
         val filtered = _books.value?.mapNotNull { book ->
             val nameMatch = book.title.contains(filteredValue, ignoreCase = true)
-            val authorNameMatch = book.authors.any { it.name.contains(filteredValue, ignoreCase = true) }
-            val authorLastNameMatch = book.authors.any { it.last_name.contains(filteredValue, ignoreCase = true) }
+            val authorNameMatch = book.authors.any { (it.name + " " + it.last_name).contains(filteredValue, ignoreCase = true) }
             val genreMatch = book.genres.any { it.contains(filteredValue, ignoreCase = true) }
             val bookCollectionMatch = book.book_collection.name.contains(filteredValue, ignoreCase = true)
             val editorialMatch = book.editorial.name.contains(filteredValue, ignoreCase = true)
@@ -97,9 +96,8 @@ class BookViewModel(
             val isbnMatch = book.isbn.contains(filteredValue, ignoreCase = true)
 
             val score = when {
-                nameMatch -> 10
-                authorNameMatch -> 9
-                authorLastNameMatch -> 8
+                nameMatch -> 9
+                authorNameMatch -> 8
                 genreMatch -> 7
                 bookCollectionMatch -> 6
                 editorialMatch -> 5
