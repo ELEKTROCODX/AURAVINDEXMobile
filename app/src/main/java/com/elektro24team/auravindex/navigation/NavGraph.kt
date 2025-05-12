@@ -23,6 +23,7 @@ import com.elektro24team.auravindex.viewmodels.PlanViewModel
 object Routes {
     const val BOOK = "book/{bookId}"
     const val COLLECTION_BOOKS = "collection_books/{collectionName}/{collectionId}"
+    const val LISTS = "lists"
     const val LOGIN = "login"
     const val MAIN = "main"
     const val NOTIFICATIONS = "notifications"
@@ -73,6 +74,11 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 bookCollectionName = collectionName,
                 collectionId = collectionId
             )
+        }
+        composable(Routes.LISTS) {
+           ListsScreen(
+               navController = navController
+           )
         }
         composable(Routes.LOGIN) {
             LoginScreen(navController = navController)
