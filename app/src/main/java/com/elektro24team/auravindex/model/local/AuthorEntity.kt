@@ -10,7 +10,6 @@ data class AuthorEntity (
     val birthdate: String,
     val createdAt: String,
     val gender: String,
-    val last_name: String,
-    val name: String,
+    val fullName: String,
     val updatedAt: String
 )
