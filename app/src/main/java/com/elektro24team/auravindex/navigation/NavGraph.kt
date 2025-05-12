@@ -3,6 +3,7 @@ package com.elektro24team.auravindex.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +18,7 @@ import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
+import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 
 // RUTAS
@@ -45,6 +47,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val planViewModel: PlanViewModel = rememberPlanViewModel()
     val bookCollectionViewModel: BookCollectionViewModel = rememberBookCollectionViewModel()
     val localSettingsViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
+    val userViewModel : UserViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(
@@ -75,12 +78,13 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             )
         }
         composable(Routes.LOGIN) {
-            LoginScreen(navController = navController)
+            LoginScreen(navController = navController, localSettingsViewModel = localSettingsViewModel)
         }
         composable(Routes.MAIN) {
             MainScreen(
                 navController = navController,
-                bookViewModel = bookViewModel
+                bookViewModel = bookViewModel,
+                userViewModel = userViewModel
             )
         }
         /*composable(Routes.NOTIFICATIONS) {

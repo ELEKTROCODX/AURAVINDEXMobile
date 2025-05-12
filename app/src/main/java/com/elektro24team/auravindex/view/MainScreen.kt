@@ -24,12 +24,14 @@ import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModelOld
+import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
+    userViewModel: UserViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -39,6 +41,7 @@ fun MainScreen(
     val showTeamDialog = remember { mutableStateOf(false) }
     val books by bookViewModel.books.observeAsState(emptyList())
     val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
+    val user by userViewModel.user.observeAsState()
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
         bookViewModel.fetchLatestReleases()
@@ -82,6 +85,9 @@ fun MainScreen(
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                     ) {
+                        user?.let{
+                            Text("Bienvenido: ${user?.name}")
+                        }
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
