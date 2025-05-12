@@ -21,15 +21,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
+import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.utils.enums.AppAction
+import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModelOld
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
+    localSettingsViewModel: LocalSettingViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -39,6 +44,10 @@ fun MainScreen(
     val showTeamDialog = remember { mutableStateOf(false) }
     val books by bookViewModel.books.observeAsState(emptyList())
     val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
+    val localSettings by localSettingsViewModel.settings.collectAsState()
+    val isLoggedIn = localSettings.getOrDefault(SettingKey.TOKEN.keySetting, "").isNotEmpty()
+    var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
+    var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.SUBSCRIBE_TO_PLAN) }
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
         bookViewModel.fetchLatestReleases()
@@ -68,7 +77,15 @@ fun MainScreen(
             bottomBar = {
                 BottomNavBar(
                     currentRoute = navController.currentBackStackEntry?.destination?.route ?: "main",
-                    onItemClick = { route -> navController.navigate(route) }
+                    onItemClick = { route ->
+                        if((route == Routes.PLANS || route == Routes.LISTS) && !isLoggedIn) {
+                            showMustBeLoggedInDialog = true
+                            if(route == Routes.PLANS) actionMustBeLoggedInDialog = AppAction.SUBSCRIBE_TO_PLAN
+                            if(route == Routes.LISTS) actionMustBeLoggedInDialog = AppAction.CHECK_LISTS
+                        } else {
+                            navController.navigate(route)
+                        }
+                    }
                 )
             },
             content = { paddingValues ->
@@ -85,6 +102,15 @@ fun MainScreen(
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
+
+                        if (showMustBeLoggedInDialog) {
+                            MustBeLoggedInDialog(
+                                navController = navController,
+                                action = actionMustBeLoggedInDialog,
+                                onDismiss = { showMustBeLoggedInDialog = false }
+                            )
+                        }
+
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize(),

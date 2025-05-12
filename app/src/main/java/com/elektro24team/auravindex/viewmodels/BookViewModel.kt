@@ -41,29 +41,30 @@ class BookViewModel(
     }
 
     fun filterBook(filterField: String, filterValue: String, showDuplicates: Boolean, showLents: Boolean) {
+        var filteredValue = filterValue.trim()
         val filtered = _books.value?.filter { book ->
             when (filterField) {
-                "title" -> book.title.contains(filterValue, ignoreCase = true)
+                "title" -> book.title.contains(filteredValue, ignoreCase = true)
                 "author" -> book.authors.any {
-                    it._id.contains(filterValue, ignoreCase = true) ||
-                            it.name.contains(filterValue, ignoreCase = true) ||
-                            it.last_name.contains(filterValue, ignoreCase = true) ||
-                            it.birthdate.contains(filterValue, ignoreCase = true) ||
-                            it.gender.contains(filterValue, ignoreCase = true)
+                    it._id.contains(filteredValue, ignoreCase = true) ||
+                            it.name.contains(filteredValue, ignoreCase = true) ||
+                            it.last_name.contains(filteredValue, ignoreCase = true) ||
+                            it.birthdate.contains(filteredValue, ignoreCase = true) ||
+                            it.gender.contains(filteredValue, ignoreCase = true)
                 }
-                "genre" -> book.genres.any { it.contains(filterValue, ignoreCase = true) }
-                "book_collection" -> book.book_collection._id.contains(filterValue, ignoreCase = true) ||
-                        book.book_collection.name.contains(filterValue, ignoreCase = true)
-                "book_status" -> book.book_status._id.contains(filterValue, ignoreCase = true) ||
-                        book.book_status.book_status.contains(filterValue, ignoreCase = true)
-                "editorial" -> book.editorial._id.contains(filterValue, ignoreCase = true) ||
-                        book.editorial.name.contains(filterValue, ignoreCase = true) ||
-                        book.editorial.email.contains(filterValue, ignoreCase = true) ||
-                        book.editorial.address.contains(filterValue, ignoreCase = true)
-                "language" -> book.language.contains(filterValue, ignoreCase = true)
-                "summary" -> book.summary.contains(filterValue, ignoreCase = true)
-                "classification" -> book.classification.contains(filterValue, ignoreCase = true)
-                "isbn" -> book.isbn.contains(filterValue, ignoreCase = true)
+                "genre" -> book.genres.any { it.contains(filteredValue, ignoreCase = true) }
+                "book_collection" -> book.book_collection._id.contains(filteredValue, ignoreCase = true) ||
+                        book.book_collection.name.contains(filteredValue, ignoreCase = true)
+                "book_status" -> book.book_status._id.contains(filteredValue, ignoreCase = true) ||
+                        book.book_status.book_status.contains(filteredValue, ignoreCase = true)
+                "editorial" -> book.editorial._id.contains(filteredValue, ignoreCase = true) ||
+                        book.editorial.name.contains(filteredValue, ignoreCase = true) ||
+                        book.editorial.email.contains(filteredValue, ignoreCase = true) ||
+                        book.editorial.address.contains(filteredValue, ignoreCase = true)
+                "language" -> book.language.contains(filteredValue, ignoreCase = true)
+                "summary" -> book.summary.contains(filteredValue, ignoreCase = true)
+                "classification" -> book.classification.contains(filteredValue, ignoreCase = true)
+                "isbn" -> book.isbn.contains(filteredValue, ignoreCase = true)
                 else -> false
             }
         }
@@ -82,22 +83,21 @@ class BookViewModel(
     }
 
     fun searchBook(filterValue: String) {
+        var filteredValue = filterValue.trim()
         val filtered = _books.value?.mapNotNull { book ->
-            val nameMatch = book.title.contains(filterValue, ignoreCase = true)
-            val authorNameMatch = book.authors.any { it.name.contains(filterValue, ignoreCase = true) }
-            val authorLastNameMatch = book.authors.any { it.last_name.contains(filterValue, ignoreCase = true) }
-            val genreMatch = book.genres.any { it.contains(filterValue, ignoreCase = true) }
-            val bookCollectionMatch = book.book_collection.name.contains(filterValue, ignoreCase = true)
-            val editorialMatch = book.editorial.name.contains(filterValue, ignoreCase = true)
-            val languageMatch = book.language.contains(filterValue, ignoreCase = true)
-            val summaryMatch = book.summary.contains(filterValue, ignoreCase = true)
-            val classificationMatch = book.classification.contains(filterValue, ignoreCase = true)
-            val isbnMatch = book.isbn.contains(filterValue, ignoreCase = true)
+            val nameMatch = book.title.contains(filteredValue, ignoreCase = true)
+            val authorNameMatch = book.authors.any { (it.name + " " + it.last_name).contains(filteredValue, ignoreCase = true) }
+            val genreMatch = book.genres.any { it.contains(filteredValue, ignoreCase = true) }
+            val bookCollectionMatch = book.book_collection.name.contains(filteredValue, ignoreCase = true)
+            val editorialMatch = book.editorial.name.contains(filteredValue, ignoreCase = true)
+            val languageMatch = book.language.contains(filteredValue, ignoreCase = true)
+            val summaryMatch = book.summary.contains(filteredValue, ignoreCase = true)
+            val classificationMatch = book.classification.contains(filteredValue, ignoreCase = true)
+            val isbnMatch = book.isbn.contains(filteredValue, ignoreCase = true)
 
             val score = when {
-                nameMatch -> 10
-                authorNameMatch -> 9
-                authorLastNameMatch -> 8
+                nameMatch -> 9
+                authorNameMatch -> 8
                 genreMatch -> 7
                 bookCollectionMatch -> 6
                 editorialMatch -> 5
