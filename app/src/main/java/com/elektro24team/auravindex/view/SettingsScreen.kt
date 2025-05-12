@@ -268,6 +268,19 @@ fun SettingsScreen(
                                     text = if ((localSettings.containsKey(SettingKey.EMAIL.keySetting)) && (localSettings[SettingKey.EMAIL.keySetting] != "")) localSettings[SettingKey.EMAIL.keySetting] ?: "N/A" else "N/A",
                                 )
                             }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "User token: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = if ((localSettings.containsKey(SettingKey.TOKEN.keySetting)) && (localSettings[SettingKey.TOKEN.keySetting] != "")) localSettings[SettingKey.TOKEN.keySetting] ?: "N/A" else "N/A",
+                                )
+                            }
                         }
                     }
                 }

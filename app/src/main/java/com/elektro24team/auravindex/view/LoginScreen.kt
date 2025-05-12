@@ -82,9 +82,11 @@ fun LoginScreen(
             result.onSuccess {
                 token ->
                 localSettingsViewModel.saveSetting(SettingKey.TOKEN.keySetting, token)
-                //Log.d("Token ", "token recibido: $token")
                 userViewModel.getUser(token,userEmail.value)
                 navController.navigate(Routes.MAIN)
+                localSettingsViewModel.saveSetting(SettingKey.EMAIL.keySetting, userResult?.email ?: "")
+                localSettingsViewModel.saveSetting(SettingKey.ID.keySetting, userResult?._id ?: "")
+                //Log.d("Token ", "token recibido: $token")
             }
             result.onFailure { error ->
                 Log.d("error: ", error.message.toString())
