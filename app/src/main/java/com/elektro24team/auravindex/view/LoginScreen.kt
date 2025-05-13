@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +60,23 @@ fun LoginScreen(
     val loginResult by viewModel.loginResult.observeAsState()
     val userEmail = remember { mutableStateOf("") }
     val userPassword = remember { mutableStateOf("") }
+    LaunchedEffect(loginResult) {
+        loginResult?.onSuccess { token ->
+            localSettingsViewModel.saveSetting(SettingKey.TOKEN.keySetting, token)
+            userViewModel.getUser(token, userEmail.value)
+        }?.onFailure { error ->
+            Toast.makeText(context, "Error de login: ${error.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+    LaunchedEffect(userResult) {
+        userResult?.let { user ->
+            localSettingsViewModel.saveSetting(SettingKey.EMAIL.keySetting, user.email)
+            localSettingsViewModel.saveSetting(SettingKey.ID.keySetting, user._id)
+            localSettingsViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user.role.name)
+            localSettingsViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user.role._id)
+            navController.navigate(Routes.MAIN)
+        }
+    }
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->
@@ -77,22 +95,6 @@ fun LoginScreen(
         ShowExternalLinkDialog(showTermsDialog, context, "https://auravindex.me/tos/")
         ShowExternalLinkDialog(showPrivacyDialog, context, "https://auravindex.me/privacy/")
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
-
-        loginResult?.let { result ->
-            result.onSuccess {
-                token ->
-                localSettingsViewModel.saveSetting(SettingKey.TOKEN.keySetting, token)
-                userViewModel.getUser(token,userEmail.value)
-                navController.navigate(Routes.MAIN)
-                localSettingsViewModel.saveSetting(SettingKey.EMAIL.keySetting, userResult?.email ?: "")
-                localSettingsViewModel.saveSetting(SettingKey.ID.keySetting, userResult?._id ?: "")
-                //Log.d("Token ", "token recibido: $token")
-            }
-            result.onFailure { error ->
-                Log.d("error: ", error.message.toString())
-                Toast.makeText(context, "Error de login: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
 
         Scaffold(
             topBar = {
@@ -140,7 +142,7 @@ fun LoginScreen(
                         Button(
                             onClick = {
                                 Log.d("Email: ", userEmail.value)
-                                viewModel.login(userEmail.value,userPassword.value)
+                                viewModel.login(userEmail.value, userPassword.value)
                             },
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         ) {

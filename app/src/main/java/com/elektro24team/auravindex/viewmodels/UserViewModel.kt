@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 
 class UserViewModel: ViewModel() {
     private val repository = UserRepository()
-    private val _user = MutableLiveData<User?>()
-    val user: LiveData<User?> = _user
+    private val _user = MutableLiveData<User>()
+    val user: MutableLiveData<User> = _user
 
     fun getUser(token: String, email: String){
         viewModelScope.launch {

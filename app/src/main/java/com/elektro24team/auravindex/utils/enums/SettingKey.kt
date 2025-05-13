@@ -5,6 +5,8 @@ enum class SettingKey(val keySetting: String) {
     EMAIL("userEmail"),
     PROFILE_IMAGE("userProfileImage"),
     TOKEN("userToken"),
+    ROLE_NAME("roleName"),
+    ROLE_ID("roleId"),
     LAST_LOGIN("lastLogin"),
     LANGUAGE("language"),
     DARK_MODE("darkMode"),

@@ -65,7 +65,6 @@ fun DrawerMenu(onItemSelected: (String) -> Unit) {
             )
         }
 
-        Spacer(modifier = Modifier.weight(1f))
         /*
         * Check if user is logged in
         * */
