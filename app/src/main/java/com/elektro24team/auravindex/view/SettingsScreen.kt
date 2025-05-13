@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -78,21 +80,7 @@ fun SettingsScreen(
         localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.TOKEN.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.ROLE_NAME.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.ROLE_ID.keySetting)
     }
-    var listSettings = listOf<String>(
-        SettingKey.DARK_MODE.keySetting,
-        SettingKey.LANGUAGE.keySetting,
-        SettingKey.LAST_LOGIN.keySetting,
-        SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting,
-        SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting,
-        SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting,
-        SettingKey.ID.keySetting,
-        SettingKey.EMAIL.keySetting,
-        SettingKey.TOKEN.keySetting,
-        SettingKey.ROLE_NAME.keySetting,
-        SettingKey.ROLE_ID.keySetting
-    )
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(onItemSelected = { route ->
@@ -138,23 +126,167 @@ fun SettingsScreen(
                         ConnectionAlert(isConnected)
 
                         Column(
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
                         ) {
                             // Settings
-                            // User local data (temporarily displayed for testing purposes)
-                            LazyColumn(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            Text(
+                                text = "Settings: ",
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                items(listSettings.size) { index ->
-                                    Row(
-                                        modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(text = listSettings[index])
-                                        Text(text = localSettings[listSettings[index]] ?: "N/A")
+                                Text(
+                                    text = "Dark mode: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Switch(
+                                    checked = localSettings.getOrDefault(SettingKey.DARK_MODE.keySetting, "false").toBoolean(),
+                                    onCheckedChange = {
+                                        localSettingsViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, it.toString())
                                     }
-                                }
+                                )
+
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Language: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = localSettings.getOrDefault(
+                                        SettingKey.LANGUAGE.keySetting,
+                                        "English"
+                                    )
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Receive push notifications: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Switch(
+                                    checked = localSettings.getOrDefault(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, "false").toBoolean(),
+                                    onCheckedChange = {
+                                        localSettingsViewModel.saveSetting(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, it.toString())
+                                    }
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Receive email notifications: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Switch(
+                                    checked = localSettings.getOrDefault(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, "false").toBoolean(),
+                                    onCheckedChange = {
+                                        localSettingsViewModel.saveSetting(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, it.toString())
+                                    }
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Receive SMS notifications: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Switch(
+                                    checked = localSettings.getOrDefault(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, "false").toBoolean(),
+                                    onCheckedChange = {
+                                        localSettingsViewModel.saveSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, it.toString())
+                                    }
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Last login: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+                                formatter.timeZone = TimeZone.getTimeZone("UTC-6")
+
+                                val lastLoginMillis = localSettings.getOrDefault(
+                                    SettingKey.LAST_LOGIN.keySetting,
+                                    System.currentTimeMillis().toString()
+                                ).toLongOrNull() ?: System.currentTimeMillis()
+
+                                val formattedDate = Instant.ofEpochMilli(lastLoginMillis)
+                                    .atZone(ZoneId.of("America/El_Salvador"))
+                                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                                Text(
+                                    text = formattedDate,
+                                )
+                            }
+                            // User local data (temporarily displayed for testing purposes)
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            Text(
+                                text = "User local data (temp): ",
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "User ID: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = if ((localSettings.containsKey(SettingKey.ID.keySetting)) && (localSettings[SettingKey.ID.keySetting] != "")) localSettings[SettingKey.ID.keySetting] ?: "N/A" else "N/A",
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "User email: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = if ((localSettings.containsKey(SettingKey.EMAIL.keySetting)) && (localSettings[SettingKey.EMAIL.keySetting] != "")) localSettings[SettingKey.EMAIL.keySetting] ?: "N/A" else "N/A",
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "User role: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = if ((localSettings.containsKey(SettingKey.ROLE_NAME.keySetting)) && (localSettings[SettingKey.ROLE_NAME.keySetting] != "")) localSettings[SettingKey.ROLE_NAME.keySetting] ?: "N/A" else "N/A",
+                                )
                             }
                         }
                     }
