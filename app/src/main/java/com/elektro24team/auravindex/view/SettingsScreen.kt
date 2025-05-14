@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -76,6 +78,8 @@ fun SettingsScreen(
         localSettingsViewModel.loadSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.ID.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.TOKEN.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.ROLE_NAME.keySetting)
     }
     ModalNavigationDrawer(
         drawerContent = {
@@ -122,7 +126,10 @@ fun SettingsScreen(
                         ConnectionAlert(isConnected)
 
                         Column(
-                            modifier = Modifier.padding(16.dp).fillMaxSize()
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
                         ) {
                             // Settings
                             Text(
@@ -266,6 +273,19 @@ fun SettingsScreen(
                                 )
                                 Text(
                                     text = if ((localSettings.containsKey(SettingKey.EMAIL.keySetting)) && (localSettings[SettingKey.EMAIL.keySetting] != "")) localSettings[SettingKey.EMAIL.keySetting] ?: "N/A" else "N/A",
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "User role: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = if ((localSettings.containsKey(SettingKey.ROLE_NAME.keySetting)) && (localSettings[SettingKey.ROLE_NAME.keySetting] != "")) localSettings[SettingKey.ROLE_NAME.keySetting] ?: "N/A" else "N/A",
                                 )
                             }
                         }
