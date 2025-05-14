@@ -4,11 +4,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
+import com.elektro24team.auravindex.utils.enums.AppAction
+import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.rememberBookCollectionViewModel
 import com.elektro24team.auravindex.utils.rememberBookViewModel
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
@@ -25,6 +30,7 @@ import com.elektro24team.auravindex.viewmodels.UserViewModel
 object Routes {
     const val BOOK = "book/{bookId}"
     const val COLLECTION_BOOKS = "collection_books/{collectionName}/{collectionId}"
+    const val LISTS = "lists"
     const val LOGIN = "login"
     const val MAIN = "main"
     const val NOTIFICATIONS = "notifications"
@@ -48,6 +54,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val bookCollectionViewModel: BookCollectionViewModel = rememberBookCollectionViewModel()
     val localSettingsViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
     val userViewModel : UserViewModel = viewModel()
+    val localSettings by localSettingsViewModel.settings.collectAsState()
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(
@@ -77,6 +84,11 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 collectionId = collectionId
             )
         }
+        composable(Routes.LISTS) {
+           ListsScreen(
+               navController = navController
+           )
+        }
         composable(Routes.LOGIN) {
             LoginScreen(navController = navController, localSettingsViewModel = localSettingsViewModel)
         }
@@ -84,7 +96,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             MainScreen(
                 navController = navController,
                 bookViewModel = bookViewModel,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
+                localSettingsViewModel = localSettingsViewModel
             )
         }
         /*composable(Routes.NOTIFICATIONS) {
