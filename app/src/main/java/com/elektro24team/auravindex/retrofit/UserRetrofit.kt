@@ -2,7 +2,7 @@ package com.elektro24team.auravindex.retrofit
 
 import com.elektro24team.auravindex.model.ApiResponse
 import com.elektro24team.auravindex.model.User
-import com.elektro24team.auravindex.utils.Constants.BASE_URL
+import com.elektro24team.auravindex.utils.constants.URLs.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

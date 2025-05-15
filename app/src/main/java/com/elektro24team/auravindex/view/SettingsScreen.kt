@@ -83,7 +83,10 @@ fun SettingsScreen(
     }
     ModalNavigationDrawer(
         drawerContent = {
-            DrawerMenu(onItemSelected = { route ->
+            DrawerMenu(
+                navController = navController,
+                currentRoute = navController.currentBackStackEntry?.destination?.route,
+                onItemSelected = { route ->
                 hamburguerMenuNavigator(
                     route,
                     navController,

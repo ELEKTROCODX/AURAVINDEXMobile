@@ -4,6 +4,26 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
+import androidx.compose.material.icons.filled.AdminPanelSettings
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Contrast
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayCircleFilled
+import androidx.compose.material.icons.filled.PrivacyTip
+import androidx.compose.material.icons.filled.ReceiptLong
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Groups
+import androidx.compose.material.icons.sharp.Article
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,13 +34,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
 import com.elektro24team.auravindex.R
+import com.elektro24team.auravindex.navigation.Routes
+import com.elektro24team.auravindex.utils.classes.AdminMenuItem
+import com.elektro24team.auravindex.utils.classes.DefaultMenuItem
+import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.isInAdminDashboard
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
 
 //MENU HAMBURGUESA DE TIPO DRAWER O CAJON
 @Composable
-fun DrawerMenu(onItemSelected: (String) -> Unit) {
+fun DrawerMenu(
+    navController: NavController,
+    currentRoute: String?,
+    onItemSelected: (String) -> Unit
+) {
     val colors = MaterialTheme.colorScheme
     val localSettingsViewModel = rememberLocalSettingViewModel()
     val localSettings by localSettingsViewModel.settings.collectAsState()
@@ -43,41 +75,90 @@ fun DrawerMenu(onItemSelected: (String) -> Unit) {
                 .height(100.dp)
                 .padding(bottom = 32.dp)
         )
-
-        val menuItems = listOf(
-            "Profile" to "profile",
-            /*"Notifications" to "notifications",*/
-            "Terms of Services" to "terms",
-            "Privacy Policy" to "privacy",
-            "Team" to "team",
-            "Settings" to "settings"
-        )
-
-        menuItems.forEach { (label, action) ->
-            Text(
-                text = label,
-                color = colors.onPrimary,
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp)
-                    .clickable { onItemSelected(action) }
+        if(isInAdminDashboard(currentRoute)) {
+            val adminMenuItems = listOf(
+                AdminMenuItem("Books", Icons.AutoMirrored.Filled.MenuBook, AdminDashboardObject.BOOK),
+                AdminMenuItem("Users", Icons.Default.Person, AdminDashboardObject.USER),
+                AdminMenuItem("Loans", Icons.AutoMirrored.Filled.ReceiptLong, AdminDashboardObject.LOAN),
+                AdminMenuItem("Notifications", Icons.Default.Notifications, AdminDashboardObject.NOTIFICATION),
+                AdminMenuItem("Fees", Icons.Default.AttachMoney, AdminDashboardObject.FEE),
+                AdminMenuItem("Plans", Icons.AutoMirrored.Filled.List, AdminDashboardObject.PLAN),
+                AdminMenuItem("Active Plans", Icons.Default.PlayCircleFilled, AdminDashboardObject.ACTIVE_PLAN)
             )
-        }
-
-        /*
-        * Check if user is logged in
-        * */
-        if(localSettings.getOrDefault(SettingKey.ID.keySetting, "").isNotEmpty()) {
-            Text(
-                text = "Log out",
-                color = colors.secondary,
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp)
-                    .clickable { onItemSelected("signout") }
+            NavigationDrawerItem(
+                label = { Text(
+                    text = "Home page",
+                    color = colors.onPrimary,
+                    style = TextStyle(fontWeight = FontWeight.Bold)
+                ) },
+                icon = { Icon(
+                    Icons.Default.Home,
+                    contentDescription = "Home page",
+                    tint = colors.onPrimary) },
+                selected = false,
+                onClick = {
+                    navController.navigate(Routes.MAIN)
+                },
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
             )
+            adminMenuItems.forEach { item ->
+                NavigationDrawerItem(
+                    label = { Text(
+                        text = item.title,
+                        color = colors.onPrimary,
+                    ) },
+                    icon = { Icon(
+                        item.icon,
+                        contentDescription = item.title,
+                        tint = colors.onPrimary) },
+                    selected = false,
+                    onClick = {
+                        onItemSelected("admin_dashboard/${item.dashboardObject.name.lowercase()}")
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+            }
+        } else {
+            val menuItems = listOf(
+                DefaultMenuItem("Home", Icons.Default.Home, Routes.MAIN),
+                DefaultMenuItem("Profile", Icons.Default.Person, Routes.PROFILE),
+                DefaultMenuItem("Terms of Services", Icons.Default.Newspaper, Routes.TERMS),
+                DefaultMenuItem("Privacy Policy", Icons.Filled.PrivacyTip, Routes.PRIVACY),
+                DefaultMenuItem("Team", Icons.Filled.Groups, Routes.TEAM),
+                DefaultMenuItem("Settings", Icons.Filled.Settings, Routes.SETTINGS),
+                DefaultMenuItem("Admin", Icons.Filled.AdminPanelSettings, Routes.ADMIN_DASHBOARD)
+            )
+            menuItems.forEach { item ->
+                NavigationDrawerItem(
+                    label = { Text(
+                        text = item.title,
+                        color = colors.onPrimary,
+                    ) },
+                    icon = { Icon(
+                        item.icon,
+                        contentDescription = item.title,
+                        tint = colors.onPrimary) },
+                    selected = false,
+                    onClick = {
+                        onItemSelected(item.route)
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+            }
+            /*
+            * Check if user is logged in
+            * */
+            if(localSettings.getOrDefault(SettingKey.ID.keySetting, "").isNotEmpty()) {
+                Text(
+                    text = "Log out",
+                    color = colors.secondary,
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp)
+                        .clickable { onItemSelected("signout") }
+                )
+            }
         }
     }
 }

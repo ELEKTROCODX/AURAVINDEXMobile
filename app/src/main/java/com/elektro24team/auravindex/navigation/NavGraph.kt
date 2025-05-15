@@ -28,6 +28,9 @@ import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 // RUTAS
 object Routes {
+    const val ADMIN_DASHBOARD = "admin_dashboard"
+    const val ADMIN_DASHBOARD_OBJECTS = "admin_dashboard/{objectName}"
+    const val ADMIN_DASHBOARD_OBJECT = "admin_dashboard/{objectName}/{objectId}"
     const val BOOK = "book/{bookId}"
     const val COLLECTION_BOOKS = "collection_books/{collectionName}/{collectionId}"
     const val LISTS = "lists"
@@ -57,6 +60,51 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val localSettings by localSettingsViewModel.settings.collectAsState()
 
     NavHost(navController = navController, startDestination = startDestination) {
+        composable(Routes.ADMIN_DASHBOARD) {
+            AdminDashBoardScreen(
+                navController = navController,
+                bookViewModel = bookViewModel,
+                userViewModel = userViewModel,
+                localSettingsViewModel = localSettingsViewModel,
+                objectName = "",
+                objectId = ""
+            )
+        }
+        composable(
+            Routes.ADMIN_DASHBOARD_OBJECTS,
+            arguments = listOf(
+                navArgument("objectName") { type = NavType.StringType }
+            )
+        ) {
+            val objectName = it.arguments?.getString("objectName") ?: ""
+            AdminDashBoardScreen(
+                navController = navController,
+                bookViewModel = bookViewModel,
+                userViewModel = userViewModel,
+                localSettingsViewModel = localSettingsViewModel,
+                objectName = objectName,
+                objectId = ""
+            )
+        }
+        composable(
+            Routes.ADMIN_DASHBOARD_OBJECT,
+            arguments = listOf(
+                navArgument("objectName") { type = NavType.StringType },
+                navArgument("objectId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+                val objectName = backStackEntry.arguments?.getString("objectName") ?: ""
+                val objectId = backStackEntry.arguments?.getString("objectId") ?: ""
+                AdminDashBoardScreen(
+                    navController = navController,
+                    bookViewModel = bookViewModel,
+                    userViewModel = userViewModel,
+                    localSettingsViewModel = localSettingsViewModel,
+                    objectName = objectName,
+                    objectId = objectId
+                )
+        }
+
         composable(
             Routes.BOOK,
             arguments = listOf(navArgument("bookId") { type = NavType.StringType })
@@ -75,14 +123,14 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navArgument("collectionId"){type = NavType.StringType}
             )){
                 backStackEntry ->
-            val collectionName = backStackEntry.arguments?.getString("collectionName") ?: ""
-            val collectionId = backStackEntry.arguments?.getString("collectionId") ?: ""
-            BooksCollectionScreen(
-                navController,
-                bookViewModel,
-                bookCollectionName = collectionName,
-                collectionId = collectionId
-            )
+                val collectionName = backStackEntry.arguments?.getString("collectionName") ?: ""
+                val collectionId = backStackEntry.arguments?.getString("collectionId") ?: ""
+                BooksCollectionScreen(
+                    navController,
+                    bookViewModel,
+                    bookCollectionName = collectionName,
+                    collectionId = collectionId
+                )
         }
         composable(Routes.LISTS) {
            ListsScreen(

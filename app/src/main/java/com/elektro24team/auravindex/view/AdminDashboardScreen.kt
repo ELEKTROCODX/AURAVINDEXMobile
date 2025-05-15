@@ -14,14 +14,10 @@ import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.navigation.Routes
+import com.elektro24team.auravindex.ui.components.AdminBookTable
 import com.elektro24team.auravindex.ui.components.HomePageSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.elektro24team.auravindex.AuraVindexApp
-import com.elektro24team.auravindex.model.Book
-import com.elektro24team.auravindex.ui.components.ConnectionAlert
-import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
@@ -32,11 +28,13 @@ import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
+fun AdminDashBoardScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
     userViewModel: UserViewModel,
-    localSettingsViewModel: LocalSettingViewModel
+    localSettingsViewModel: LocalSettingViewModel,
+    objectName: String?,
+    objectId: String?
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -44,13 +42,10 @@ fun MainScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val books by bookViewModel.books.observeAsState(emptyList())
-    val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
-    val user by userViewModel.user.observeAsState()
     val localSettings by localSettingsViewModel.settings.collectAsState()
     val isLoggedIn = localSettings.getOrDefault(SettingKey.TOKEN.keySetting, "").isNotEmpty()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
-    var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.SUBSCRIBE_TO_PLAN) }
+    var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.ACCESS_ADMIN_DASHBOARD) }
 
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
@@ -79,20 +74,12 @@ fun MainScreen(
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
-                    TopBar(navController = navController, drawerState = drawerState)
+                TopBar(navController = navController, drawerState = drawerState)
             },
             bottomBar = {
                 BottomNavBar(
-                    currentRoute = navController.currentBackStackEntry?.destination?.route ?: "main",
-                    onItemClick = { route ->
-                        if((route == Routes.PLANS || route == Routes.LISTS) && !isLoggedIn) {
-                            showMustBeLoggedInDialog = true
-                            if(route == Routes.PLANS) actionMustBeLoggedInDialog = AppAction.SUBSCRIBE_TO_PLAN
-                            if(route == Routes.LISTS) actionMustBeLoggedInDialog = AppAction.CHECK_LISTS
-                        } else {
-                            navController.navigate(route)
-                        }
-                    }
+                    currentRoute = navController.currentBackStackEntry?.destination?.route ?: "admin_dashboard",
+                    onItemClick = { route -> navController.navigate(route) }
                 )
             },
             content = { paddingValues ->
@@ -106,47 +93,34 @@ fun MainScreen(
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                     ) {
-                        user?.let{
-                            Text("Bienvenido: ${user?.name}")
+                        if(isLoggedIn) {
+                            actionMustBeLoggedInDialog = AppAction.ACCESS_ADMIN_DASHBOARD
+                            showMustBeLoggedInDialog = true
                         }
-                        val app = LocalContext.current.applicationContext as AuraVindexApp
-                        val isConnected by app.networkLiveData.observeAsState(true)
-                        ConnectionAlert(isConnected)
 
-                        if (showMustBeLoggedInDialog) {
-                            MustBeLoggedInDialog(
-                                navController = navController,
-                                action = actionMustBeLoggedInDialog,
-                                onDismiss = { showMustBeLoggedInDialog = false }
+                        /*
+                        * Case 1: Object name and ID are null (show welcome screen)
+                        * Case 2: Object name is not null but ID is null (show object table)
+                        * Case 3: Object name and ID are not null (show object details)
+                        * */
+                        if(objectName == null || objectName == "") {
+                            Text(
+                                text = "Admin Dashboard",
+                                style = MaterialTheme.typography.headlineMedium,
+                                modifier = Modifier.padding(vertical = 16.dp).align(Alignment.CenterHorizontally)
                             )
-                        }
-
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            verticalArrangement = Arrangement.Top,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            // Recent searches
-
-                            // Recommendations
-                            item {
-                                HomePageSection(
-                                    "Recommendations",
-                                    books.take(10),
-                                    seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                    navController
-                                )
+                            Button(
+                                onClick = {navController.navigate("admin_dashboard/book")}
+                            ) {
+                                Text("Books")
                             }
-                            // New releases
-                            item {
-                                HomePageSection(
-                                    "New releases",
-                                    latestReleases,
-                                    seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                    navController
-                                )
-                            }
+                        } else if(objectId == null || objectId == "") {
+                            AdminBookTable(
+                                navController = navController,
+                                books = bookViewModel.books.observeAsState().value ?: emptyList()
+                            )
+                        } else if((objectName != null || objectName != "") && (objectId != null || objectId != "")) {
+                            Text("None null")
                         }
                     }
                 }

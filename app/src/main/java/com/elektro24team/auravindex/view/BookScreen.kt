@@ -53,7 +53,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
@@ -66,10 +65,9 @@ import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
-import com.elektro24team.auravindex.utils.Constants.IMG_url
+import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.BookViewModel
-import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -93,7 +91,10 @@ fun BookScreen(
 
     ModalNavigationDrawer(
         drawerContent = {
-            DrawerMenu(onItemSelected = { route ->
+            DrawerMenu(
+                navController = navController,
+                currentRoute = navController.currentBackStackEntry?.destination?.route,
+                onItemSelected = { route ->
                 hamburguerMenuNavigator(
                     route,
                     navController,
