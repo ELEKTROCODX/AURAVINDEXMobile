@@ -77,95 +77,75 @@ fun LoginScreen(
             navController.navigate(Routes.MAIN)
         }
     }
-    ModalNavigationDrawer(
-        drawerContent = {
-            DrawerMenu(onItemSelected = { route ->
-                hamburguerMenuNavigator(
-                    route,
-                    navController,
-                    showTermsDialog,
-                    showPrivacyDialog,
-                    showTeamDialog
-                )
-            })
-
+    Scaffold(
+        topBar = {
+            TopBar(navController = navController, drawerState = drawerState)
         },
-        drawerState = drawerState
-    ) {
-        ShowExternalLinkDialog(showTermsDialog, context, "https://auravindex.me/tos/")
-        ShowExternalLinkDialog(showPrivacyDialog, context, "https://auravindex.me/privacy/")
-        ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
-
-        Scaffold(
-            topBar = {
-                TopBar(navController = navController, drawerState = drawerState)
-            },
-            bottomBar = {
-                BottomNavBar(
-                    currentRoute = navController.currentBackStackEntry?.destination?.route ?: "login",
-                    onItemClick = { route -> navController.navigate(route) }
-                )
-            },
-            content = { paddingValues ->
-                Box(
+        bottomBar = {
+            BottomNavBar(
+                currentRoute = navController.currentBackStackEntry?.destination?.route ?: "login",
+                onItemClick = { route -> navController.navigate(route) }
+            )
+        },
+        content = { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(horizontal = 16.dp)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp)
+                    val app = LocalContext.current.applicationContext as AuraVindexApp
+                    val isConnected by app.networkLiveData.observeAsState(true)
+                    ConnectionAlert(isConnected)
+                    Text(
+                        text = "Login page",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterHorizontally)
+                    )
+                    TextField(
+                        value = userEmail.value,
+                        onValueChange = {userEmail.value = it},
+                        label = { Text("Email")},
+                        placeholder = { Text("email")},
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    TextField(
+                        value = userPassword.value,
+                        onValueChange = {userPassword.value = it},
+                        label = { Text("Password")},
+                        placeholder = { Text("password")},
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Button(
+                        onClick = {
+                            Log.d("Email: ", userEmail.value)
+                            viewModel.login(userEmail.value, userPassword.value)
+                        },
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {
-                        val app = LocalContext.current.applicationContext as AuraVindexApp
-                        val isConnected by app.networkLiveData.observeAsState(true)
-                        ConnectionAlert(isConnected)
                         Text(
-                            text = "Login page",
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterHorizontally)
+                            text = "Login",
+                            modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterVertically)
                         )
-                        TextField(
-                            value = userEmail.value,
-                            onValueChange = {userEmail.value = it},
-                            label = { Text("Email")},
-                            placeholder = { Text("email")},
-                            modifier = Modifier.padding(16.dp)
-                        )
-                        TextField(
-                            value = userPassword.value,
-                            onValueChange = {userPassword.value = it},
-                            label = { Text("Password")},
-                            placeholder = { Text("password")},
-                            modifier = Modifier.padding(16.dp)
-                        )
-                        Button(
-                            onClick = {
-                                Log.d("Email: ", userEmail.value)
-                                viewModel.login(userEmail.value, userPassword.value)
-                            },
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        ) {
-                            Text(
-                                text = "Login",
-                                modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterVertically)
-                            )
-                        }
-                        Button(
-                            onClick = {
-                                navController.navigate(Routes.MAIN)
-                            },
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        ) {
+                    }
+                    Button(
+                        onClick = {
+                            navController.navigate(Routes.MAIN)
+                        },
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    ) {
 
-                            Text(
-                                text = "Skip login",
-                                modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterVertically)
-                            )
-                        }
+                        Text(
+                            text = "Skip login",
+                            modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterVertically)
+                        )
                     }
                 }
             }
-        )
-    }
+        }
+    )
 }
