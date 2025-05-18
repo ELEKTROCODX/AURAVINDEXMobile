@@ -19,6 +19,7 @@ import com.elektro24team.auravindex.ui.components.HomePageSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.viewmodels.BookViewModel
@@ -115,10 +116,20 @@ fun AdminDashBoardScreen(
                                 Text("Books")
                             }
                         } else if(objectId == null || objectId == "") {
-                            AdminBookTable(
-                                navController = navController,
-                                books = bookViewModel.books.observeAsState().value ?: emptyList()
-                            )
+                            when(objectName) {
+                                AdminDashboardObject.BOOK.name.lowercase() -> {
+                                    val books by bookViewModel.books.observeAsState()
+                                    Text(
+                                        text = "Books",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        modifier = Modifier.padding(start = 4.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
+                                    )
+                                    AdminBookTable(navController, books ?: emptyList())
+                                }
+                                else -> {
+                                    Text("Unknown object")
+                                }
+                            }
                         } else if((objectName != null || objectName != "") && (objectId != null || objectId != "")) {
                             Text("None null")
                         }

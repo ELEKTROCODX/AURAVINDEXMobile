@@ -43,7 +43,9 @@ import com.elektro24team.auravindex.utils.classes.AdminMenuItem
 import com.elektro24team.auravindex.utils.classes.DefaultMenuItem
 import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.isAdmin
 import com.elektro24team.auravindex.utils.functions.isInAdminDashboard
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
 
 //MENU HAMBURGUESA DE TIPO DRAWER O CAJON
@@ -59,6 +61,8 @@ fun DrawerMenu(
     LaunchedEffect(Unit) {
         localSettingsViewModel.loadSetting(SettingKey.ID.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.TOKEN.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.ROLE_NAME.keySetting)
     }
     Column(
         modifier = Modifier
@@ -88,8 +92,7 @@ fun DrawerMenu(
             NavigationDrawerItem(
                 label = { Text(
                     text = "Home page",
-                    color = colors.onPrimary,
-                    style = TextStyle(fontWeight = FontWeight.Bold)
+                    color = colors.onPrimary
                 ) },
                 icon = { Icon(
                     Icons.Default.Home,
@@ -98,6 +101,21 @@ fun DrawerMenu(
                 selected = false,
                 onClick = {
                     navController.navigate(Routes.MAIN)
+                },
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            )
+            NavigationDrawerItem(
+                label = { Text(
+                    text = "Admin page",
+                    color = colors.onPrimary
+                ) },
+                icon = { Icon(
+                    Icons.Filled.AdminPanelSettings,
+                    contentDescription = "Admin page",
+                    tint = colors.onPrimary) },
+                selected = false,
+                onClick = {
+                    navController.navigate(Routes.ADMIN_DASHBOARD)
                 },
                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
             )
@@ -125,8 +143,7 @@ fun DrawerMenu(
                 DefaultMenuItem("Terms of Services", Icons.Default.Newspaper, Routes.TERMS),
                 DefaultMenuItem("Privacy Policy", Icons.Filled.PrivacyTip, Routes.PRIVACY),
                 DefaultMenuItem("Team", Icons.Filled.Groups, Routes.TEAM),
-                DefaultMenuItem("Settings", Icons.Filled.Settings, Routes.SETTINGS),
-                DefaultMenuItem("Admin", Icons.Filled.AdminPanelSettings, Routes.ADMIN_DASHBOARD)
+                DefaultMenuItem("Settings", Icons.Filled.Settings, Routes.SETTINGS)
             )
             menuItems.forEach { item ->
                 NavigationDrawerItem(
@@ -145,10 +162,28 @@ fun DrawerMenu(
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
             }
+            if(isAdmin(localSettings)) {
+                NavigationDrawerItem(
+                    label = { Text(
+                        text = "Admin",
+                        color = colors.onPrimary,
+                    ) },
+                    icon = { Icon(
+                        Icons.Filled.AdminPanelSettings,
+                        contentDescription = "Admin",
+                        tint = colors.onPrimary) },
+                    selected = false,
+                    onClick = {
+                        onItemSelected(Routes.ADMIN_DASHBOARD)
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+            }
+
             /*
             * Check if user is logged in
             * */
-            if(localSettings.getOrDefault(SettingKey.ID.keySetting, "").isNotEmpty()) {
+            if(isLoggedIn(localSettings)) {
                 Text(
                     text = "Log out",
                     color = colors.secondary,
