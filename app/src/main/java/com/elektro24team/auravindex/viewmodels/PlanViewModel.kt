@@ -16,8 +16,8 @@ class PlanViewModel(
     private val repository: PlanRepository
 ) : ViewModel() {
 
-    private val _plans = MutableLiveData<List<PlanEntity>>()
-    val plans: LiveData<List<PlanEntity>> = _plans
+    private val _plans = MutableLiveData<List<Plan>>()
+    val plans: LiveData<List<Plan>> = _plans
 
     fun loadPlans() {
         viewModelScope.launch {

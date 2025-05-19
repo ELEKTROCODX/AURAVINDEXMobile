@@ -35,22 +35,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.model.Book
+import com.elektro24team.auravindex.model.Plan
 import com.elektro24team.auravindex.utils.bookStatusIcons
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
 
 @Composable
-fun AdminBookTable(
+fun AdminPlanTable(
     navController: NavController,
-    books: List<Book>
+    plans: List<Plan>
 ) {
     var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
-    var totalPages = (books.size + rowsPerPage - 1) / rowsPerPage
-    val currentPageBooks = books.drop(currentPage * rowsPerPage).take(rowsPerPage)
+    var totalPages = (plans.size + rowsPerPage - 1) / rowsPerPage
+    val currentPagePlans = plans.drop(currentPage * rowsPerPage).take(rowsPerPage)
     Text(
-        text = "Books",
+        text = "Plans",
         style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
         modifier = Modifier.padding(start = 4.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
     )
@@ -65,29 +65,20 @@ fun AdminBookTable(
             Column(
             ) {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                    TableHeaderCell("Title", 220.dp)
-                    TableHeaderCell("Classification", 120.dp)
-                    TableHeaderCell("Status", 60.dp)
-                    TableHeaderCell("ISBN", 140.dp)
+                    TableHeaderCell("Name", 220.dp)
+                    TableHeaderCell("Fixed price", 120.dp)
+                    TableHeaderCell("Monthly price", 120.dp)
                 }
                 Divider()
-                currentPageBooks.forEach { book ->
+                currentPagePlans.forEach { plan ->
                     Row(
                         modifier = Modifier
-                            .clickable { navController.navigate("admin_dashboard/book/${book._id}") }
+                            .clickable { navController.navigate("admin_dashboard/plan/${plan._id}") }
                             .padding(vertical = 6.dp)
                     ) {
-                        TableCell(book.title, 220.dp)
-                        TableCell(book.classification, 120.dp)
-                        Spacer(modifier = Modifier.width(15.dp))
-                        Icon(
-                            imageVector = bookStatusIcons.find { it.book_status == book.book_status.book_status }?.icon ?: Icons.Default.CheckCircle,
-                            contentDescription = book.book_status.book_status,
-                            tint = MaterialTheme.colors.secondary,
-                            modifier = Modifier.size(30.dp),
-                        )
-                        Spacer(modifier = Modifier.width(15.dp))
-                        TableCell(book.isbn, 140.dp)
+                        TableCell(plan.name, 220.dp)
+                        TableCell(plan.fixed_price, 120.dp)
+                        TableCell(plan.monthly_price, 120.dp)
                     }
                     Divider()
                 }

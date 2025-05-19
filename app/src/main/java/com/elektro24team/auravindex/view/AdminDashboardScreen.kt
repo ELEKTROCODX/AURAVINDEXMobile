@@ -13,6 +13,7 @@ import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
+import com.elektro24team.auravindex.ui.components.AdminPlanTable
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.ui.components.TopBar
@@ -22,6 +23,7 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.PlanViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,6 +31,7 @@ fun AdminDashBoardScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
     userViewModel: UserViewModel,
+    planViewModel: PlanViewModel,
     localSettingsViewModel: LocalSettingViewModel,
     objectName: String?,
     objectId: String?
@@ -114,12 +117,14 @@ fun AdminDashBoardScreen(
                                     LaunchedEffect(Unit) {
                                         bookViewModel.loadBooks(showDuplicates = true, showLents = true)
                                     }
-                                    Text(
-                                        text = "Books",
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        modifier = Modifier.padding(start = 4.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
-                                    )
                                     AdminBookTable(navController, books ?: emptyList())
+                                }
+                                AdminDashboardObject.PLAN.name.lowercase() -> {
+                                    val plans by planViewModel.plans.observeAsState()
+                                    LaunchedEffect(Unit) {
+                                        planViewModel.loadPlans()
+                                    }
+                                    AdminPlanTable(navController, plans ?: emptyList())
                                 }
                                 else -> {
                                     Text("Unknown object")
@@ -128,7 +133,6 @@ fun AdminDashBoardScreen(
                         } else if((objectName != null || objectName != "") && (objectId != null || objectId != "")) {
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
-
                                     AdminBookCard(
                                         navController = navController,
                                         bookViewModel = bookViewModel,
