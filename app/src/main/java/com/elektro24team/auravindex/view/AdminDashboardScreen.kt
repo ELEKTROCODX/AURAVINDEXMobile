@@ -1,8 +1,6 @@
 package com.elektro24team.auravindex.view
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -13,9 +11,8 @@ import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.navigation.Routes
+import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
-import com.elektro24team.auravindex.ui.components.HomePageSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.ui.components.TopBar
@@ -23,7 +20,6 @@ import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.viewmodels.BookViewModel
-import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 
@@ -47,11 +43,7 @@ fun AdminDashBoardScreen(
     val isLoggedIn = localSettings.getOrDefault(SettingKey.TOKEN.keySetting, "").isNotEmpty()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
     var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.ACCESS_ADMIN_DASHBOARD) }
-
-    LaunchedEffect(Unit) {
-        bookViewModel.loadBooks(showDuplicates = false, showLents = true)
-        bookViewModel.fetchLatestReleases()
-    }
+    val colors = MaterialTheme.colorScheme
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -119,6 +111,9 @@ fun AdminDashBoardScreen(
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
                                     val books by bookViewModel.books.observeAsState()
+                                    LaunchedEffect(Unit) {
+                                        bookViewModel.loadBooks(showDuplicates = true, showLents = true)
+                                    }
                                     Text(
                                         text = "Books",
                                         style = MaterialTheme.typography.headlineMedium,
@@ -131,7 +126,16 @@ fun AdminDashBoardScreen(
                                 }
                             }
                         } else if((objectName != null || objectName != "") && (objectId != null || objectId != "")) {
-                            Text("None null")
+                            when(objectName) {
+                                AdminDashboardObject.BOOK.name.lowercase() -> {
+
+                                    AdminBookCard(
+                                        navController = navController,
+                                        bookViewModel = bookViewModel,
+                                        bookId = objectId,
+                                    )
+                                }
+                            }
                         }
                     }
                 }

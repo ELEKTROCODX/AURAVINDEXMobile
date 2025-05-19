@@ -161,7 +161,7 @@ fun BookScreen(
                                     .heightIn(max=300.dp)
                                     .clip(RoundedCornerShape(16.dp))
                                     .shadow(8.dp, RoundedCornerShape(16.dp))
-                                    .align(Alignment.Center), // Alineamos la imagen al centro
+                                    .align(Alignment.Center),
                                 imageOptions = ImageOptions(
                                     contentScale = ContentScale.Crop
                                 ),
@@ -175,7 +175,7 @@ fun BookScreen(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(16.dp))
                                             .shadow(8.dp, RoundedCornerShape(16.dp))
-                                            .align(Alignment.Center) // También centramos la imagen predeterminada
+                                            .align(Alignment.Center)
                                     )
                                 }
                             )
@@ -282,7 +282,7 @@ fun BookScreen(
                                 )
                                 Text(
                                     text = book.value?.genres?.joinToString(", ") ?: "Not available",
-                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                    style = TextStyle(fontSize = 16.sp, color = Color.Black, textAlign = TextAlign.Justify)
                                 )
                             }
 
@@ -376,7 +376,7 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book.value?.isbn ?: "ISBN",
+                                    text = book.value?.isbn ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }

@@ -25,6 +25,7 @@ import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import com.elektro24team.auravindex.viewmodels.UserViewModel
@@ -48,7 +49,6 @@ fun MainScreen(
     val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
     val user by userViewModel.user.observeAsState()
     val localSettings by localSettingsViewModel.settings.collectAsState()
-    val isLoggedIn = localSettings.getOrDefault(SettingKey.TOKEN.keySetting, "").isNotEmpty()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
     var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.SUBSCRIBE_TO_PLAN) }
 
@@ -85,7 +85,7 @@ fun MainScreen(
                 BottomNavBar(
                     currentRoute = navController.currentBackStackEntry?.destination?.route ?: "main",
                     onItemClick = { route ->
-                        if((route == Routes.PLANS || route == Routes.LISTS) && !isLoggedIn) {
+                        if((route == Routes.PLANS || route == Routes.LISTS) && !isLoggedIn(localSettings)) {
                             showMustBeLoggedInDialog = true
                             if(route == Routes.PLANS) actionMustBeLoggedInDialog = AppAction.SUBSCRIBE_TO_PLAN
                             if(route == Routes.LISTS) actionMustBeLoggedInDialog = AppAction.CHECK_LISTS

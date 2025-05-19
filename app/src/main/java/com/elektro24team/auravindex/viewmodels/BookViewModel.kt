@@ -18,9 +18,11 @@ class BookViewModel(
 ) : ViewModel() {
 
     private val _books = MutableLiveData<List<Book>>()
+    private val _book = MutableLiveData<Book>()
     private val _filteredBooks = MutableLiveData<List<Book>>()
     private val _latestReleases = MutableLiveData<List<Book>>()
     val books: LiveData<List<Book>> = _books
+    val book: LiveData<Book> = _book
     val filteredBooks: LiveData<List<Book>> = _filteredBooks
     val latestReleases: LiveData<List<Book>> = _latestReleases
 
@@ -118,6 +120,9 @@ class BookViewModel(
             if( _books.value?.find{ it._id == bookId } == null) {
                 val result = repository.getBookById(bookId)
                 _books.postValue(listOf(result))
+                _book.postValue(result)
+            } else {
+                _book.postValue(_books.value?.find{ it._id == bookId })
             }
         }
 
