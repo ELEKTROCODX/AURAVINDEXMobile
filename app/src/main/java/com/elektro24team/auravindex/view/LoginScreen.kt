@@ -10,7 +10,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -32,11 +31,8 @@ import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
-import com.elektro24team.auravindex.ui.components.DrawerMenu
-import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
-import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.LoginViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
@@ -46,7 +42,8 @@ import com.elektro24team.auravindex.viewmodels.UserViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
-    localSettingsViewModel: LocalSettingViewModel
+    userViewModel: UserViewModel,
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -55,14 +52,13 @@ fun LoginScreen(
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val viewModel: LoginViewModel = viewModel()
-    val userViewModel: UserViewModel = viewModel()
     val userResult by userViewModel.user.observeAsState()
     val loginResult by viewModel.loginResult.observeAsState()
     val userEmail = remember { mutableStateOf("") }
     val userPassword = remember { mutableStateOf("") }
     LaunchedEffect(loginResult) {
         loginResult?.onSuccess { token ->
-            localSettingsViewModel.saveSetting(SettingKey.TOKEN.keySetting, token)
+            localSettingViewModel.saveSetting(SettingKey.TOKEN.keySetting, token)
             userViewModel.getUser(token, userEmail.value)
         }?.onFailure { error ->
             Toast.makeText(context, "Error de login: ${error.message}", Toast.LENGTH_SHORT).show()
@@ -70,10 +66,10 @@ fun LoginScreen(
     }
     LaunchedEffect(userResult) {
         userResult?.let { user ->
-            localSettingsViewModel.saveSetting(SettingKey.EMAIL.keySetting, user.email)
-            localSettingsViewModel.saveSetting(SettingKey.ID.keySetting, user._id)
-            localSettingsViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user.role.name)
-            localSettingsViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user.role._id)
+            localSettingViewModel.saveSetting(SettingKey.EMAIL.keySetting, user.email)
+            localSettingViewModel.saveSetting(SettingKey.ID.keySetting, user._id)
+            localSettingViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user.role.name)
+            localSettingViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user.role._id)
             navController.navigate(Routes.MAIN)
         }
     }

@@ -9,9 +9,7 @@ import androidx.compose.ui.res.painterResource
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -21,7 +19,6 @@ import androidx.navigation.NavController
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.enums.SettingKey
-import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
@@ -34,15 +31,15 @@ fun WelcomeScreen(
     bookViewModel: BookViewModel,
     planViewModel: PlanViewModel,
     bookCollectionViewModel: BookCollectionViewModel,
-    localSettingsViewModel: LocalSettingViewModel
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
     var isReadyToNavigate by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        localSettingsViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
 
         bookViewModel.loadBooks(showDuplicates = true, showLents = true)
         bookViewModel.fetchLatestReleases()
@@ -55,17 +52,17 @@ fun WelcomeScreen(
             SettingKey.LANGUAGE.keySetting,
             SettingKey.LAST_LOGIN.keySetting
         )
-        val loaded = localSettingsViewModel.loadSettings(*keys)
+        val loaded = localSettingViewModel.loadSettings(*keys)
 
         if (loaded[SettingKey.DARK_MODE.keySetting].isNullOrBlank()) {
-            localSettingsViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, "false")
+            localSettingViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, "false")
         }
 
         if (loaded[SettingKey.LANGUAGE.keySetting].isNullOrBlank()) {
-            localSettingsViewModel.saveSetting(SettingKey.LANGUAGE.keySetting, "English")
+            localSettingViewModel.saveSetting(SettingKey.LANGUAGE.keySetting, "English")
         }
 
-        localSettingsViewModel.saveSetting(
+        localSettingViewModel.saveSetting(
             SettingKey.LAST_LOGIN.keySetting,
             System.currentTimeMillis().toString()
         )

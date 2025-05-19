@@ -89,8 +89,8 @@ fun AdminBookCard(
             GlideImage(
                 imageModel = { imageUrl },
                 modifier = Modifier
-                    .widthIn(max=200.dp)
-                    .heightIn(max=300.dp)
+                    .widthIn(max = 200.dp)
+                    .heightIn(max = 300.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .shadow(8.dp, RoundedCornerShape(16.dp))
                     .align(Alignment.Center),
@@ -116,7 +116,11 @@ fun AdminBookCard(
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = "Book Details",
-                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF572365)),
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color(0xFF572365)
+                ),
                 modifier = Modifier.padding(bottom = 12.dp)
             )
             Divider(color = Color.LightGray, thickness = 1.dp)
@@ -129,11 +133,22 @@ fun AdminBookCard(
                 Text(
                     text = buildAnnotatedString {
                         append("Summary: ")
-                        withStyle(SpanStyle(fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.Normal)) {
-                            append(book.value?.summary?: "Not available")
+                        withStyle(
+                            SpanStyle(
+                                fontSize = 16.sp,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Normal
+                            )
+                        ) {
+                            append(book.value?.summary ?: "Not available")
                         }
                     },
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365), textAlign = TextAlign.Justify)
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365),
+                        textAlign = TextAlign.Justify
+                    )
                 )
             }
             Divider(color = Color.LightGray, thickness = 1.dp)
@@ -145,10 +160,15 @@ fun AdminBookCard(
             ) {
                 Text(
                     text = "Authors: ",
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365)
+                    ),
                 )
                 Text(
-                    text = book.value?.authors?.joinToString(", ") { it.name + " " + it.last_name } ?: "Not available",
+                    text = book.value?.authors?.joinToString(", ") { it.name + " " + it.last_name }
+                        ?: "Not available",
                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                 )
             }
@@ -161,7 +181,11 @@ fun AdminBookCard(
             ) {
                 Text(
                     text = "Editorial: ",
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365)
+                    ),
                 )
                 Text(
                     text = book.value?.editorial?.name ?: "Not available",
@@ -177,7 +201,11 @@ fun AdminBookCard(
             ) {
                 Text(
                     text = "Collection: ",
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365)
+                    ),
                 )
                 Text(
                     text = book.value?.book_collection?.name ?: "Not available",
@@ -194,11 +222,19 @@ fun AdminBookCard(
             ) {
                 Text(
                     text = "Genres: ",
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365)
+                    ),
                 )
                 Text(
                     text = book.value?.genres?.joinToString(", ") ?: "Not available",
-                    style = TextStyle(fontSize = 16.sp, color = Color.Black, textAlign = TextAlign.Justify)
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Justify
+                    )
                 )
             }
             Divider(color = Color.LightGray, thickness = 1.dp)
@@ -210,7 +246,11 @@ fun AdminBookCard(
             ) {
                 Text(
                     text = "Edition: ",
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365)
+                    ),
                 )
                 Text(
                     text = book.value?.edition ?: "Not available",
@@ -226,7 +266,11 @@ fun AdminBookCard(
             ) {
                 Text(
                     text = "Language: ",
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365)
+                    ),
                 )
                 Text(
                     text = book.value?.language ?: "Not available",
@@ -242,15 +286,21 @@ fun AdminBookCard(
             ) {
                 Text(
                     text = "Status: ",
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365)
+                    ),
                 )
                 Text(
-                    text = book.value?.book_status?.book_status?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } ?: "Not available",
+                    text = book.value?.book_status?.book_status?.lowercase()
+                        ?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                        ?: "Not available",
                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                 )
             }
             Divider(color = Color.LightGray, thickness = 1.dp)
-            if(book.value?.book_status?.book_status?.lowercase() == "lent") {
+            if (book.value?.book_status?.book_status?.lowercase() == "lent") {
                 /* I could try adding more info, like lent status and all that */
                 Row(
                     modifier = Modifier
@@ -260,7 +310,11 @@ fun AdminBookCard(
                 ) {
                     Text(
                         text = "Lent to: ",
-                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = Color(0xFF572365)
+                        ),
                     )
                     Text(
                         text = "Some User",
@@ -277,7 +331,11 @@ fun AdminBookCard(
             ) {
                 Text(
                     text = "Classification: ",
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365)
+                    ),
                 )
                 Text(
                     text = book.value?.classification ?: "Not available",
@@ -293,7 +351,11 @@ fun AdminBookCard(
             ) {
                 Text(
                     text = "ISBN: ",
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365)
+                    ),
                 )
                 Text(
                     text = book.value?.isbn ?: "Not available",
@@ -331,7 +393,7 @@ fun AdminBookCard(
                 )
             }
             Button(
-                onClick = { /* Acción para "Cancel"*/  },
+                onClick = { /* Acción para "Cancel"*/ },
                 modifier = Modifier
                     .height(48.dp)
                     .weight(1f),

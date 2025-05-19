@@ -12,16 +12,22 @@ import com.elektro24team.auravindex.data.local.dao.BookCollectionDao
 import com.elektro24team.auravindex.data.local.dao.BookDao
 import com.elektro24team.auravindex.data.local.dao.BookStatusDao
 import com.elektro24team.auravindex.data.local.dao.EditorialDao
+import com.elektro24team.auravindex.data.local.dao.GenderDao
 import com.elektro24team.auravindex.data.local.dao.LocalSettingDao
 import com.elektro24team.auravindex.data.local.dao.PlanDao
+import com.elektro24team.auravindex.data.local.dao.RoleDao
+import com.elektro24team.auravindex.data.local.dao.UserDao
 import com.elektro24team.auravindex.model.local.AuthorEntity
 import com.elektro24team.auravindex.model.local.BookAuthorCrossRef
 import com.elektro24team.auravindex.model.local.BookCollectionEntity
 import com.elektro24team.auravindex.model.local.BookEntity
 import com.elektro24team.auravindex.model.local.BookStatusEntity
 import com.elektro24team.auravindex.model.local.EditorialEntity
+import com.elektro24team.auravindex.model.local.GenderEntity
 import com.elektro24team.auravindex.model.local.LocalSettingEntity
 import com.elektro24team.auravindex.model.local.PlanEntity
+import com.elektro24team.auravindex.model.local.RoleEntity
+import com.elektro24team.auravindex.model.local.UserEntity
 
 @Database(
     entities = [
@@ -32,14 +38,17 @@ import com.elektro24team.auravindex.model.local.PlanEntity
         EditorialEntity::class,
         BookStatusEntity::class,
         AuthorEntity::class,
-        BookAuthorCrossRef::class
+        BookAuthorCrossRef::class,
+        GenderEntity::class,
+        RoleEntity::class,
+        UserEntity::class
                ],
-    version = 6 // Note: Increase version number when database schema changes
+    version = 9 // Note: Increase version number when database schema changes
     /* Note: be careful when updating schema, due local settings might be lost */
 )
 
 @TypeConverters(com.elektro24team.auravindex.utils.TypeConverters::class)
-abstract class AuraVindexDatabase : RoomDatabase() {
+internal abstract class AuraVindexDatabase : RoomDatabase() {
     abstract fun planDao(): PlanDao
     abstract fun bookCollectionDao(): BookCollectionDao
     abstract fun localSettingDao(): LocalSettingDao
@@ -47,6 +56,10 @@ abstract class AuraVindexDatabase : RoomDatabase() {
     abstract fun editorialDao(): EditorialDao
     abstract fun bookStatusDao(): BookStatusDao
     abstract fun authorDao(): AuthorDao
+    abstract fun genderDao(): GenderDao
+    abstract fun roleDao(): RoleDao
+    abstract fun userDao(): UserDao
+
 
     companion object {
         @Volatile private var INSTANCE: AuraVindexDatabase? = null
@@ -59,7 +72,7 @@ abstract class AuraVindexDatabase : RoomDatabase() {
                     "auravindex.db"
                 )
                     /*.addMigrations(MIGRATION_2_3)*/
-                    /*.fallbackToDestructiveMigration(true)*/  /*TODO: Remove this in production*/
+                    .fallbackToDestructiveMigration(true)  /*TODO: Remove this in production*/
                     .build()
                     .also { INSTANCE = it }
             }

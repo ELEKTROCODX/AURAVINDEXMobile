@@ -17,14 +17,11 @@ import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.HomePageSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.AuraVindexApp
-import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.AppAction
-import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
@@ -36,7 +33,7 @@ fun MainScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
     userViewModel: UserViewModel,
-    localSettingsViewModel: LocalSettingViewModel
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -47,7 +44,7 @@ fun MainScreen(
     val books by bookViewModel.books.observeAsState(emptyList())
     val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
     val user by userViewModel.user.observeAsState()
-    val localSettings by localSettingsViewModel.settings.collectAsState()
+    val localSettings by localSettingViewModel.settings.collectAsState()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
     var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.SUBSCRIBE_TO_PLAN) }
 

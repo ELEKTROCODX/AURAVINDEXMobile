@@ -7,15 +7,28 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserService{
-    @GET("user/")
+    @GET("user")
     suspend fun getUser(
         @Header("Authorization") token: String,
         @Query("filter_field") filterField: String,
         @Query("filter_value") filterValue: String,
     ): ApiResponse<List<User>>
+
+    @GET("user")
+    suspend fun getUsers(
+        @Header("Authorization") token: String,
+    ): ApiResponse<List<User>>
+
+    @GET("user/{id}")
+    suspend fun getUserById(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): User
+
 }
 
 object UserClient{

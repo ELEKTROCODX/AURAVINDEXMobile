@@ -11,14 +11,17 @@ import com.elektro24team.auravindex.data.repository.BookCollectionRepository
 import com.elektro24team.auravindex.data.repository.BookRepository
 import com.elektro24team.auravindex.data.repository.LocalSettingRepository
 import com.elektro24team.auravindex.data.repository.PlanRepository
+import com.elektro24team.auravindex.data.repository.UserRepository
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
+import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.factories.BookCollectionViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.BookViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.LocalSettingViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.PlanViewModelFactory
+import com.elektro24team.auravindex.viewmodels.factories.UserViewModelFactory
 
 @Composable
 fun rememberPlanViewModel(): PlanViewModel {
@@ -54,4 +57,15 @@ fun rememberLocalSettingViewModel(): LocalSettingViewModel {
     val repository = remember { LocalSettingRepository(db.localSettingDao()) }
     val factory = remember { LocalSettingViewModelFactory(repository) }
     return viewModel(factory = factory)
+}
+
+
+@Composable
+fun rememberUserViewModel(): UserViewModel {
+    val context = LocalContext.current
+    val db = remember { AuraVindexDatabase.getInstance(context) }
+    val repository = remember { UserRepository(db.userDao()) }
+    val factory = remember { UserViewModelFactory(repository) }
+    return viewModel(factory = factory)
+
 }

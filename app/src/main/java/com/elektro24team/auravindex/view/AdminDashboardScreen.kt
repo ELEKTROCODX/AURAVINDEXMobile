@@ -15,6 +15,8 @@ import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
 import com.elektro24team.auravindex.ui.components.AdminPlanCard
 import com.elektro24team.auravindex.ui.components.AdminPlanTable
+import com.elektro24team.auravindex.ui.components.AdminUserCard
+import com.elektro24team.auravindex.ui.components.AdminUserTable
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
 import com.elektro24team.auravindex.ui.components.TopBar
@@ -33,7 +35,7 @@ fun AdminDashBoardScreen(
     bookViewModel: BookViewModel,
     userViewModel: UserViewModel,
     planViewModel: PlanViewModel,
-    localSettingsViewModel: LocalSettingViewModel,
+    localSettingViewModel: LocalSettingViewModel,
     objectName: String?,
     objectId: String?
 ) {
@@ -43,7 +45,7 @@ fun AdminDashBoardScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val localSettings by localSettingsViewModel.settings.collectAsState()
+    val localSettings by localSettingViewModel.settings.collectAsState()
     val isLoggedIn = localSettings.getOrDefault(SettingKey.TOKEN.keySetting, "").isNotEmpty()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
     var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.ACCESS_ADMIN_DASHBOARD) }
@@ -127,6 +129,13 @@ fun AdminDashBoardScreen(
                                     }
                                     AdminPlanTable(navController, plans ?: emptyList())
                                 }
+                                AdminDashboardObject.USER.name.lowercase() -> {
+                                    val users by userViewModel.users.observeAsState()
+                                    LaunchedEffect(Unit) {
+                                        userViewModel.getUsers(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
+                                    }
+                                    AdminUserTable(navController, users ?: emptyList())
+                                }
                                 else -> {
                                     Text("Unknown object")
                                 }
@@ -145,6 +154,14 @@ fun AdminDashBoardScreen(
                                         navController = navController,
                                         planViewModel = planViewModel,
                                         planId = objectId,
+                                    )
+                                }
+                                AdminDashboardObject.USER.name.lowercase() -> {
+                                    AdminUserCard(
+                                        navController = navController,
+                                        userViewModel = userViewModel,
+                                        localSettingViewModel = localSettingViewModel,
+                                        userId = objectId,
                                     )
                                 }
                                 else -> {
