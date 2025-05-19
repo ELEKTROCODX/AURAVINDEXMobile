@@ -10,6 +10,9 @@ import retrofit2.http.GET
 interface PlanService{
     @GET("plan")
     suspend fun getPlans(): ApiResponse<List<Plan>>
+
+    @GET("plan/{planId}")
+    suspend fun getPlanById(planId: String): Plan
 }
 //Object that manage the PlanService, is a singleton instance
 object PlanClient{

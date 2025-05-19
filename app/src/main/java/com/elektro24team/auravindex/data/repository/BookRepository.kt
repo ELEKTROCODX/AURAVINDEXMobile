@@ -15,18 +15,6 @@ class BookRepository(
     @Volatile
     private var lastCacheTime: Long = 0
 
-    suspend fun getBookById(bookId: String): Book {
-        val local = bookDao.getBookWithRelations(bookId)
-        if (local != null) {
-            return local.toDomain()
-        }
-
-        val remote = BookClient.apiService.getBookById(bookId)
-        saveBookToCache(remote)
-
-        return remote
-    }
-
     suspend fun getAllBooks(
         showDuplicates: Boolean,
         showLents: Boolean
@@ -44,7 +32,17 @@ class BookRepository(
             local.map { it.toDomain() }
         }
     }
+    suspend fun getBookById(bookId: String): Book {
+        val local = bookDao.getBookWithRelations(bookId)
+        if (local != null) {
+            return local.toDomain()
+        }
 
+        val remote = BookClient.apiService.getBookById(bookId)
+        saveBookToCache(remote)
+
+        return remote
+    }
     suspend fun saveBookToCache(book: Book) {
         val bookEntity = book.toEntity()
         val editorial = book.editorial.toEntity()

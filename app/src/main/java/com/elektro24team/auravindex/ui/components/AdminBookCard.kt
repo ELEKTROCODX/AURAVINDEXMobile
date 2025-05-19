@@ -80,9 +80,7 @@ fun AdminBookCard(
             ),
             modifier = Modifier.padding(top = 16.dp)
         )
-
         Spacer(modifier = Modifier.height(20.dp))
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -95,7 +93,7 @@ fun AdminBookCard(
                     .heightIn(max=300.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .shadow(8.dp, RoundedCornerShape(16.dp))
-                    .align(Alignment.Center), // Alineamos la imagen al centro
+                    .align(Alignment.Center),
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop
                 ),
@@ -114,21 +112,14 @@ fun AdminBookCard(
                 }
             )
         }
-
-
         Spacer(modifier = Modifier.height(20.dp))
-
         Column(modifier = Modifier.fillMaxWidth()) {
-
-            // Título de la tabla
             Text(
                 text = "Book Details",
                 style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF572365)),
                 modifier = Modifier.padding(bottom = 12.dp)
             )
-
             Divider(color = Color.LightGray, thickness = 1.dp)
-            // Fila para Summary
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,7 +137,6 @@ fun AdminBookCard(
                 )
             }
             Divider(color = Color.LightGray, thickness = 1.dp)
-            // Fila para Authors
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -162,10 +152,7 @@ fun AdminBookCard(
                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                 )
             }
-
             Divider(color = Color.LightGray, thickness = 1.dp)
-
-            // Fila para Editorial
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -181,10 +168,7 @@ fun AdminBookCard(
                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                 )
             }
-
             Divider(color = Color.LightGray, thickness = 1.dp)
-
-            // Fila para Collection
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -202,8 +186,6 @@ fun AdminBookCard(
             }
 
             Divider(color = Color.LightGray, thickness = 1.dp)
-
-            // Fila para Genres
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -219,10 +201,7 @@ fun AdminBookCard(
                     style = TextStyle(fontSize = 16.sp, color = Color.Black, textAlign = TextAlign.Justify)
                 )
             }
-
             Divider(color = Color.LightGray, thickness = 1.dp)
-
-            // Fila para Edition
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -238,10 +217,7 @@ fun AdminBookCard(
                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                 )
             }
-
             Divider(color = Color.LightGray, thickness = 1.dp)
-
-            // Fila para Language
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -257,10 +233,7 @@ fun AdminBookCard(
                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                 )
             }
-
             Divider(color = Color.LightGray, thickness = 1.dp)
-
-            // Fila para Status
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -295,10 +268,7 @@ fun AdminBookCard(
                     )
                 }
                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-
             }
-            // Fila para Classification
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -314,10 +284,7 @@ fun AdminBookCard(
                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                 )
             }
-
             Divider(color = Color.LightGray, thickness = 1.dp)
-
-            // Fila para ISBN
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -336,15 +303,13 @@ fun AdminBookCard(
 
             Divider(color = Color.LightGray, thickness = 1.dp)
         }
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp), // Espaciado entre botones
-            verticalAlignment = Alignment.CenterVertically // Alineación vertical
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Botón "Editar"
             Button(
                 onClick = {  /* Acción para "Editar" */ },
                 modifier = Modifier
@@ -365,7 +330,6 @@ fun AdminBookCard(
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 )
             }
-
             Button(
                 onClick = { /* Acción para "Cancel"*/  },
                 modifier = Modifier

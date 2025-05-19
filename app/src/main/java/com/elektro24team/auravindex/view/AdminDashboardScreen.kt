@@ -13,6 +13,7 @@ import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
+import com.elektro24team.auravindex.ui.components.AdminPlanCard
 import com.elektro24team.auravindex.ui.components.AdminPlanTable
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
@@ -138,6 +139,16 @@ fun AdminDashBoardScreen(
                                         bookViewModel = bookViewModel,
                                         bookId = objectId,
                                     )
+                                }
+                                AdminDashboardObject.PLAN.name.lowercase() -> {
+                                    AdminPlanCard(
+                                        navController = navController,
+                                        planViewModel = planViewModel,
+                                        planId = objectId,
+                                    )
+                                }
+                                else -> {
+                                    Text("Unknown object")
                                 }
                             }
                         }

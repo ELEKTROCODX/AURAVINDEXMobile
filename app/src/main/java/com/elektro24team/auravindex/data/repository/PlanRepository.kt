@@ -1,14 +1,10 @@
 package com.elektro24team.auravindex.data.repository
 
-import android.util.Log
 import com.elektro24team.auravindex.data.local.dao.PlanDao
 import com.elektro24team.auravindex.mapper.toDomain
+import com.elektro24team.auravindex.mapper.toEntity
 import com.elektro24team.auravindex.model.Plan
-import com.elektro24team.auravindex.model.local.PlanEntity
-import com.elektro24team.auravindex.retrofit.BookClient
 import com.elektro24team.auravindex.retrofit.PlanClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 
 class PlanRepository(
@@ -28,5 +24,19 @@ class PlanRepository(
         } else {
             local.map { it.toDomain() }
         }
+    }
+    suspend fun getPlanById(planId: String): Plan {
+        val local = planDao.getPlanById(planId)
+        if (local != null) {
+            return local.toDomain()
+        }
+
+        val remote = PlanClient.apiService.getPlanById(planId)
+        savePlanToCache(remote)
+
+        return remote
+    }
+    suspend fun savePlanToCache(plan: Plan) {
+        planDao.insertPlans(listOf(plan.toEntity()))
     }
 }

@@ -34,7 +34,7 @@ import com.elektro24team.auravindex.model.local.PlanEntity
         AuthorEntity::class,
         BookAuthorCrossRef::class
                ],
-    version = 5 // Note: Increase version number when database schema changes
+    version = 6 // Note: Increase version number when database schema changes
     /* Note: be careful when updating schema, due local settings might be lost */
 )
 
@@ -59,7 +59,7 @@ abstract class AuraVindexDatabase : RoomDatabase() {
                     "auravindex.db"
                 )
                     /*.addMigrations(MIGRATION_2_3)*/
-                    /*.fallbackToDestructiveMigration(true) // TODO: Remove this in production*/
+                    .fallbackToDestructiveMigration(true)  /*TODO: Remove this in production*/
                     .build()
                     .also { INSTANCE = it }
             }
