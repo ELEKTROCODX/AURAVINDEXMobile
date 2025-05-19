@@ -27,7 +27,6 @@ import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.BookViewModel
-import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 

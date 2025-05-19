@@ -59,7 +59,7 @@ abstract class AuraVindexDatabase : RoomDatabase() {
                     "auravindex.db"
                 )
                     /*.addMigrations(MIGRATION_2_3)*/
-                    .fallbackToDestructiveMigration(true)  /*TODO: Remove this in production*/
+                    /*.fallbackToDestructiveMigration(true)*/  /*TODO: Remove this in production*/
                     .build()
                     .also { INSTANCE = it }
             }
