@@ -50,6 +50,13 @@ fun AdminDashBoardScreen(
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
     var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.ACCESS_ADMIN_DASHBOARD) }
     val colors = MaterialTheme.colorScheme
+    LaunchedEffect(Unit) {
+        localSettingViewModel.loadSettings(
+            SettingKey.TOKEN.keySetting,
+            SettingKey.ID.keySetting,
+            SettingKey.EMAIL.keySetting,
+        )
+    }
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -96,7 +103,6 @@ fun AdminDashBoardScreen(
                             actionMustBeLoggedInDialog = AppAction.ACCESS_ADMIN_DASHBOARD
                             showMustBeLoggedInDialog = true
                         }
-
                         /*
                         * Case 1: Object name and ID are null (show welcome screen)
                         * Case 2: Object name is not null but ID is null (show object table)
