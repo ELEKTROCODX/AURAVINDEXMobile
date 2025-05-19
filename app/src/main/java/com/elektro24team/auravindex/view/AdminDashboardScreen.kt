@@ -102,11 +102,11 @@ fun AdminDashBoardScreen(
                                 style = MaterialTheme.typography.headlineMedium,
                                 modifier = Modifier.padding(vertical = 16.dp).align(Alignment.CenterHorizontally)
                             )
-                            Button(
-                                onClick = {navController.navigate("admin_dashboard/book")}
-                            ) {
-                                Text("Books")
-                            }
+                            /*
+                            * Admin actions:
+                            * Send notifications
+                            * Check statistics
+                            * */
                         } else if(objectId == null || objectId == "") {
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
