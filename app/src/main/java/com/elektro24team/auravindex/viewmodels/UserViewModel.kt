@@ -1,6 +1,9 @@
 package com.elektro24team.auravindex.viewmodels
 
+import retrofit2.HttpException
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresExtension
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,52 +23,48 @@ class UserViewModel(
     val users: MutableLiveData<List<User>> = _users
     val user: MutableLiveData<User> = _user
 
-    fun getUser(token: String, email: String){
+    fun getUser(token: String, email: String) {
         viewModelScope.launch {
-            try {
-                val response = repository.getUser(token, email)
-                if (response.isSuccess) {
-                    _user.value = response.getOrNull()
-                } else {
-                    if (response.hashCode() == 401) {
-                        notifyTokenExpired()
-                    } else if(response.hashCode() == 403){
-                        notifyInsufficentPermissions()
-                    } else {
-                        notifyError("Erorr loading books")
-                    }
-                }
-            } catch (e: Exception) {
-                notifyError("Network error: ${e.message}")
-            }
-        }
-    }
-    
-    fun loadUser(token: String, userId: String) {
-        viewModelScope.launch {
-            if( _users.value?.find{ it._id == userId } == null) {
-                val result = repository.getUserById(token, userId)
-                _users.postValue(listOf(result))
-                _user.postValue(result)
+            val result = repository.getUser(token, email)
+            if (result.isSuccess) {
+                _user.value = result.getOrNull()
             } else {
-                _user.postValue(_users.value?.find{ it._id == userId })
+                val error = result.exceptionOrNull()
+                if (error is HttpException) {
+                    when (error.code()) {
+                        401 -> notifyTokenExpired()
+                        403 -> notifyInsufficentPermissions()
+                        else -> notifyError("HTTP error: ${error.code()}")
+                    }
+                } else {
+                    notifyError("Network error: ${error?.message}")
+                }
             }
         }
     }
 
-    fun getUserById(token: String, userId: String){
-        viewModelScope.launch {
-            val response = repository.getUserById(token, userId)
-            _user.value = response
-        }
-    }
-
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     fun getUsers(token: String){
         viewModelScope.launch {
             val result = repository.getUsers(token)
-            _users.value = result
+            when {
+                result.isSuccess -> _users.value = result.getOrNull()
+                result.isFailure -> {
+                    val error = result.exceptionOrNull()
+                    Log.e("UserViewModel", "Error loading users", error)
+                    when (error) {
+                        is HttpException -> {
+                            Log.e("UserViewModel", "HTTP error: ${error.code()}")
+                            when (error.code()) {
+                                401 -> notifyTokenExpired()
+                                403 -> notifyInsufficentPermissions()
+                                else -> notifyError("Error loading users")
+                            }
+                        }
+                        else -> notifyError("Network error: ${error?.message}")
+                    }
+                }
+            }
         }
     }
-
-
 }

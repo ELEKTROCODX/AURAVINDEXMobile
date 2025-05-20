@@ -68,7 +68,7 @@ fun AdminUserCard(
     val colors = androidx.compose.material3.MaterialTheme.colorScheme
     val settings = localSettingViewModel.settings.collectAsState()
     LaunchedEffect(Unit) {
-        userViewModel.loadUser(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), userId)
+        userViewModel.getUser(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), userId)
     }
     Card(
         modifier = Modifier

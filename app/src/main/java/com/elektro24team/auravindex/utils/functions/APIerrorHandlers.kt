@@ -38,6 +38,14 @@ object APIerrorHandlers {
         }
 
     }
+
+    fun errorHandler(
+        context: Context,
+        message: String
+    ) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+
     @Composable
     fun ObserveTokenExpiration(
         viewModel: BaseViewModel,
@@ -64,6 +72,19 @@ object APIerrorHandlers {
         LaunchedEffect(insufficientPermissions.value) {
             if (insufficientPermissions.value == true) {
                 insufficientPermissionsHandler(context, navController)
+            }
+        }
+    }
+
+    @Composable
+    fun ObserveError(
+        viewModel: BaseViewModel,
+    ) {
+        val error = viewModel.error.observeAsState()
+        val context = LocalContext.current
+        LaunchedEffect(error.value) {
+            if (error.value != null) {
+                errorHandler(context, error.value!!)
             }
         }
     }

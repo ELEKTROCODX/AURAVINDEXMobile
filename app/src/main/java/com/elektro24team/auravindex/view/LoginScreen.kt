@@ -74,15 +74,6 @@ fun LoginScreen(
         }
     }
     Scaffold(
-        topBar = {
-            TopBar(navController = navController, drawerState = drawerState)
-        },
-        bottomBar = {
-            BottomNavBar(
-                currentRoute = navController.currentBackStackEntry?.destination?.route ?: "login",
-                onItemClick = { route -> navController.navigate(route) }
-            )
-        },
         content = { paddingValues ->
             Box(
                 modifier = Modifier

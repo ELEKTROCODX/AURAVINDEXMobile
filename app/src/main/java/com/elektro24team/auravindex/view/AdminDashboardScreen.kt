@@ -1,5 +1,7 @@
 package com.elektro24team.auravindex.view
 
+import android.os.Build
+import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,6 +26,7 @@ import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficentPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
@@ -32,6 +35,7 @@ import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 
+@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminDashBoardScreen(
@@ -147,6 +151,7 @@ fun AdminDashBoardScreen(
                                 AdminDashboardObject.USER.name.lowercase() -> {
                                     ObserveTokenExpiration(userViewModel, navController, localSettingViewModel)
                                     ObserveInsufficentPermissions(userViewModel, navController)
+                                    ObserveError(userViewModel)
                                     val users by userViewModel.users.observeAsState()
                                     LaunchedEffect(Unit) {
                                         userViewModel.getUsers(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
