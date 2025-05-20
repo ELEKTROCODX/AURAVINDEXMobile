@@ -7,16 +7,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.data.local.AuraVindexDatabase
+import com.elektro24team.auravindex.data.repository.AuditLogRepository
 import com.elektro24team.auravindex.data.repository.BookCollectionRepository
 import com.elektro24team.auravindex.data.repository.BookRepository
 import com.elektro24team.auravindex.data.repository.LocalSettingRepository
 import com.elektro24team.auravindex.data.repository.PlanRepository
 import com.elektro24team.auravindex.data.repository.UserRepository
+import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
+import com.elektro24team.auravindex.viewmodels.factories.AuditLogViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.BookCollectionViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.BookViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.LocalSettingViewModelFactory
@@ -68,4 +71,13 @@ fun rememberUserViewModel(): UserViewModel {
     val factory = remember { UserViewModelFactory(repository) }
     return viewModel(factory = factory)
 
+}
+
+@Composable
+fun rememberAuditLogViewModel(): AuditLogViewModel {
+    val context = LocalContext.current
+    val db = remember { AuraVindexDatabase.getInstance(context) }
+    val repository = remember { AuditLogRepository(db.auditLogDao()) }
+    val factory = remember { AuditLogViewModelFactory(repository) }
+    return viewModel(factory = factory)
 }

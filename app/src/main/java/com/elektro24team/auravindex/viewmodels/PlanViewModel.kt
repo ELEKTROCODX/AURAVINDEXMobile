@@ -6,12 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.PlanRepository
 import com.elektro24team.auravindex.model.Plan
+import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 
 //Manage plans data
 class PlanViewModel(
     private val repository: PlanRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _plans = MutableLiveData<List<Plan>>()
     private val _plan = MutableLiveData<Plan>()

@@ -7,7 +7,8 @@ enum class AdminDashboardObject(val objectName: String) {
         NOTIFICATION("notification"),
         FEE("fee"),
         PLAN("plan"),
-        ACTIVE_PLAN("active_plan");
+        ACTIVE_PLAN("active_plan"),
+        AUDIT_LOG("audit_log");
 
         companion object {
             fun fromKey(objectName: String): AdminDashboardObject? =

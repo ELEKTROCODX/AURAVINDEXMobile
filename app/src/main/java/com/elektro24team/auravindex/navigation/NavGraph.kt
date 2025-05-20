@@ -10,12 +10,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.elektro24team.auravindex.utils.rememberAuditLogViewModel
 import com.elektro24team.auravindex.utils.rememberBookCollectionViewModel
 import com.elektro24team.auravindex.utils.rememberBookViewModel
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
 import com.elektro24team.auravindex.utils.rememberPlanViewModel
 import com.elektro24team.auravindex.utils.rememberUserViewModel
 import com.elektro24team.auravindex.view.*
+import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
@@ -54,6 +56,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val bookCollectionViewModel: BookCollectionViewModel = rememberBookCollectionViewModel()
     val localSettingViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
     val userViewModel : UserViewModel = rememberUserViewModel()
+    val auditLogViewModel : AuditLogViewModel = rememberAuditLogViewModel()
     val localSettings by localSettingViewModel.settings.collectAsState()
 
     NavHost(navController = navController, startDestination = startDestination) {
@@ -63,6 +66,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 bookViewModel = bookViewModel,
                 userViewModel = userViewModel,
                 planViewModel = planViewModel,
+                auditLogViewModel = auditLogViewModel,
                 localSettingViewModel = localSettingViewModel,
                 objectName = "",
                 objectId = ""
@@ -80,6 +84,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 bookViewModel = bookViewModel,
                 userViewModel = userViewModel,
                 planViewModel = planViewModel,
+                auditLogViewModel = auditLogViewModel,
                 localSettingViewModel = localSettingViewModel,
                 objectName = objectName,
                 objectId = ""
@@ -99,6 +104,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                     bookViewModel = bookViewModel,
                     userViewModel = userViewModel,
                     planViewModel = planViewModel,
+                    auditLogViewModel = auditLogViewModel,
                     localSettingViewModel = localSettingViewModel,
                     objectName = objectName,
                     objectId = objectId

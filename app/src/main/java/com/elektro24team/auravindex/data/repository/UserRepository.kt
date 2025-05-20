@@ -19,7 +19,7 @@ class UserRepository(
         val isCacheExpired = (currentTime - lastCacheTime) > CACHE_EXPIRY_MS
         val local = userDao.getAllUsersWithRelations()
         return if (local.isEmpty() || isCacheExpired) {
-            val remote = UserClient.apiService.getUsers(token = token)
+            val remote = UserClient.apiService.getUsers(token = "Bearer $token")
             remote.data.map { it }
         } else {
             local.map { it.toDomain() }
@@ -31,7 +31,7 @@ class UserRepository(
             return local.toDomain()
         }
 
-        val remote = UserClient.apiService.getUserById(token = token, id = userId)
+        val remote = UserClient.apiService.getUserById(token = "Bearer $token", id = userId)
         saveUserToCache(remote)
 
         return remote
@@ -42,7 +42,7 @@ class UserRepository(
     
     suspend fun getUser(token: String, email: String): Result<User>{
         return try {
-            val response = UserClient.apiService.getUser(token = token,filterField = "email",filterValue = email)
+            val response = UserClient.apiService.getUser(token = "Bearer $token", filterField = "email", filterValue = email)
             Log.d("UserRepository", "Usuario recibido: ${response}")
             val user = response.data?.firstOrNull()
             user?.let {

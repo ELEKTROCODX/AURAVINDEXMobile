@@ -8,12 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.BookRepository
 import com.elektro24team.auravindex.data.repository.UserRepository
 import com.elektro24team.auravindex.model.User
+import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 
 class UserViewModel(
     private val repository: UserRepository
 
-): ViewModel() {
+): BaseViewModel() {
     private val _users = MutableLiveData<List<User>>()
     private val _user = MutableLiveData<User>()
     val users: MutableLiveData<List<User>> = _users
@@ -21,9 +22,22 @@ class UserViewModel(
 
     fun getUser(token: String, email: String){
         viewModelScope.launch {
-            val result = repository.getUser("Bearer $token", email)
-            _user.value = result.getOrNull()
-            Log.d("UserViewModel","Usuario cargado: ${_user.value?.name}")
+            try {
+                val response = repository.getUser(token, email)
+                if (response.isSuccess) {
+                    _user.value = response.getOrNull()
+                } else {
+                    if (response.hashCode() == 401) {
+                        notifyTokenExpired()
+                    } else if(response.hashCode() == 403){
+                        notifyInsufficentPermissions()
+                    } else {
+                        notifyError("Erorr loading books")
+                    }
+                }
+            } catch (e: Exception) {
+                notifyError("Network error: ${e.message}")
+            }
         }
     }
     
@@ -41,14 +55,14 @@ class UserViewModel(
 
     fun getUserById(token: String, userId: String){
         viewModelScope.launch {
-            val response = repository.getUserById("Bearer $token", userId)
+            val response = repository.getUserById(token, userId)
             _user.value = response
         }
     }
 
     fun getUsers(token: String){
         viewModelScope.launch {
-            val result = repository.getUsers("Bearer $token")
+            val result = repository.getUsers(token)
             _users.value = result
         }
     }

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material.icons.sharp.Article
 import androidx.compose.material3.*
@@ -87,7 +88,8 @@ fun DrawerMenu(
                 AdminMenuItem("Notifications", Icons.Default.Notifications, AdminDashboardObject.NOTIFICATION),
                 AdminMenuItem("Fees", Icons.Default.AttachMoney, AdminDashboardObject.FEE),
                 AdminMenuItem("Plans", Icons.AutoMirrored.Filled.List, AdminDashboardObject.PLAN),
-                AdminMenuItem("Active Plans", Icons.Default.PlayCircleFilled, AdminDashboardObject.ACTIVE_PLAN)
+                AdminMenuItem("Active Plans", Icons.Default.PlayCircleFilled, AdminDashboardObject.ACTIVE_PLAN),
+                AdminMenuItem("Audit Log", Icons.Default.Terminal, AdminDashboardObject.AUDIT_LOG)
             )
             NavigationDrawerItem(
                 label = { Text(

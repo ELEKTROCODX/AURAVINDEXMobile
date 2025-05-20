@@ -13,4 +13,7 @@ interface LocalSettingDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertSetting(setting: LocalSettingEntity)
+
+    @Query("DELETE FROM localsettings WHERE keySetting = :key")
+    suspend fun deleteSetting(key: String)
 }

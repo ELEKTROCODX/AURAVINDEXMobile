@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.ui.components.AdminAuditLogTable
 import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
 import com.elektro24team.auravindex.ui.components.AdminPlanCard
@@ -23,6 +24,9 @@ import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficentPermissions
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
+import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
@@ -35,6 +39,7 @@ fun AdminDashBoardScreen(
     bookViewModel: BookViewModel,
     userViewModel: UserViewModel,
     planViewModel: PlanViewModel,
+    auditLogViewModel: AuditLogViewModel,
     localSettingViewModel: LocalSettingViewModel,
     objectName: String?,
     objectId: String?
@@ -122,6 +127,8 @@ fun AdminDashBoardScreen(
                         } else if(objectId == null || objectId == "") {
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
+                                    ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficentPermissions(bookViewModel, navController)
                                     val books by bookViewModel.books.observeAsState()
                                     LaunchedEffect(Unit) {
                                         bookViewModel.loadBooks(showDuplicates = true, showLents = true)
@@ -129,6 +136,8 @@ fun AdminDashBoardScreen(
                                     AdminBookTable(navController, books ?: emptyList())
                                 }
                                 AdminDashboardObject.PLAN.name.lowercase() -> {
+                                    ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficentPermissions(planViewModel, navController)
                                     val plans by planViewModel.plans.observeAsState()
                                     LaunchedEffect(Unit) {
                                         planViewModel.loadPlans()
@@ -136,11 +145,22 @@ fun AdminDashBoardScreen(
                                     AdminPlanTable(navController, plans ?: emptyList())
                                 }
                                 AdminDashboardObject.USER.name.lowercase() -> {
+                                    ObserveTokenExpiration(userViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficentPermissions(userViewModel, navController)
                                     val users by userViewModel.users.observeAsState()
                                     LaunchedEffect(Unit) {
                                         userViewModel.getUsers(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
                                     }
                                     AdminUserTable(navController, users ?: emptyList())
+                                }
+                                AdminDashboardObject.AUDIT_LOG.name.lowercase() -> {
+                                    ObserveTokenExpiration(auditLogViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficentPermissions(auditLogViewModel, navController)
+                                    val auditLogs by auditLogViewModel.auditLogs.observeAsState()
+                                    LaunchedEffect(Unit) {
+                                        auditLogViewModel.getAuditLogs(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
+                                    }
+                                    AdminAuditLogTable(navController, auditLogs ?: emptyList())
                                 }
                                 else -> {
                                     Text("Unknown object")
@@ -149,6 +169,8 @@ fun AdminDashBoardScreen(
                         } else if((objectName != null || objectName != "") && (objectId != null || objectId != "")) {
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
+                                    ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficentPermissions(bookViewModel, navController)
                                     AdminBookCard(
                                         navController = navController,
                                         bookViewModel = bookViewModel,
@@ -156,6 +178,8 @@ fun AdminDashBoardScreen(
                                     )
                                 }
                                 AdminDashboardObject.PLAN.name.lowercase() -> {
+                                    ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficentPermissions(planViewModel, navController)
                                     AdminPlanCard(
                                         navController = navController,
                                         planViewModel = planViewModel,
@@ -163,6 +187,8 @@ fun AdminDashBoardScreen(
                                     )
                                 }
                                 AdminDashboardObject.USER.name.lowercase() -> {
+                                    ObserveTokenExpiration(userViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficentPermissions(userViewModel, navController)
                                     AdminUserCard(
                                         navController = navController,
                                         userViewModel = userViewModel,

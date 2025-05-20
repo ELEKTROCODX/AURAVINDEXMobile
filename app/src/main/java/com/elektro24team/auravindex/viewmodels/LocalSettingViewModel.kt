@@ -40,4 +40,12 @@ class LocalSettingViewModel(
             _settings.update { it + (keySetting to keyValue) }
         }
     }
+
+    fun clearSetting(keySetting: String) {
+        viewModelScope.launch {
+            repository.clearSetting(keySetting)
+            _settings.update { it - keySetting }
+        }
+
+    }
 }

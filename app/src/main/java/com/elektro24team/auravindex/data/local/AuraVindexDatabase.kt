@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.elektro24team.auravindex.data.local.dao.AuditLogDao
 import com.elektro24team.auravindex.data.local.dao.AuthorDao
 import com.elektro24team.auravindex.data.local.dao.BookCollectionDao
 import com.elektro24team.auravindex.data.local.dao.BookDao
@@ -14,9 +15,11 @@ import com.elektro24team.auravindex.data.local.dao.BookStatusDao
 import com.elektro24team.auravindex.data.local.dao.EditorialDao
 import com.elektro24team.auravindex.data.local.dao.GenderDao
 import com.elektro24team.auravindex.data.local.dao.LocalSettingDao
+import com.elektro24team.auravindex.data.local.dao.LogActionDao
 import com.elektro24team.auravindex.data.local.dao.PlanDao
 import com.elektro24team.auravindex.data.local.dao.RoleDao
 import com.elektro24team.auravindex.data.local.dao.UserDao
+import com.elektro24team.auravindex.model.local.AuditLogEntity
 import com.elektro24team.auravindex.model.local.AuthorEntity
 import com.elektro24team.auravindex.model.local.BookAuthorCrossRef
 import com.elektro24team.auravindex.model.local.BookCollectionEntity
@@ -25,6 +28,7 @@ import com.elektro24team.auravindex.model.local.BookStatusEntity
 import com.elektro24team.auravindex.model.local.EditorialEntity
 import com.elektro24team.auravindex.model.local.GenderEntity
 import com.elektro24team.auravindex.model.local.LocalSettingEntity
+import com.elektro24team.auravindex.model.local.LogActionEntity
 import com.elektro24team.auravindex.model.local.PlanEntity
 import com.elektro24team.auravindex.model.local.RoleEntity
 import com.elektro24team.auravindex.model.local.UserEntity
@@ -41,9 +45,11 @@ import com.elektro24team.auravindex.model.local.UserEntity
         BookAuthorCrossRef::class,
         GenderEntity::class,
         RoleEntity::class,
-        UserEntity::class
+        UserEntity::class,
+        LogActionEntity::class,
+        AuditLogEntity::class,
                ],
-    version = 9 // Note: Increase version number when database schema changes
+    version = 11 // Note: Increase version number when database schema changes
     /* Note: be careful when updating schema, due local settings might be lost */
 )
 
@@ -59,6 +65,8 @@ internal abstract class AuraVindexDatabase : RoomDatabase() {
     abstract fun genderDao(): GenderDao
     abstract fun roleDao(): RoleDao
     abstract fun userDao(): UserDao
+    abstract fun logActionDao(): LogActionDao
+    abstract fun auditLogDao(): AuditLogDao
 
 
     companion object {

@@ -9,13 +9,14 @@ import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.model.local.BookEntity
 import com.elektro24team.auravindex.retrofit.BookClient
 import com.elektro24team.auravindex.utils.normalize
+import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 import kotlin.collections.filter
 import kotlin.text.contains
 
 class BookViewModel(
     private val repository: BookRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _books = MutableLiveData<List<Book>>()
     private val _book = MutableLiveData<Book>()
