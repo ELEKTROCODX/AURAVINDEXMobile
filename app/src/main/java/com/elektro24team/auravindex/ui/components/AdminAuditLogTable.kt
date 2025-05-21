@@ -1,5 +1,7 @@
 package com.elektro24team.auravindex.ui.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -22,9 +24,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.AuditLog
+import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+import java.util.TimeZone
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AdminAuditLogTable(
     navController: NavController,
@@ -50,10 +60,10 @@ fun AdminAuditLogTable(
             Column(
             ) {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                    TableHeaderCell("User", 120.dp)
-                    TableHeaderCell("Action", 120.dp)
-                    TableHeaderCell("Object", 120.dp)
-                    TableHeaderCell("Date", 120.dp)
+                    TableHeaderCell("User", 160.dp)
+                    TableHeaderCell("Action", 160.dp)
+                    TableHeaderCell("Object", 160.dp)
+                    TableHeaderCell("Date", 160.dp)
                 }
                 Divider()
                 currentPageAuditLogs.forEach { auditLog ->
@@ -62,10 +72,13 @@ fun AdminAuditLogTable(
                             .clickable { navController.navigate("admin_dashboard/audit_log/${auditLog._id}") }
                             .padding(vertical = 6.dp)
                     ) {
-                        TableCell(auditLog.user.email, 120.dp)
-                        TableCell(auditLog.action.action_code, 120.dp)
-                        TableCell(auditLog.affected_object, 120.dp)
-                        TableCell(auditLog.createdAt, 120.dp)
+                       /* val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+                        formatter.timeZone = TimeZone.getTimeZone("UTC-6")
+                        val formattedDate = formatter.format(auditLog.createdAt)*/
+                        TableCell(auditLog.user?.email ?: "Unknown", 160.dp)
+                        TableCell(auditLog.action.action_code, 160.dp)
+                        TableCell(auditLog.affected_object, 160.dp)
+                        TableCell(auditLog.createdAt, 160.dp)
                     }
                     Divider()
                 }

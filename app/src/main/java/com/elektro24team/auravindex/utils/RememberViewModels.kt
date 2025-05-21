@@ -67,7 +67,7 @@ fun rememberLocalSettingViewModel(): LocalSettingViewModel {
 fun rememberUserViewModel(): UserViewModel {
     val context = LocalContext.current
     val db = remember { AuraVindexDatabase.getInstance(context) }
-    val repository = remember { UserRepository(db.userDao()) }
+    val repository = remember { UserRepository(db.userDao(), db.genderDao(), db.roleDao()) }
     val factory = remember { UserViewModelFactory(repository) }
     return viewModel(factory = factory)
 

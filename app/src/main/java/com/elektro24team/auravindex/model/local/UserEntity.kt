@@ -9,7 +9,7 @@ import com.elektro24team.auravindex.model.Role
 data class UserEntity(
     val __v: Int,
     @PrimaryKey val _id: String,
-    val address: String,
+    val address: String?,
     val biography: String,
     val birthdate: String,
     val createdAt: String,

@@ -12,11 +12,11 @@ fun AuditLog.toEntity(): AuditLogEntity {
         _id = this._id,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
-        user_id = this.user._id,
+        user_id = this.user?._id,
         action_id = this.action._id,
         affectedObject = this.affected_object,
-        gender_id = this.user.gender._id,
-        role_id = this.user.role._id
+        gender_id = this.user?.gender?._id,
+        role_id = this.user?.role?._id
     )
 }
 

@@ -64,7 +64,7 @@ fun AdminUserTable(
                     ) {
                         TableCell("${user.name} ${user.last_name}", 120.dp)
                         TableCell(user.email, 180.dp)
-                        TableCell(user.role.name, 120.dp)
+                        TableCell(user.role?.name ?: "Unknown", 120.dp)
                     }
                     Divider()
                 }

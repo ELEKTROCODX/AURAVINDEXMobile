@@ -195,6 +195,16 @@ fun DrawerMenu(
                         .padding(vertical = 12.dp)
                         .clickable { onItemSelected("signout") }
                 )
+            } else {
+                Text(
+                    text = "Log in",
+                    color = colors.secondary,
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 12.dp)
+                        .clickable { onItemSelected("login") }
+                )
             }
         }
     }

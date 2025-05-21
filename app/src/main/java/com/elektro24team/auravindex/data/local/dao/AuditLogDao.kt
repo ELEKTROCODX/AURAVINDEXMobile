@@ -5,10 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.elektro24team.auravindex.model.AuditLog
-import com.elektro24team.auravindex.model.LogAction
-import com.elektro24team.auravindex.model.User
-import com.elektro24team.auravindex.model.local.AuthorEntity
 import com.elektro24team.auravindex.model.local.AuditLogEntity
 import com.elektro24team.auravindex.model.local.LogActionEntity
 import com.elektro24team.auravindex.model.local.UserEntity
@@ -21,23 +17,25 @@ interface AuditLogDao {
     @Transaction
     suspend fun insertAuditLogWithRelations(
         auditLog: AuditLogEntity,
-        user: UserEntity,
-        action: LogActionEntity
+        action: LogActionEntity,
+        user: UserEntity?
     ) {
         insertAuditLog(auditLog)
-        insertUser(user)
         insertLogAction(action)
+        if(user != null) insertUser(user)
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAuditLog(book: AuditLogEntity)
+    suspend fun insertAuditLog(auditLog: AuditLogEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUser(editorial: UserEntity)
+    suspend fun insertUser(user: UserEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLogAction(status: LogActionEntity)
+    suspend fun insertLogAction(action: LogActionEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAuditLogs(auditLogs: List<AuditLogEntity>)
 
     @Transaction
     @Query("SELECT * FROM auditlogs WHERE _id = :auditLogId")
@@ -46,5 +44,8 @@ interface AuditLogDao {
     @Transaction
     @Query("SELECT * FROM auditlogs")
     suspend fun getAllAuditLogsWithRelations(): List<AuditLogWithRelations>
+
+    @Query("DELETE FROM auditlogs")
+    suspend fun clearAuditLogs()
 
 }

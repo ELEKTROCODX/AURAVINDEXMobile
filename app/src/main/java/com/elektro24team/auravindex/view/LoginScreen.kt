@@ -45,12 +45,7 @@ fun LoginScreen(
     userViewModel: UserViewModel,
     localSettingViewModel: LocalSettingViewModel
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val showTermsDialog = remember { mutableStateOf(false) }
-    val showPrivacyDialog = remember { mutableStateOf(false) }
-    val showTeamDialog = remember { mutableStateOf(false) }
     val viewModel: LoginViewModel = viewModel()
     val userResult by userViewModel.user.observeAsState()
     val loginResult by viewModel.loginResult.observeAsState()
@@ -68,8 +63,8 @@ fun LoginScreen(
         userResult?.let { user ->
             localSettingViewModel.saveSetting(SettingKey.EMAIL.keySetting, user.email)
             localSettingViewModel.saveSetting(SettingKey.ID.keySetting, user._id)
-            localSettingViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user.role.name)
-            localSettingViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user.role._id)
+            localSettingViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user.role?.name ?: "Unknown")
+            localSettingViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user.role?._id ?: "Unknown")
             navController.navigate(Routes.MAIN)
         }
     }

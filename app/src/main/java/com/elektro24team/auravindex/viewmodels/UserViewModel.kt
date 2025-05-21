@@ -51,14 +51,12 @@ class UserViewModel(
                 result.isSuccess -> _users.value = result.getOrNull()
                 result.isFailure -> {
                     val error = result.exceptionOrNull()
-                    Log.e("UserViewModel", "Error loading users", error)
                     when (error) {
                         is HttpException -> {
-                            Log.e("UserViewModel", "HTTP error: ${error.code()}")
                             when (error.code()) {
                                 401 -> notifyTokenExpired()
                                 403 -> notifyInsufficentPermissions()
-                                else -> notifyError("Error loading users")
+                                else -> notifyError("HTTP error: ${error.code()}")
                             }
                         }
                         else -> notifyError("Network error: ${error?.message}")

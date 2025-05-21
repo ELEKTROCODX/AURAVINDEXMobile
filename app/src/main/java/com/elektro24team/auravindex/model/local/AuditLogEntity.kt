@@ -9,9 +9,9 @@ data class AuditLogEntity(
     @PrimaryKey val _id: String,
     val createdAt: String,
     val updatedAt: String,
-    val user_id: String,
-    val gender_id: String,
-    val role_id: String,
+    val user_id: String?,
+    val gender_id: String?,
+    val role_id: String?,
     val action_id: String,
     val affectedObject: String
 )

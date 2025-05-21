@@ -15,19 +15,19 @@ class AuditLogWithRelations (
         parentColumn = "user_id",
         entityColumn = "_id"
     )
-    val user: UserEntity,
+    val user: UserEntity?,
 
     @Relation(
         parentColumn = "gender_id",
         entityColumn = "_id"
     )
-    val gender: GenderEntity,
+    val gender: GenderEntity?,
 
     @Relation(
         parentColumn = "role_id",
         entityColumn = "_id"
     )
-    val role: RoleEntity,
+    val role: RoleEntity?,
 
     @Relation(
         parentColumn = "action_id",

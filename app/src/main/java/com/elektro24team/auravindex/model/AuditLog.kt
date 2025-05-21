@@ -7,5 +7,5 @@ data class AuditLog(
     val affected_object: String,
     val createdAt: String,
     val updatedAt: String,
-    val user: User
+    val user: User?
 )

@@ -227,12 +227,10 @@ fun SettingsScreen(
                                 )
                                 val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
                                 formatter.timeZone = TimeZone.getTimeZone("UTC-6")
-
                                 val lastLoginMillis = localSettings.getOrDefault(
                                     SettingKey.LAST_LOGIN.keySetting,
                                     System.currentTimeMillis().toString()
                                 ).toLongOrNull() ?: System.currentTimeMillis()
-
                                 val formattedDate = Instant.ofEpochMilli(lastLoginMillis)
                                     .atZone(ZoneId.of("America/El_Salvador"))
                                     .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))

@@ -1,6 +1,8 @@
 package com.elektro24team.auravindex.data.repository
 
 import android.util.Log
+import com.elektro24team.auravindex.data.local.dao.GenderDao
+import com.elektro24team.auravindex.data.local.dao.RoleDao
 import com.elektro24team.auravindex.data.local.dao.UserDao
 import com.elektro24team.auravindex.mapper.toDomain
 import com.elektro24team.auravindex.mapper.toEntity
@@ -8,7 +10,9 @@ import com.elektro24team.auravindex.model.User
 import com.elektro24team.auravindex.retrofit.UserClient
 
 class UserRepository(
-  private val userDao: UserDao  
+    private val userDao: UserDao,
+    private val genderDao: GenderDao,
+    private val roleDao: RoleDao
 ){
     private val CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000L // 1 día
     @Volatile
@@ -19,14 +23,17 @@ class UserRepository(
             val currentTime = System.currentTimeMillis()
             val isCacheExpired = (currentTime - lastCacheTime) > CACHE_EXPIRY_MS
             val local = userDao.getAllUsersWithRelations()
-
             if (local.isNotEmpty() && !isCacheExpired) {
                 Result.success(local.map { it.toDomain() })
             } else {
                 val remote = UserClient.apiService.getUsers("Bearer $token")
                 val users = remote.data ?: emptyList()
+                val genders = users.mapNotNull { it.gender }.distinctBy { it._id }
+                val roles = users.mapNotNull { it.role }.distinctBy { it._id }
+                genderDao.insertGenders(genders.map { it.toEntity() })
+                roleDao.insertRoles(roles.map { it.toEntity() })
                 userDao.clearUsers()
-                userDao.insertUser(users.map { it.toEntity() })
+                userDao.insertUsers(users.map { it.toEntity() })
                 lastCacheTime = System.currentTimeMillis()
                 Result.success(users)
             }
@@ -40,7 +47,6 @@ class UserRepository(
             if (local != null) {
                 return Result.success(local.toDomain())
             }
-
             val remote = UserClient.apiService.getUserById("Bearer $token", userId)
             saveUserToCache(remote)
             Result.success(remote)
@@ -49,7 +55,9 @@ class UserRepository(
         }
     }
     suspend fun saveUserToCache(user: User) {
-        userDao.insertUser(listOf(user.toEntity()))
+        user.gender?.let { genderDao.insertGenders(listOf(it.toEntity())) }
+        user.role?.let { roleDao.insertRoles(listOf(it.toEntity())) }
+        userDao.insertUsers(listOf(user.toEntity()))
     }
 
     suspend fun getUser(token: String, email: String): Result<User> {

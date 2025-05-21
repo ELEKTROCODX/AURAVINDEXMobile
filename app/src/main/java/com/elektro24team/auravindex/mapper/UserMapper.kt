@@ -1,6 +1,5 @@
 package com.elektro24team.auravindex.mapper
 
-import com.elektro24team.auravindex.model.Author
 import com.elektro24team.auravindex.model.User
 import com.elektro24team.auravindex.model.Gender
 import com.elektro24team.auravindex.model.Role

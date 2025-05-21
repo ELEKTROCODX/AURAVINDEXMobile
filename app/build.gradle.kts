@@ -57,6 +57,7 @@ dependencies {
         exclude(group = "com.intellij", module = "annotations")
     }
 
+    implementation(libs.gson)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.retrofit)

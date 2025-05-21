@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -35,6 +36,7 @@ import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,6 +163,7 @@ fun AdminDashBoardScreen(
                                 AdminDashboardObject.AUDIT_LOG.name.lowercase() -> {
                                     ObserveTokenExpiration(auditLogViewModel, navController, localSettingViewModel)
                                     ObserveInsufficentPermissions(auditLogViewModel, navController)
+                                    ObserveError(auditLogViewModel)
                                     val auditLogs by auditLogViewModel.auditLogs.observeAsState()
                                     LaunchedEffect(Unit) {
                                         auditLogViewModel.getAuditLogs(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))

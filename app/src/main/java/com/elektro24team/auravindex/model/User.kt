@@ -3,7 +3,7 @@ package com.elektro24team.auravindex.model
 data class User(
     val __v: Int,
     val _id: String,
-    val address: String,
+    val address: String?,
     val biography: String,
     val birthdate: String,
     val createdAt: String,
