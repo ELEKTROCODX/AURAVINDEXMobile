@@ -43,7 +43,6 @@ fun MainScreen(
     val showTeamDialog = remember { mutableStateOf(false) }
     val books by bookViewModel.books.observeAsState(emptyList())
     val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
-    val user by userViewModel.user.observeAsState()
     val localSettings by localSettingViewModel.settings.collectAsState()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
     var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.SUBSCRIBE_TO_PLAN) }
@@ -102,9 +101,6 @@ fun MainScreen(
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                     ) {
-                        user?.let{
-                            Text("Bienvenido: ${user?.name}")
-                        }
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)

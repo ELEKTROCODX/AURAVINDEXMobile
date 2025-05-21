@@ -48,12 +48,7 @@ fun LoginScreen(
     ObserveError(authViewModel)
     LaunchedEffect(loginResult) {
         if (loginResult != null && loginResult != "") {
-            localSettingViewModel.clearSetting(SettingKey.TOKEN.keySetting)
-            localSettingViewModel.clearSetting(SettingKey.ID.keySetting)
-            localSettingViewModel.clearSetting(SettingKey.EMAIL.keySetting)
-            localSettingViewModel.clearSetting(SettingKey.PROFILE_IMAGE.keySetting)
-            localSettingViewModel.clearSetting(SettingKey.ROLE_ID.keySetting)
-            localSettingViewModel.clearSetting(SettingKey.ROLE_NAME.keySetting)
+            localSettingViewModel.clearSettings(SettingKey.TOKEN.keySetting, SettingKey.ID.keySetting, SettingKey.EMAIL.keySetting, SettingKey.PROFILE_IMAGE.keySetting, SettingKey.ROLE_ID.keySetting, SettingKey.ROLE_NAME.keySetting)
             userViewModel.getUserByEmail(loginResult!!, userEmail.value)
         }
     }
@@ -67,6 +62,8 @@ fun LoginScreen(
             localSettingViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user?.role?.name.toString())
             userEmail.value = ""
             userPassword.value = ""
+            authViewModel.loginResult.value = ""
+            userViewModel.user.value = null
             Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
             navController.navigate(Routes.MAIN)        }
     }

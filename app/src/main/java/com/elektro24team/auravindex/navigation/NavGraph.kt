@@ -174,7 +174,11 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             )
         }
         composable(Routes.PROFILE) {
-            ProfileScreen(navController = navController)
+            ProfileScreen(
+                navController = navController,
+                userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel
+            )
         }
         composable(Routes.SEARCH) {
             SearchScreen(

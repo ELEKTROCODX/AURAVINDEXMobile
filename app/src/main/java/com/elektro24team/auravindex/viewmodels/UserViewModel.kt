@@ -39,6 +39,26 @@ class UserViewModel(
         }
     }
 
+    fun getUserById(token: String, userId: String) {
+        viewModelScope.launch {
+            val result = repository.getUserById(token, userId)
+            if(result.isSuccess) {
+                _user.value = result.getOrNull()
+            } else {
+                val error = result.exceptionOrNull()
+                if(error is HttpException) {
+                    when(error.code()){
+                        401 -> notifyTokenExpired()
+                        403 -> notifyInsufficentPermissions()
+                        else -> notifyError("HTTP error: ${error.code()}")
+                    }
+                } else {
+                notifyError("Network error: ${error?.message}")
+                }
+            }
+        }
+    }
+
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     fun getUsers(token: String){
         viewModelScope.launch {

@@ -51,6 +51,8 @@ import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
@@ -67,7 +69,7 @@ fun AdminUserCard(
     val colors = androidx.compose.material3.MaterialTheme.colorScheme
     val settings = localSettingViewModel.settings.collectAsState()
     LaunchedEffect(Unit) {
-        userViewModel.getUserByEmail(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), userId)
+        userViewModel.getUserById(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), userId)
     }
     Card(
         modifier = Modifier
@@ -188,7 +190,7 @@ fun AdminUserCard(
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                 )
                 Text(
-                    text = user.value?.birthdate ?: "Not available",
+                    text = formatUtcToLocalWithDate(user.value?.birthdate),
                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                 )
             }
