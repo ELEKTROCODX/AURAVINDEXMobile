@@ -27,6 +27,7 @@ import com.elektro24team.auravindex.model.AuditLog
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocal
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
@@ -78,7 +79,7 @@ fun AdminAuditLogTable(
                         TableCell(auditLog.user?.email ?: "Unknown", 160.dp)
                         TableCell(auditLog.action.action_code, 160.dp)
                         TableCell(auditLog.affected_object, 160.dp)
-                        TableCell(auditLog.createdAt, 160.dp)
+                        TableCell(formatUtcToLocal(auditLog.createdAt), 160.dp)
                     }
                     Divider()
                 }
