@@ -70,7 +70,6 @@ fun AdminAuditLogTable(
                 currentPageAuditLogs.forEach { auditLog ->
                     Row(
                         modifier = Modifier
-                            .clickable { navController.navigate("admin_dashboard/audit_log/${auditLog._id}") }
                             .padding(vertical = 6.dp)
                     ) {
                        /* val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
