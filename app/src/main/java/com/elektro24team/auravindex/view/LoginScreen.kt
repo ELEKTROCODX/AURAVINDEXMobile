@@ -1,40 +1,34 @@
 package com.elektro24team.auravindex.view
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.navigation.Routes
-import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
-import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
-import com.elektro24team.auravindex.viewmodels.LoginViewModel
+import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 
@@ -42,31 +36,39 @@ import com.elektro24team.auravindex.viewmodels.UserViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
+    authViewModel: AuthViewModel,
     userViewModel: UserViewModel,
     localSettingViewModel: LocalSettingViewModel
 ) {
     val context = LocalContext.current
-    val viewModel: LoginViewModel = viewModel()
-    val userResult by userViewModel.user.observeAsState()
-    val loginResult by viewModel.loginResult.observeAsState()
+    val loginResult by authViewModel.loginResult.observeAsState()
+    val user by userViewModel.user.observeAsState()
     val userEmail = remember { mutableStateOf("") }
     val userPassword = remember { mutableStateOf("") }
+    ObserveError(authViewModel)
     LaunchedEffect(loginResult) {
-        loginResult?.onSuccess { token ->
-            localSettingViewModel.saveSetting(SettingKey.TOKEN.keySetting, token)
-            userViewModel.getUser(token, userEmail.value)
-        }?.onFailure { error ->
-            Toast.makeText(context, "Error de login: ${error.message}", Toast.LENGTH_SHORT).show()
+        if (loginResult != null && loginResult != "") {
+            localSettingViewModel.clearSetting(SettingKey.TOKEN.keySetting)
+            localSettingViewModel.clearSetting(SettingKey.ID.keySetting)
+            localSettingViewModel.clearSetting(SettingKey.EMAIL.keySetting)
+            localSettingViewModel.clearSetting(SettingKey.PROFILE_IMAGE.keySetting)
+            localSettingViewModel.clearSetting(SettingKey.ROLE_ID.keySetting)
+            localSettingViewModel.clearSetting(SettingKey.ROLE_NAME.keySetting)
+            userViewModel.getUserByEmail(loginResult!!, userEmail.value)
         }
     }
-    LaunchedEffect(userResult) {
-        userResult?.let { user ->
-            localSettingViewModel.saveSetting(SettingKey.EMAIL.keySetting, user.email)
-            localSettingViewModel.saveSetting(SettingKey.ID.keySetting, user._id)
-            localSettingViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user.role?.name ?: "Unknown")
-            localSettingViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user.role?._id ?: "Unknown")
-            navController.navigate(Routes.MAIN)
-        }
+    LaunchedEffect(user) {
+        if (user != null) {
+            localSettingViewModel.saveSetting(SettingKey.TOKEN.keySetting, loginResult!!)
+            localSettingViewModel.saveSetting(SettingKey.EMAIL.keySetting, userEmail.value)
+            localSettingViewModel.saveSetting(SettingKey.ID.keySetting, user?._id.toString())
+            localSettingViewModel.saveSetting(SettingKey.PROFILE_IMAGE.keySetting, user?.user_img.toString())
+            localSettingViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user?.role?._id.toString())
+            localSettingViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user?.role?.name.toString())
+            userEmail.value = ""
+            userPassword.value = ""
+            Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+            navController.navigate(Routes.MAIN)        }
     }
     Scaffold(
         content = { paddingValues ->
@@ -104,8 +106,7 @@ fun LoginScreen(
                     )
                     Button(
                         onClick = {
-                            Log.d("Email: ", userEmail.value)
-                            viewModel.login(userEmail.value, userPassword.value)
+                            authViewModel.login(userEmail.value, userPassword.value)
                         },
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {

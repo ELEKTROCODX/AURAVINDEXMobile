@@ -2,13 +2,9 @@ package com.elektro24team.auravindex.viewmodels
 
 import retrofit2.HttpException
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresExtension
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elektro24team.auravindex.data.repository.BookRepository
 import com.elektro24team.auravindex.data.repository.UserRepository
 import com.elektro24team.auravindex.model.User
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
@@ -23,7 +19,7 @@ class UserViewModel(
     val users: MutableLiveData<List<User>> = _users
     val user: MutableLiveData<User> = _user
 
-    fun getUser(token: String, email: String) {
+    fun getUserByEmail(token: String, email: String) {
         viewModelScope.launch {
             val result = repository.getUser(token, email)
             if (result.isSuccess) {

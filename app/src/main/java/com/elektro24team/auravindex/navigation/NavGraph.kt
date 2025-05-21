@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.elektro24team.auravindex.utils.rememberAuditLogViewModel
+import com.elektro24team.auravindex.utils.rememberAuthViewModel
 import com.elektro24team.auravindex.utils.rememberBookCollectionViewModel
 import com.elektro24team.auravindex.utils.rememberBookViewModel
 import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
@@ -18,6 +20,7 @@ import com.elektro24team.auravindex.utils.rememberPlanViewModel
 import com.elektro24team.auravindex.utils.rememberUserViewModel
 import com.elektro24team.auravindex.view.*
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
+import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
@@ -47,10 +50,12 @@ object Routes {
     const val WELCOME = "welcome"
 }
 
+@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(startDestination: String = Routes.WELCOME) {
     val navController = rememberNavController()
+    val authViewModel: AuthViewModel = rememberAuthViewModel()
     val bookViewModel: BookViewModel = rememberBookViewModel()
     val planViewModel: PlanViewModel = rememberPlanViewModel()
     val bookCollectionViewModel: BookCollectionViewModel = rememberBookCollectionViewModel()
@@ -146,6 +151,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.LOGIN) {
             LoginScreen(
                 navController = navController,
+                authViewModel = authViewModel,
                 userViewModel = userViewModel,
                 localSettingViewModel = localSettingViewModel
             )

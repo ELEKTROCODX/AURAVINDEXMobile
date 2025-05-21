@@ -28,12 +28,6 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocal
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
-import java.util.TimeZone
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

@@ -51,7 +51,6 @@ import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.utils.enums.SettingKey
-import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
@@ -68,7 +67,7 @@ fun AdminUserCard(
     val colors = androidx.compose.material3.MaterialTheme.colorScheme
     val settings = localSettingViewModel.settings.collectAsState()
     LaunchedEffect(Unit) {
-        userViewModel.getUser(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), userId)
+        userViewModel.getUserByEmail(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), userId)
     }
     Card(
         modifier = Modifier

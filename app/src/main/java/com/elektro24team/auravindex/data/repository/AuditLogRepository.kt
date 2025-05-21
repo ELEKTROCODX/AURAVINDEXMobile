@@ -11,7 +11,7 @@ import com.elektro24team.auravindex.retrofit.AuditLogClient
 class AuditLogRepository(
     private val auditLogDao: AuditLogDao
 ) {
-    private val CACHE_EXPIRY_MS = 10 * 60 * 1000L // 10 min
+    private val CACHE_EXPIRY_MS = 1 * 60 * 1000L // 1 min
 
     @Volatile
     private var lastCacheTime: Long = 0
