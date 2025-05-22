@@ -193,7 +193,7 @@ fun DrawerMenu(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp)
-                        .clickable { onItemSelected("signout") }
+                        .clickable { onItemSelected("logout") }
                 )
             } else {
                 Text(

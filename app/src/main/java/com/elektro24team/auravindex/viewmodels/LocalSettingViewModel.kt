@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.LocalSettingRepository
+import com.elektro24team.auravindex.utils.enums.SettingKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -51,6 +52,19 @@ class LocalSettingViewModel(
         val results = mutableMapOf<String, String>()
         keys.forEach { key ->
             repository.clearSetting(key)
+        }
+    }
+    fun clearUserSettings() {
+        viewModelScope.launch {
+            var keys = listOf(
+                SettingKey.ID.keySetting,
+                SettingKey.EMAIL.keySetting,
+                SettingKey.PROFILE_IMAGE.keySetting,
+                SettingKey.TOKEN.keySetting,
+                SettingKey.ROLE_NAME.keySetting,
+                SettingKey.ROLE_ID.keySetting,
+            )
+            clearSettings(*keys.toTypedArray())
         }
     }
 }

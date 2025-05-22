@@ -1,11 +1,13 @@
 package com.elektro24team.auravindex.navigation
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -37,6 +39,7 @@ object Routes {
     const val COLLECTION_BOOKS = "collection_books/{collectionName}/{collectionId}"
     const val LISTS = "lists"
     const val LOGIN = "login"
+    const val LOGOUT = "logout"
     const val MAIN = "main"
     const val NOTIFICATIONS = "notifications"
     const val PLANS = "plans"
@@ -155,6 +158,11 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 userViewModel = userViewModel,
                 localSettingViewModel = localSettingViewModel
             )
+        }
+        composable(Routes.LOGOUT) {
+            localSettingViewModel.clearUserSettings()
+            Toast.makeText(LocalContext.current, "Successfully logged out.", Toast.LENGTH_LONG).show()
+            navController.navigate(Routes.WELCOME)
         }
         composable(Routes.MAIN) {
             MainScreen(

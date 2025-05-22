@@ -48,7 +48,7 @@ fun LoginScreen(
     ObserveError(authViewModel)
     LaunchedEffect(loginResult) {
         if (loginResult != null && loginResult != "") {
-            localSettingViewModel.clearSettings(SettingKey.TOKEN.keySetting, SettingKey.ID.keySetting, SettingKey.EMAIL.keySetting, SettingKey.PROFILE_IMAGE.keySetting, SettingKey.ROLE_ID.keySetting, SettingKey.ROLE_NAME.keySetting)
+            localSettingViewModel.clearUserSettings()
             userViewModel.getUserByEmail(loginResult!!, userEmail.value)
         }
     }
@@ -64,7 +64,7 @@ fun LoginScreen(
             userPassword.value = ""
             authViewModel.loginResult.value = ""
             userViewModel.user.value = null
-            Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Successfully logged in.", Toast.LENGTH_SHORT).show()
             navController.navigate(Routes.MAIN)        }
     }
     Scaffold(
