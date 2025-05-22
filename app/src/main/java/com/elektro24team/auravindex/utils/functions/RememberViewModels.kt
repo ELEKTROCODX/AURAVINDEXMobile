@@ -1,10 +1,8 @@
-package com.elektro24team.auravindex.utils
+package com.elektro24team.auravindex.utils.functions
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.data.local.AuraVindexDatabase
 import com.elektro24team.auravindex.data.repository.AuditLogRepository

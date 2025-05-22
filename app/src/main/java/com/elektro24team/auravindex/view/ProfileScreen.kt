@@ -15,14 +15,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -65,11 +59,13 @@ import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
-import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
+import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
-import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
@@ -89,11 +85,14 @@ fun ProfileScreen(
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val user = userViewModel.user.observeAsState()
-    val colors = androidx.compose.material3.MaterialTheme.colorScheme
+    val colors = MaterialTheme.colorScheme
     val localSettings = localSettingViewModel.settings.collectAsState()
     LaunchedEffect(Unit) {
         localSettingViewModel.loadSettings(SettingKey.TOKEN.keySetting, SettingKey.ID.keySetting)
         userViewModel.getUserById(localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), localSettings.value.getOrDefault(SettingKey.ID.keySetting, ""))
+    }
+    if(!isLoggedIn(localSettings.value)) {
+        mustBeLoggedInToast(AppAction.ACCESS_PROFILE_PAGE, navController, Routes.MAIN)
     }
     ModalNavigationDrawer(
         drawerContent = {

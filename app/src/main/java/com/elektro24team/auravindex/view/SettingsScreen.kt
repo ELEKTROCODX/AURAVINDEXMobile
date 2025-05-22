@@ -41,7 +41,7 @@ import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
-import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import java.text.SimpleDateFormat
 import java.time.Instant

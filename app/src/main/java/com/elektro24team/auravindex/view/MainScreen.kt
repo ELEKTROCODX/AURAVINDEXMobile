@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.HomePageSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
-import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog

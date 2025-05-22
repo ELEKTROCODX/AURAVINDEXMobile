@@ -10,21 +10,15 @@ import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material.icons.filled.PrivacyTip
-import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Terminal
-import androidx.compose.material.icons.outlined.Groups
-import androidx.compose.material.icons.sharp.Article
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,8 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
@@ -47,7 +39,7 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.isAdmin
 import com.elektro24team.auravindex.utils.functions.isInAdminDashboard
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
-import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.utils.functions.rememberLocalSettingViewModel
 
 //MENU HAMBURGUESA DE TIPO DRAWER O CAJON
 @Composable

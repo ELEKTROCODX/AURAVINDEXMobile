@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.ui.theme.PurpleC
-import com.elektro24team.auravindex.utils.rememberBookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 
 @Composable

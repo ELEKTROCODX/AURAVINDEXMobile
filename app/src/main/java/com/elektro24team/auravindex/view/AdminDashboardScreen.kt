@@ -22,7 +22,7 @@ import com.elektro24team.auravindex.ui.components.AdminPlanTable
 import com.elektro24team.auravindex.ui.components.AdminUserCard
 import com.elektro24team.auravindex.ui.components.AdminUserTable
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
-import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
 import com.elektro24team.auravindex.utils.enums.AppAction
