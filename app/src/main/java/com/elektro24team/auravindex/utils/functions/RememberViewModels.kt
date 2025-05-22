@@ -17,6 +17,7 @@ import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
+import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.factories.AuditLogViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.BookCollectionViewModelFactory
@@ -85,4 +86,9 @@ fun rememberAuditLogViewModel(): AuditLogViewModel {
 fun rememberAuthViewModel(): AuthViewModel {
     return viewModel()
 
+}
+
+@Composable
+fun rememberRecentBookViewModel(): RecentBookViewModel {
+    return viewModel()
 }

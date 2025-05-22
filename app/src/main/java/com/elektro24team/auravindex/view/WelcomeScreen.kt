@@ -40,6 +40,7 @@ fun WelcomeScreen(
         localSettingViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
         localSettingViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
         localSettingViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
+        localSettingViewModel.loadUserSettings()
 
         bookViewModel.loadBooks(showDuplicates = true, showLents = true)
         bookViewModel.fetchLatestReleases()

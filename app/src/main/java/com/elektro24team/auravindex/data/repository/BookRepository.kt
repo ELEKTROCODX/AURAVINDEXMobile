@@ -6,6 +6,7 @@ import com.elektro24team.auravindex.mapper.toDomain
 import com.elektro24team.auravindex.mapper.toEntity
 import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.retrofit.BookClient
+import com.elektro24team.auravindex.retrofit.UserClient
 
 
 class BookRepository(
@@ -42,6 +43,15 @@ class BookRepository(
         saveBookToCache(remote)
 
         return remote
+    }
+    suspend fun getBookByIdWithAuth(token: String, bookId: String): Result<Book> {
+        return try {
+            val remote = BookClient.apiService.getBookByIdWithAuth("Bearer $token", bookId)
+            saveBookToCache(remote)
+            Result.success(remote)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
     suspend fun saveBookToCache(book: Book) {
         val bookEntity = book.toEntity()

@@ -1,8 +1,11 @@
 package com.elektro24team.auravindex.view
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -18,14 +21,18 @@ import com.elektro24team.auravindex.ui.components.HomePageSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.AuraVindexApp
+import com.elektro24team.auravindex.model.RecentBook
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.AppAction
+import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,6 +40,7 @@ fun MainScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
     userViewModel: UserViewModel,
+    recentBookViewModel: RecentBookViewModel,
     localSettingViewModel: LocalSettingViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -44,13 +52,21 @@ fun MainScreen(
     val books by bookViewModel.books.observeAsState(emptyList())
     val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
     val localSettings by localSettingViewModel.settings.collectAsState()
+    val recentBooks by recentBookViewModel.recentBook.observeAsState()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
     var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.SUBSCRIBE_TO_PLAN) }
 
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
+        localSettingViewModel.loadUserSettings()
         bookViewModel.fetchLatestReleases()
+        if(isLoggedIn(localSettings)) {
+            recentBookViewModel.loadRecentBooks(localSettings[SettingKey.TOKEN.keySetting] ?: "", localSettings[SettingKey.ID.keySetting] ?: "")
+        }
     }
+    ObserveError(bookViewModel)
+    ObserveError(userViewModel)
+    ObserveError(recentBookViewModel)
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -112,33 +128,33 @@ fun MainScreen(
                                 onDismiss = { showMustBeLoggedInDialog = false }
                             )
                         }
-
-                        LazyColumn(
+                        Column(
                             modifier = Modifier
-                                .fillMaxSize(),
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            // Recent searches
-
-                            // Recommendations
-                            item {
+                            if(isLoggedIn(localSettings) && recentBooks?.books != null ) {
                                 HomePageSection(
-                                    "Recommendations",
-                                    books.take(10),
+                                    "Recent searches",
+                                    recentBooks?.books,
                                     seeMoreAction = { navController.navigate(Routes.SEARCH) },
                                     navController
                                 )
                             }
-                            // New releases
-                            item {
-                                HomePageSection(
-                                    "New releases",
-                                    latestReleases,
-                                    seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                    navController
-                                )
-                            }
+                            HomePageSection(
+                                "Recommendations",
+                                books.take(10),
+                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                                navController
+                            )
+                            HomePageSection(
+                                "New releases",
+                                latestReleases,
+                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                                navController
+                            )
                         }
                     }
                 }

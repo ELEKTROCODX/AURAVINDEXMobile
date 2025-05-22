@@ -10,6 +10,7 @@ import com.elektro24team.auravindex.model.local.BookEntity
 import com.elektro24team.auravindex.retrofit.BookClient
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import kotlin.collections.filter
 import kotlin.text.contains
 
@@ -21,10 +22,10 @@ class BookViewModel(
     private val _book = MutableLiveData<Book>()
     private val _filteredBooks = MutableLiveData<List<Book>>()
     private val _latestReleases = MutableLiveData<List<Book>>()
-    val books: LiveData<List<Book>> = _books
-    val book: LiveData<Book> = _book
-    val filteredBooks: LiveData<List<Book>> = _filteredBooks
-    val latestReleases: LiveData<List<Book>> = _latestReleases
+    val books: MutableLiveData<List<Book>> = _books
+    val book: MutableLiveData<Book> = _book
+    val filteredBooks: MutableLiveData<List<Book>> = _filteredBooks
+    val latestReleases: MutableLiveData<List<Book>> = _latestReleases
 
     suspend fun loadBooks(showDuplicates: Boolean, showLents: Boolean) {
         val result = repository.getAllBooks(showDuplicates, showLents)
@@ -114,7 +115,6 @@ class BookViewModel(
         }?.sortedByDescending { it.second }?.map { it.first }
         _filteredBooks.postValue(filtered ?: emptyList())
     }
-
     fun loadBook(bookId: String) {
         viewModelScope.launch {
             if( _books.value?.find{ it._id == bookId } == null) {
@@ -125,7 +125,24 @@ class BookViewModel(
                 _book.postValue(_books.value?.find{ it._id == bookId })
             }
         }
-
     }
-    
+    fun fetchBookWithAuth(token: String, bookId: String) {
+        viewModelScope.launch {
+            val result = repository.getBookByIdWithAuth(token, bookId)
+            if (result.isSuccess) {
+                _book.value = result.getOrNull()
+            } else {
+                val error = result.exceptionOrNull()
+                if (error is HttpException) {
+                    when (error.code()) {
+                        401 -> notifyTokenExpired()
+                        403 -> notifyInsufficentPermissions()
+                        else -> notifyError("HTTP error: ${error.code()}")
+                    }
+                } else {
+                    notifyError("Network error: ${error?.message}")
+                }
+            }
+        }
+    }
 }

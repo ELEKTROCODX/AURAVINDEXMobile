@@ -19,6 +19,7 @@ import com.elektro24team.auravindex.utils.functions.rememberBookCollectionViewMo
 import com.elektro24team.auravindex.utils.functions.rememberBookViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLocalSettingViewModel
 import com.elektro24team.auravindex.utils.functions.rememberPlanViewModel
+import com.elektro24team.auravindex.utils.functions.rememberRecentBookViewModel
 import com.elektro24team.auravindex.utils.functions.rememberUserViewModel
 import com.elektro24team.auravindex.view.*
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
@@ -27,6 +28,7 @@ import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
+import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 
@@ -65,6 +67,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val localSettingViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
     val userViewModel : UserViewModel = rememberUserViewModel()
     val auditLogViewModel : AuditLogViewModel = rememberAuditLogViewModel()
+    val recentBookViewModel: RecentBookViewModel = rememberRecentBookViewModel()
     val localSettings by localSettingViewModel.settings.collectAsState()
 
     NavHost(navController = navController, startDestination = startDestination) {
@@ -127,7 +130,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             BookScreen(
                 navController = navController,
                 bookId = bookId ?: "",
-                bookViewModel = bookViewModel
+                bookViewModel = bookViewModel,
+                localSettingViewModel = localSettingViewModel
             )
         }
         composable(
@@ -169,7 +173,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navController = navController,
                 bookViewModel = bookViewModel,
                 userViewModel = userViewModel,
-                localSettingViewModel = localSettingViewModel
+                recentBookViewModel = recentBookViewModel,
+                localSettingViewModel = localSettingViewModel,
             )
         }
         /*composable(Routes.NOTIFICATIONS) {

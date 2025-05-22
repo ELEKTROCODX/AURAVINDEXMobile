@@ -32,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -66,8 +67,11 @@ import com.elektro24team.auravindex.ui.theme.MediumPadding
 import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
+import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -76,17 +80,22 @@ import com.skydoves.landscapist.glide.GlideImage
 fun BookScreen(
     navController: NavController,
     bookId: String,
-    bookViewModel: BookViewModel
+    bookViewModel: BookViewModel,
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val book = remember { mutableStateOf<Book?>(bookViewModel.books.value?.find { it._id == bookId }) }
+    val book = bookViewModel.book.observeAsState()
+    val settings = localSettingViewModel.settings.collectAsState()
     LaunchedEffect(bookId) {
-        bookViewModel.loadBook(bookId)
+        if(isLoggedIn(settings.value)) {
+            bookViewModel.fetchBookWithAuth(settings.value[SettingKey.TOKEN.keySetting].toString(), bookId)
+        } else {
+            bookViewModel.loadBook(bookId)
+        }
     }
 
     ModalNavigationDrawer(

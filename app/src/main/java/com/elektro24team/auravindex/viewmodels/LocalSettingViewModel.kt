@@ -34,6 +34,19 @@ class LocalSettingViewModel(
             _settings.update { it + (keySetting to (result ?: "")) }
         }
     }
+    fun loadUserSettings() {
+        viewModelScope.launch {
+            var keys = listOf(
+                SettingKey.ID.keySetting,
+                SettingKey.EMAIL.keySetting,
+                SettingKey.PROFILE_IMAGE.keySetting,
+                SettingKey.TOKEN.keySetting,
+                SettingKey.ROLE_NAME.keySetting,
+                SettingKey.ROLE_ID.keySetting,
+            )
+            loadSettings(*keys.toTypedArray())
+        }
+    }
 
     fun saveSetting(keySetting: String, keyValue: String) {
         viewModelScope.launch {
