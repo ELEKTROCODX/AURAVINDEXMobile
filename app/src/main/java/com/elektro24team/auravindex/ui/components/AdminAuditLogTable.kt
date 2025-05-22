@@ -40,7 +40,7 @@ fun AdminAuditLogTable(
     var totalPages = (auditLogs.size + rowsPerPage - 1) / rowsPerPage
     val currentPageAuditLogs = auditLogs.drop(currentPage * rowsPerPage).take(rowsPerPage)
     Text(
-        text = "Audit logs",
+        text = "API Audit logs",
         style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
         modifier = Modifier.padding(start = 4.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
     )
