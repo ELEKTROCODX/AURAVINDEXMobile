@@ -65,7 +65,9 @@ fun LoginScreen(
             authViewModel.loginResult.value = ""
             userViewModel.user.value = null
             Toast.makeText(context, "Successfully logged in.", Toast.LENGTH_SHORT).show()
-            navController.navigate(Routes.MAIN)        }
+            localSettingViewModel.saveSetting(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis().toString())
+            navController.navigate(Routes.MAIN)
+        }
     }
     Scaffold(
         content = { paddingValues ->

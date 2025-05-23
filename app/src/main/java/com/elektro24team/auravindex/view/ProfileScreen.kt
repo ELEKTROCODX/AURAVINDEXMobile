@@ -139,11 +139,6 @@ fun ProfileScreen(
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
-                        Text(
-                            text = "Profile screen (dev)",
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
                         Card(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -154,16 +149,6 @@ fun ProfileScreen(
                             shape = androidx.compose.material.MaterialTheme.shapes.medium
                         ) {
                             val imageUrl = IMG_url.trimEnd('/') + "/" + user?.value?.user_img?.trimStart('/')
-                            androidx.compose.material.Text(
-                                text = "${user?.value?.name} ${user?.value?.last_name}",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 25.sp,
-                                    color = MaterialTheme.colorScheme.primary
-                                ),
-                                modifier = Modifier.padding(top = 16.dp)
-                            )
-                            Spacer(modifier = Modifier.height(20.dp))
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -197,7 +182,7 @@ fun ProfileScreen(
                             }
                             Spacer(modifier = Modifier.height(20.dp))
                             Column(modifier = Modifier.fillMaxWidth()) {
-                                androidx.compose.material.Text(
+                                Text(
                                     text = "User Details",
                                     style = TextStyle(
                                         fontWeight = FontWeight.Bold,
@@ -213,7 +198,27 @@ fun ProfileScreen(
                                         .padding(vertical = 4.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    androidx.compose.material.Text(
+                                    Text(
+                                        text = "Name: ",
+                                        style = TextStyle(
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 16.sp,
+                                            color = Color(0xFF572365)
+                                        ),
+                                    )
+                                    Text(
+                                        text = "${user.value?.name} ${user.value?.last_name}",
+                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                    )
+                                }
+                                Divider(color = Color.LightGray, thickness = 1.dp)
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
                                         text = "Email: ",
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
@@ -221,7 +226,7 @@ fun ProfileScreen(
                                             color = Color(0xFF572365)
                                         ),
                                     )
-                                    androidx.compose.material.Text(
+                                    Text(
                                         text = user.value?.email ?: "Not available",
                                         style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                     )
@@ -233,7 +238,7 @@ fun ProfileScreen(
                                         .padding(vertical = 4.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    androidx.compose.material.Text(
+                                    Text(
                                         text = buildAnnotatedString {
                                             append("Biography: ")
                                             withStyle(
@@ -261,7 +266,7 @@ fun ProfileScreen(
                                         .padding(vertical = 4.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    androidx.compose.material.Text(
+                                    Text(
                                         text = "Gender: ",
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
@@ -269,7 +274,7 @@ fun ProfileScreen(
                                             color = Color(0xFF572365)
                                         ),
                                     )
-                                    androidx.compose.material.Text(
+                                    Text(
                                         text = user.value?.gender?.name ?: "Not available",
                                         style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                     )
@@ -281,7 +286,7 @@ fun ProfileScreen(
                                         .padding(vertical = 4.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    androidx.compose.material.Text(
+                                    Text(
                                         text = "Birthdate: ",
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
@@ -301,7 +306,27 @@ fun ProfileScreen(
                                         .padding(vertical = 4.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    androidx.compose.material.Text(
+                                    Text(
+                                        text = "Address: ",
+                                        style = TextStyle(
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 16.sp,
+                                            color = Color(0xFF572365)
+                                        ),
+                                    )
+                                    Text(
+                                        text = user.value?.address ?: "Not available",
+                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                    )
+                                }
+                                Divider(color = Color.LightGray, thickness = 1.dp)
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
                                         text = "Role: ",
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
@@ -309,7 +334,7 @@ fun ProfileScreen(
                                             color = Color(0xFF572365)
                                         ),
                                     )
-                                    androidx.compose.material.Text(
+                                    Text(
                                         text = user.value?.role?.name ?: "Not available",
                                         style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                     )

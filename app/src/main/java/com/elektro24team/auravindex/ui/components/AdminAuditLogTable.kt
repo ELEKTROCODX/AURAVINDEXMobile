@@ -55,9 +55,9 @@ fun AdminAuditLogTable(
             Column(
             ) {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                    TableHeaderCell("User", 160.dp)
-                    TableHeaderCell("Action", 160.dp)
-                    TableHeaderCell("Object", 160.dp)
+                    TableHeaderCell("User", 180.dp)
+                    TableHeaderCell("Action", 180.dp)
+                    TableHeaderCell("Object", 180.dp)
                     TableHeaderCell("Date", 160.dp)
                 }
                 Divider()
@@ -69,9 +69,9 @@ fun AdminAuditLogTable(
                        /* val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
                         formatter.timeZone = TimeZone.getTimeZone("UTC-6")
                         val formattedDate = formatter.format(auditLog.createdAt)*/
-                        TableCell(auditLog.user?.email ?: "Unknown", 160.dp)
-                        TableCell(auditLog.action.action_code, 160.dp)
-                        TableCell(auditLog.affected_object, 160.dp)
+                        TableCell(auditLog.user?.email ?: "Unknown", 180.dp)
+                        TableCell(auditLog.action.action_code, 180.dp)
+                        TableCell(auditLog.affected_object, 180.dp)
                         TableCell(formatUtcToLocalWithHour(auditLog.createdAt), 160.dp)
                     }
                     Divider()

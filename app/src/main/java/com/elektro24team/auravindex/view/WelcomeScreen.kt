@@ -54,20 +54,12 @@ fun WelcomeScreen(
             SettingKey.LAST_LOGIN.keySetting
         )
         val loaded = localSettingViewModel.loadSettings(*keys)
-
         if (loaded[SettingKey.DARK_MODE.keySetting].isNullOrBlank()) {
             localSettingViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, "false")
         }
-
         if (loaded[SettingKey.LANGUAGE.keySetting].isNullOrBlank()) {
             localSettingViewModel.saveSetting(SettingKey.LANGUAGE.keySetting, "English")
         }
-
-        localSettingViewModel.saveSetting(
-            SettingKey.LAST_LOGIN.keySetting,
-            System.currentTimeMillis().toString()
-        )
-
         isReadyToNavigate = true
     }
 
