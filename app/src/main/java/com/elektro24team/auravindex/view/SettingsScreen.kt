@@ -5,16 +5,13 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -44,14 +41,12 @@ import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
-import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
-import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
@@ -60,7 +55,7 @@ import java.util.TimeZone
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    localSettingsViewModel: LocalSettingViewModel
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -68,18 +63,18 @@ fun SettingsScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val localSettings by localSettingsViewModel.settings.collectAsState()
+    val localSettings by localSettingViewModel.settings.collectAsState()
     LaunchedEffect(Unit) {
-        localSettingsViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.ID.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.TOKEN.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.ROLE_NAME.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.ID.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.EMAIL.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.TOKEN.keySetting)
+        localSettingViewModel.loadSetting(SettingKey.ROLE_NAME.keySetting)
     }
     ModalNavigationDrawer(
         drawerContent = {
@@ -152,7 +147,7 @@ fun SettingsScreen(
                                 Switch(
                                     checked = localSettings.getOrDefault(SettingKey.DARK_MODE.keySetting, "false").toBoolean(),
                                     onCheckedChange = {
-                                        localSettingsViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, it.toString())
+                                        localSettingViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, it.toString())
                                     }
                                 )
 
@@ -185,7 +180,7 @@ fun SettingsScreen(
                                 Switch(
                                     checked = localSettings.getOrDefault(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, "false").toBoolean(),
                                     onCheckedChange = {
-                                        localSettingsViewModel.saveSetting(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, it.toString())
+                                        localSettingViewModel.saveSetting(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, it.toString())
                                     }
                                 )
                             }
@@ -201,7 +196,7 @@ fun SettingsScreen(
                                 Switch(
                                     checked = localSettings.getOrDefault(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, "false").toBoolean(),
                                     onCheckedChange = {
-                                        localSettingsViewModel.saveSetting(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, it.toString())
+                                        localSettingViewModel.saveSetting(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, it.toString())
                                     }
                                 )
                             }
@@ -217,7 +212,7 @@ fun SettingsScreen(
                                 Switch(
                                     checked = localSettings.getOrDefault(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, "false").toBoolean(),
                                     onCheckedChange = {
-                                        localSettingsViewModel.saveSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, it.toString())
+                                        localSettingViewModel.saveSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, it.toString())
                                     }
                                 )
                             }
@@ -232,12 +227,10 @@ fun SettingsScreen(
                                 )
                                 val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
                                 formatter.timeZone = TimeZone.getTimeZone("UTC-6")
-
                                 val lastLoginMillis = localSettings.getOrDefault(
                                     SettingKey.LAST_LOGIN.keySetting,
                                     System.currentTimeMillis().toString()
                                 ).toLongOrNull() ?: System.currentTimeMillis()
-
                                 val formattedDate = Instant.ofEpochMilli(lastLoginMillis)
                                     .atZone(ZoneId.of("America/El_Salvador"))
                                     .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
@@ -289,6 +282,19 @@ fun SettingsScreen(
                                 )
                                 Text(
                                     text = if ((localSettings.containsKey(SettingKey.ROLE_NAME.keySetting)) && (localSettings[SettingKey.ROLE_NAME.keySetting] != "")) localSettings[SettingKey.ROLE_NAME.keySetting] ?: "N/A" else "N/A",
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "User token: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = if ((localSettings.containsKey(SettingKey.TOKEN.keySetting)) && (localSettings[SettingKey.TOKEN.keySetting] != "")) localSettings[SettingKey.TOKEN.keySetting] ?: "N/A" else "N/A",
                                 )
                             }
                         }

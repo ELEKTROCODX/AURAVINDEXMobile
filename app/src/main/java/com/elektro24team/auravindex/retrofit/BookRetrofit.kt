@@ -6,6 +6,7 @@ import com.elektro24team.auravindex.utils.constants.URLs.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -25,6 +26,12 @@ interface BookService{
 
     @GET("book/{id}")
     suspend fun getBookById(
+        @Path("id") id: String
+    ): Book
+
+    @GET("book/{id}")
+    suspend fun getBookByIdWithAuth(
+        @Header("Authorization") token: String,
         @Path("id") id: String
     ): Book
 

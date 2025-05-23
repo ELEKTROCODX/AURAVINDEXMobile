@@ -1,44 +1,34 @@
 package com.elektro24team.auravindex.view
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.navigation.Routes
-import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
-import com.elektro24team.auravindex.ui.components.DrawerMenu
-import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
-import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
-import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
-import com.elektro24team.auravindex.viewmodels.LoginViewModel
+import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 
@@ -46,47 +36,40 @@ import com.elektro24team.auravindex.viewmodels.UserViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
-    localSettingsViewModel: LocalSettingViewModel
+    authViewModel: AuthViewModel,
+    userViewModel: UserViewModel,
+    localSettingViewModel: LocalSettingViewModel
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val showTermsDialog = remember { mutableStateOf(false) }
-    val showPrivacyDialog = remember { mutableStateOf(false) }
-    val showTeamDialog = remember { mutableStateOf(false) }
-    val viewModel: LoginViewModel = viewModel()
-    val userViewModel: UserViewModel = viewModel()
-    val userResult by userViewModel.user.observeAsState()
-    val loginResult by viewModel.loginResult.observeAsState()
+    val loginResult by authViewModel.loginResult.observeAsState()
+    val user by userViewModel.user.observeAsState()
     val userEmail = remember { mutableStateOf("") }
     val userPassword = remember { mutableStateOf("") }
+    ObserveError(authViewModel)
     LaunchedEffect(loginResult) {
-        loginResult?.onSuccess { token ->
-            localSettingsViewModel.saveSetting(SettingKey.TOKEN.keySetting, token)
-            userViewModel.getUser(token, userEmail.value)
-        }?.onFailure { error ->
-            Toast.makeText(context, "Error de login: ${error.message}", Toast.LENGTH_SHORT).show()
+        if (loginResult != null && loginResult != "") {
+            localSettingViewModel.clearUserSettings()
+            userViewModel.getUserByEmail(loginResult!!, userEmail.value)
         }
     }
-    LaunchedEffect(userResult) {
-        userResult?.let { user ->
-            localSettingsViewModel.saveSetting(SettingKey.EMAIL.keySetting, user.email)
-            localSettingsViewModel.saveSetting(SettingKey.ID.keySetting, user._id)
-            localSettingsViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user.role.name)
-            localSettingsViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user.role._id)
+    LaunchedEffect(user) {
+        if (user != null) {
+            localSettingViewModel.saveSetting(SettingKey.TOKEN.keySetting, loginResult!!)
+            localSettingViewModel.saveSetting(SettingKey.EMAIL.keySetting, userEmail.value)
+            localSettingViewModel.saveSetting(SettingKey.ID.keySetting, user?._id.toString())
+            localSettingViewModel.saveSetting(SettingKey.PROFILE_IMAGE.keySetting, user?.user_img.toString())
+            localSettingViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user?.role?._id.toString())
+            localSettingViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user?.role?.name.toString())
+            userEmail.value = ""
+            userPassword.value = ""
+            authViewModel.loginResult.value = ""
+            userViewModel.user.value = null
+            Toast.makeText(context, "Successfully logged in.", Toast.LENGTH_SHORT).show()
+            localSettingViewModel.saveSetting(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis().toString())
             navController.navigate(Routes.MAIN)
         }
     }
     Scaffold(
-        topBar = {
-            TopBar(navController = navController, drawerState = drawerState)
-        },
-        bottomBar = {
-            BottomNavBar(
-                currentRoute = navController.currentBackStackEntry?.destination?.route ?: "login",
-                onItemClick = { route -> navController.navigate(route) }
-            )
-        },
         content = { paddingValues ->
             Box(
                 modifier = Modifier
@@ -122,8 +105,7 @@ fun LoginScreen(
                     )
                     Button(
                         onClick = {
-                            Log.d("Email: ", userEmail.value)
-                            viewModel.login(userEmail.value, userPassword.value)
+                            authViewModel.login(userEmail.value, userPassword.value)
                         },
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {

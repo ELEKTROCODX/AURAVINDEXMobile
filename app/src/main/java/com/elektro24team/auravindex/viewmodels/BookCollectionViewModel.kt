@@ -6,11 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.BookCollectionRepository
 import com.elektro24team.auravindex.model.local.BookCollectionEntity
+import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 
 class BookCollectionViewModel(
     private val repository: BookCollectionRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _bookCollections = MutableLiveData<List<BookCollectionEntity>>()
     val bookCollections: LiveData<List<BookCollectionEntity>> = _bookCollections

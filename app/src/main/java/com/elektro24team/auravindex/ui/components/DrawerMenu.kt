@@ -10,20 +10,15 @@ import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material.icons.filled.PrivacyTip
-import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Groups
-import androidx.compose.material.icons.sharp.Article
+import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,8 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
@@ -43,8 +36,10 @@ import com.elektro24team.auravindex.utils.classes.AdminMenuItem
 import com.elektro24team.auravindex.utils.classes.DefaultMenuItem
 import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.isAdmin
 import com.elektro24team.auravindex.utils.functions.isInAdminDashboard
-import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.utils.functions.rememberLocalSettingViewModel
 
 //MENU HAMBURGUESA DE TIPO DRAWER O CAJON
 @Composable
@@ -59,6 +54,8 @@ fun DrawerMenu(
     LaunchedEffect(Unit) {
         localSettingsViewModel.loadSetting(SettingKey.ID.keySetting)
         localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.TOKEN.keySetting)
+        localSettingsViewModel.loadSetting(SettingKey.ROLE_NAME.keySetting)
     }
     Column(
         modifier = Modifier
@@ -83,13 +80,13 @@ fun DrawerMenu(
                 AdminMenuItem("Notifications", Icons.Default.Notifications, AdminDashboardObject.NOTIFICATION),
                 AdminMenuItem("Fees", Icons.Default.AttachMoney, AdminDashboardObject.FEE),
                 AdminMenuItem("Plans", Icons.AutoMirrored.Filled.List, AdminDashboardObject.PLAN),
-                AdminMenuItem("Active Plans", Icons.Default.PlayCircleFilled, AdminDashboardObject.ACTIVE_PLAN)
+                AdminMenuItem("Active Plans", Icons.Default.PlayCircleFilled, AdminDashboardObject.ACTIVE_PLAN),
+                AdminMenuItem("Audit Log", Icons.Default.Terminal, AdminDashboardObject.AUDIT_LOG)
             )
             NavigationDrawerItem(
                 label = { Text(
                     text = "Home page",
-                    color = colors.onPrimary,
-                    style = TextStyle(fontWeight = FontWeight.Bold)
+                    color = colors.onPrimary
                 ) },
                 icon = { Icon(
                     Icons.Default.Home,
@@ -98,6 +95,21 @@ fun DrawerMenu(
                 selected = false,
                 onClick = {
                     navController.navigate(Routes.MAIN)
+                },
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            )
+            NavigationDrawerItem(
+                label = { Text(
+                    text = "Admin page",
+                    color = colors.onPrimary
+                ) },
+                icon = { Icon(
+                    Icons.Filled.AdminPanelSettings,
+                    contentDescription = "Admin page",
+                    tint = colors.onPrimary) },
+                selected = false,
+                onClick = {
+                    navController.navigate(Routes.ADMIN_DASHBOARD)
                 },
                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
             )
@@ -125,8 +137,7 @@ fun DrawerMenu(
                 DefaultMenuItem("Terms of Services", Icons.Default.Newspaper, Routes.TERMS),
                 DefaultMenuItem("Privacy Policy", Icons.Filled.PrivacyTip, Routes.PRIVACY),
                 DefaultMenuItem("Team", Icons.Filled.Groups, Routes.TEAM),
-                DefaultMenuItem("Settings", Icons.Filled.Settings, Routes.SETTINGS),
-                DefaultMenuItem("Admin", Icons.Filled.AdminPanelSettings, Routes.ADMIN_DASHBOARD)
+                DefaultMenuItem("Settings", Icons.Filled.Settings, Routes.SETTINGS)
             )
             menuItems.forEach { item ->
                 NavigationDrawerItem(
@@ -145,10 +156,28 @@ fun DrawerMenu(
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
             }
+            if(isAdmin(localSettings)) {
+                NavigationDrawerItem(
+                    label = { Text(
+                        text = "Admin",
+                        color = colors.onPrimary,
+                    ) },
+                    icon = { Icon(
+                        Icons.Filled.AdminPanelSettings,
+                        contentDescription = "Admin",
+                        tint = colors.onPrimary) },
+                    selected = false,
+                    onClick = {
+                        onItemSelected(Routes.ADMIN_DASHBOARD)
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+            }
+
             /*
             * Check if user is logged in
             * */
-            if(localSettings.getOrDefault(SettingKey.ID.keySetting, "").isNotEmpty()) {
+            if(isLoggedIn(localSettings)) {
                 Text(
                     text = "Log out",
                     color = colors.secondary,
@@ -156,7 +185,17 @@ fun DrawerMenu(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp)
-                        .clickable { onItemSelected("signout") }
+                        .clickable { onItemSelected("logout") }
+                )
+            } else {
+                Text(
+                    text = "Log in",
+                    color = colors.secondary,
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 12.dp)
+                        .clickable { onItemSelected("login") }
                 )
             }
         }
