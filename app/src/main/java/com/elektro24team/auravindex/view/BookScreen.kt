@@ -400,30 +400,31 @@ fun BookScreen(
                             horizontalArrangement = Arrangement.spacedBy(16.dp), // Espaciado entre botones
                             verticalAlignment = Alignment.CenterVertically // Alineación vertical
                         ) {
-                            // Botón "Loan"
-                            Button(
-                                onClick = {  /* Acción para "Loan" */ },
-                                modifier = Modifier
-                                    .height(48.dp)
-                                    .weight(1f),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
-                                shape = RoundedCornerShape(12.dp),
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.LibraryAdd,
-                                    contentDescription = "Loan",
-                                    tint = Color.White,
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
-                                Text(
-                                    text = "Loan",
-                                    color = Color.White,
-                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                )
+                            if(isLoggedIn(settings.value) && book.value?.book_status?.book_status == "AVAILABLE") {
+                                Button(
+                                    onClick = {  /* Acción para "Loan" */ },
+                                    modifier = Modifier
+                                        .height(48.dp)
+                                        .weight(1f),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
+                                    shape = RoundedCornerShape(12.dp),
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.LibraryAdd,
+                                        contentDescription = "Loan",
+                                        tint = Color.White,
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    )
+                                    Text(
+                                        text = "Loan",
+                                        color = Color.White,
+                                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                    )
+                                }
                             }
 
-                            Button(
-                                onClick = { /* Acción para "Cancel"*/  },
+                            /*Button(
+                                onClick = { *//* Acción para "Cancel"*//*  },
                                 modifier = Modifier
                                     .height(48.dp)
                                     .weight(1f),
@@ -441,7 +442,7 @@ fun BookScreen(
                                     color = Color.White,
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                 )
-                            }
+                            }*/
                         }
                     }
                 }
