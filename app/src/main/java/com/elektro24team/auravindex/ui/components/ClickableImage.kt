@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.model.Book
-import com.elektro24team.auravindex.utils.Constants.IMG_url
+import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 

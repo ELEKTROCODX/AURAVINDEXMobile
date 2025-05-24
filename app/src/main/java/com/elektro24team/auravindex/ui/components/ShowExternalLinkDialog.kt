@@ -6,7 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import com.elektro24team.auravindex.utils.openLink
+import com.elektro24team.auravindex.utils.functions.openLink
 
 @Composable
 fun ShowExternalLinkDialog(

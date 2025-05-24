@@ -19,7 +19,7 @@ import com.elektro24team.auravindex.model.local.PlanEntity
 import com.elektro24team.auravindex.ui.theme.PurpleC
 
 @Composable
-fun PlanCard(plan: PlanEntity) {
+fun PlanCard(plan: Plan) {
     val colors = MaterialTheme.colorScheme
 
     Card(

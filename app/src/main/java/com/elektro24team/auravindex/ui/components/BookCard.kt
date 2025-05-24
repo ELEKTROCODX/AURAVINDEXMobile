@@ -18,7 +18,7 @@ import com.elektro24team.auravindex.ui.theme.BlackC
 import com.elektro24team.auravindex.ui.theme.BrownC
 import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
-import com.elektro24team.auravindex.utils.Constants.IMG_url
+import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 

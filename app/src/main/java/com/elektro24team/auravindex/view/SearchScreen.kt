@@ -21,7 +21,7 @@ import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.ui.components.BookCollectionsSection
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
-import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -37,8 +37,7 @@ import com.elektro24team.auravindex.ui.theme.BrownC
 import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.ui.theme.WhiteC
-import com.elektro24team.auravindex.utils.Constants.IMG_url
-import com.elektro24team.auravindex.utils.normalize
+import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.skydoves.landscapist.ImageOptions
@@ -66,7 +65,10 @@ fun SearchScreen(
 
     ModalNavigationDrawer(
         drawerContent = {
-            DrawerMenu(onItemSelected = { route ->
+            DrawerMenu(
+                navController = navController,
+                currentRoute = navController.currentBackStackEntry?.destination?.route,
+                onItemSelected = { route ->
                 hamburguerMenuNavigator(
                     route,
                     navController,

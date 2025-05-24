@@ -21,7 +21,6 @@ import com.elektro24team.auravindex.ui.components.BookCard
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.theme.*
 import com.elektro24team.auravindex.viewmodels.BookViewModel
-import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

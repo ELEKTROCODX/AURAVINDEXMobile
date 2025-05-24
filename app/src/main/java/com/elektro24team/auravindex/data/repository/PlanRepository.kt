@@ -1,12 +1,10 @@
 package com.elektro24team.auravindex.data.repository
 
-import android.util.Log
 import com.elektro24team.auravindex.data.local.dao.PlanDao
+import com.elektro24team.auravindex.mapper.toDomain
+import com.elektro24team.auravindex.mapper.toEntity
 import com.elektro24team.auravindex.model.Plan
-import com.elektro24team.auravindex.model.local.PlanEntity
 import com.elektro24team.auravindex.retrofit.PlanClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 
 class PlanRepository(
@@ -16,39 +14,29 @@ class PlanRepository(
     @Volatile
     private var lastCacheTime: Long = 0
 
-    suspend fun getPlans(): List<PlanEntity> {
+    suspend fun getPlans(): List<Plan> {
         val currentTime = System.currentTimeMillis()
         val isCacheExpired = (currentTime - lastCacheTime) > CACHE_EXPIRY_MS
-
-        return if (planDao.getAllPlans().isEmpty() || isCacheExpired) {
-            try {
-                val response = PlanClient.apiService.getPlans()
-                val planEntities = response.data.map { it.toEntity() }
-                planDao.clearPlans()
-                planDao.insertPlans(planEntities)
-                lastCacheTime = currentTime
-                planEntities
-            } catch (e: Exception) {
-                // Fall back to local data if API fails
-                planDao.getAllPlans()
-            }
+        val local = planDao.getAllPlans()
+        return if (local.isEmpty() || isCacheExpired) {
+            val remote = PlanClient.apiService.getPlans()
+            remote.data.map { it }
         } else {
-            planDao.getAllPlans()
+            local.map { it.toDomain() }
         }
     }
+    suspend fun getPlanById(planId: String): Plan {
+        val local = planDao.getPlanById(planId)
+        if (local != null) {
+            return local.toDomain()
+        }
 
-    private fun Plan.toEntity(): PlanEntity {
-        return PlanEntity(
-            _id = this._id,
-            name = this.name,
-            fixed_price = this.fixed_price,
-            monthly_price = this.monthly_price,
-            max_simultaneous_loans = this.max_simultaneous_loans,
-            max_return_days = this.max_return_days,
-            max_renovations_per_loan = this.max_renovations_per_loan,
-            createdAt = this.createdAt,
-            updatedAt = this.updatedAt,
-            __v = this.__v
-        )
+        val remote = PlanClient.apiService.getPlanById(planId)
+        savePlanToCache(remote)
+
+        return remote
+    }
+    suspend fun savePlanToCache(plan: Plan) {
+        planDao.insertPlans(listOf(plan.toEntity()))
     }
 }

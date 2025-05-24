@@ -41,7 +41,7 @@ import com.elektro24team.auravindex.ui.theme.PurpleC
 @Composable
 fun HomePageSection(
     title: String,
-    books: List<Book>,
+    books: List<Book>?,
     seeMoreAction: () -> Unit,
     navController: NavController
 ) {
@@ -87,66 +87,68 @@ fun HomePageSection(
                 .heightIn(max=240.dp, min=240.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(books.size) { index ->
-                Row(
-                    modifier = Modifier.heightIn(min = 250.dp, max = 250.dp)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .width(175.dp)
-                            .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
-                            .heightIn(min = 250.dp, max = 250.dp )
-                            .padding(8.dp)
-                            .clickable { navController.navigate("book/${books[index]._id}") },
-                        horizontalAlignment = Alignment.CenterHorizontally
+            if (books != null) {
+                items(books.size) { index ->
+                    Row(
+                        modifier = Modifier.heightIn(min = 250.dp, max = 250.dp)
                     ) {
-                        val book = books[index]
-
-                        // Imagen clickeable
-                        ClickableImage(book.book_img, book, navController)
-
-                        // Título
-                        Text(
-                            text = book.title,
+                        Column(
                             modifier = Modifier
-                                .padding(top = 8.dp)
-                                .width(120.dp),
-                            style = TextStyle(
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color.Black
-                            ),
-                            textAlign = TextAlign.Center,
-                            maxLines = 2
-                        )
+                                .width(175.dp)
+                                .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                                .heightIn(min = 250.dp, max = 250.dp )
+                                .padding(8.dp)
+                                .clickable { navController.navigate("book/${books[index]._id}") },
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            val book = books[index]
 
-                        Text(
-                            text = book.authors.joinToString(", ") { it.name +" "+ it.last_name},
-                            modifier = Modifier
-                                .padding(top = 4.dp)
-                                .width(120.dp),
-                            style = TextStyle(
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Light,
-                                color = Color.DarkGray
-                            ),
-                            textAlign = TextAlign.Center,
-                            maxLines = 2
-                        )
+                            // Imagen clickeable
+                            ClickableImage(book.book_img, book, navController)
+
+                            // Título
+                            Text(
+                                text = book.title,
+                                modifier = Modifier
+                                    .padding(top = 8.dp)
+                                    .width(120.dp),
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.Black
+                                ),
+                                textAlign = TextAlign.Center,
+                                maxLines = 2
+                            )
+
+                            Text(
+                                text = book.authors.joinToString(", ") { it.name +" "+ it.last_name},
+                                modifier = Modifier
+                                    .padding(top = 4.dp)
+                                    .width(120.dp),
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Light,
+                                    color = Color.DarkGray
+                                ),
+                                textAlign = TextAlign.Center,
+                                maxLines = 2
+                            )
+                        }
+
+                        // Separador visual entre tarjetas
+                        if (index < books.lastIndex) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(1.dp)
+                                    .padding(horizontal = 4.dp)
+                                    .background(PurpleC.copy(alpha = 0.5f))
+                            )
+                        }
                     }
 
-                    // Separador visual entre tarjetas
-                    if (index < books.lastIndex) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(1.dp)
-                                .padding(horizontal = 4.dp)
-                                .background(PurpleC.copy(alpha = 0.5f))
-                        )
-                    }
                 }
-
             }
         }
         Spacer(modifier = Modifier.height(MediumPadding))

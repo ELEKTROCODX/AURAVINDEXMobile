@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import com.elektro24team.auravindex.ui.components.BookCard
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.ArrowBack
