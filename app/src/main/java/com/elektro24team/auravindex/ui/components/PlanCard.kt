@@ -2,6 +2,8 @@ package com.elektro24team.auravindex.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.Plan
+import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
@@ -146,12 +149,58 @@ fun PlanCard(
 
             // Botón
             if(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN.keySetting, "").toString() == plan?._id) {
-                /* Todo: add cancel subscription button */
+                /* Todo: add ending date */
                 Text(
                     text = "CURRENT SUBSCRIPTION.",
                     style = TextStyle(fontWeight = FontWeight.Bold),
                     color = colors.primary
                 )
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = {
+                            if(isLoggedIn(localSettings.value)) {
+
+                            } else {
+                                mustBeLoggedInToast(context, AppAction.SUBSCRIBE_TO_PLAN, navController)
+                            }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(4.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
+
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(
+                            text = "RENEW",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = colors.onPrimary
+                        )
+                    }
+                    Button(
+                        onClick = {
+                            if(isLoggedIn(localSettings.value)) {
+
+                            } else {
+                                mustBeLoggedInToast(context, AppAction.SUBSCRIBE_TO_PLAN, navController)
+                            }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(4.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = OrangeC),
+                        shape = RoundedCornerShape(12.dp),
+                    ) {
+                        Text(
+                            text = "CANCEL",
+
+                            style = MaterialTheme.typography.labelLarge,
+                            color = colors.onPrimary
+                        )
+                    }
+                }
             } else {
                 Button(
                     onClick = {
@@ -167,9 +216,10 @@ fun PlanCard(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
+                        .padding(4.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
+                    ) {
                     Text(
                         text = "SUBSCRIBE",
                         style = MaterialTheme.typography.labelLarge,

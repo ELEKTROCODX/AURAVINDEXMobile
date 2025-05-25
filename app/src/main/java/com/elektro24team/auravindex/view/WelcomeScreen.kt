@@ -40,6 +40,7 @@ fun WelcomeScreen(
     localSettingViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
+    val settings by localSettingViewModel.settings.collectAsState()
     var isReadyToNavigate by remember { mutableStateOf(false) }
     val app = LocalContext.current.applicationContext as AuraVindexApp
     val isConnected by app.networkLiveData.observeAsState(true)
@@ -70,11 +71,19 @@ fun WelcomeScreen(
         modifier = Modifier
             .clickable {
                 if(isReadyToNavigate) {
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.WELCOME) {
-                            inclusive = true
-                        }
-                    }
+                   if(isLoggedIn(settings)) {
+                       navController.navigate(Routes.MAIN) {
+                           popUpTo(Routes.WELCOME) {
+                               inclusive = true
+                           }
+                       }
+                   } else {
+                       navController.navigate(Routes.LOGIN) {
+                           popUpTo(Routes.WELCOME) {
+                               inclusive = true
+                           }
+                       }
+                   }
                 }
             }
     ) {
