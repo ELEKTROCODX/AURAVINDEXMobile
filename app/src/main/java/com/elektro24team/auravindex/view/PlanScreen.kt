@@ -20,7 +20,13 @@ import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.PlanCard
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficentPermissions
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
@@ -41,10 +47,20 @@ fun PlanScreen(
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val plans by planViewModel.plans.observeAsState(emptyList())
-
+    val localSettings = localSettingViewModel.settings.collectAsState()
+    ObserveSuccess(activePlanViewModel)
+    ObserveError(activePlanViewModel)
+    ObserveInsufficentPermissions(activePlanViewModel, navController)
+    ObserveTokenExpiration(activePlanViewModel, navController, localSettingViewModel)
     LaunchedEffect(Unit) {
         planViewModel.loadPlans()
         activePlanViewModel.clearNotifications()
+        if(isLoggedIn(localSettings.value)) {
+            activePlanViewModel.loadActivePlanByUserId(
+                localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                localSettings.value.getOrDefault(SettingKey.ID.keySetting, "")
+            )
+        }
     }
     ModalNavigationDrawer(
         drawerContent = {

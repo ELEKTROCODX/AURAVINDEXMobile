@@ -2,7 +2,6 @@ package com.elektro24team.auravindex.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,10 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.ActivePlan
-import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
-import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -69,7 +66,7 @@ fun AdminActivePlanTable(
                     ) {
                         TableCell(activePlan.user?.email ?: "Unknown", 180.dp)
                         TableCell(activePlan.plan?.name ?: "Unknown", 180.dp)
-                        TableCell(activePlan.plan_status?.planStatus ?: "Unknown", 180.dp)
+                        TableCell(activePlan.plan_status?.plan_status ?: "Unknown", 180.dp)
                         TableCell(formatUtcToLocalWithHour(activePlan.ending_date), 180.dp)
                     }
                     Divider()

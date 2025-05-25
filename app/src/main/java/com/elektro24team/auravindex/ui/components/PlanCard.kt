@@ -27,6 +27,7 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficentPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
@@ -43,23 +44,15 @@ fun PlanCard(
     val context = LocalContext.current
     val localSettings = localSettingViewModel.settings.collectAsState()
     val activePlan = activePlanViewModel.activePlan.observeAsState()
-    ObserveSuccess(activePlanViewModel)
-    ObserveError(activePlanViewModel)
-    ObserveInsufficentPermissions(activePlanViewModel, navController)
-    /*ObserveTokenExpiration(activePlanViewModel, navController, localSettingViewModel)*/
-    LaunchedEffect(Unit) {
-        if(isLoggedIn(localSettings.value)) {
-            activePlanViewModel.loadActivePlanByUserId(
-                localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-                localSettings.value.getOrDefault(SettingKey.ID.keySetting, "")
-            )
-        }
-    }
     LaunchedEffect(activePlan.value) {
         if(!activePlan.value?.plan?._id.isNullOrEmpty()) {
             localSettingViewModel.saveSetting(
                 SettingKey.ACTIVE_PLAN.keySetting,
                 activePlan.value?.plan?._id.toString()
+            )
+            localSettingViewModel.saveSetting(
+                SettingKey.ACTIVE_PLAN_ID.keySetting,
+                activePlan.value?._id.toString()
             )
         }
     }
@@ -153,6 +146,7 @@ fun PlanCard(
 
             // Botón
             if(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN.keySetting, "").toString() == plan?._id) {
+                /* Todo: add cancel subscription button */
                 Text(
                     text = "CURRENT SUBSCRIPTION.",
                     style = TextStyle(fontWeight = FontWeight.Bold),

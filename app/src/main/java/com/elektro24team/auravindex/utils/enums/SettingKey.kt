@@ -8,6 +8,7 @@ enum class SettingKey(val keySetting: String) {
     ROLE_NAME("roleName"),
     ROLE_ID("roleId"),
     ACTIVE_PLAN("activePlan"),
+    ACTIVE_PLAN_ID("activePlanId"),
     LAST_LOGIN("lastLogin"),
     LANGUAGE("language"),
     DARK_MODE("darkMode"),
