@@ -60,7 +60,9 @@ class ActivePlanViewModel() : BaseViewModel() {
                 Result.failure(e)
             }
             if (result.isSuccess) {
-                _activePlan.value = result.getOrNull()?.data?.get(0)
+                if(result.getOrNull()?.data?.isNotEmpty() == true) {
+                    _activePlan.value = result.getOrNull()?.data?.get(0)
+                }
             } else {
                 val error = result.exceptionOrNull()
                 if (error is HttpException) {
