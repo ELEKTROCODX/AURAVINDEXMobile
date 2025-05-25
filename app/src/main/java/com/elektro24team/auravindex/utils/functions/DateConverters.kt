@@ -15,7 +15,6 @@ fun formatUtcToLocalWithHour(input: String?): String {
         return "Unknown"
     }
 }
-
 fun formatUtcToLocalWithDate(input: String?): String {
     if(!input.isNullOrEmpty()) {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())

@@ -31,6 +31,8 @@ import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveErro
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficentPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
@@ -56,6 +58,10 @@ fun PlanCard(
             localSettingViewModel.saveSetting(
                 SettingKey.ACTIVE_PLAN_ID.keySetting,
                 activePlan.value?._id.toString()
+            )
+            localSettingViewModel.saveSetting(
+                SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting,
+                activePlan.value?.ending_date.toString()
             )
         }
     }
@@ -149,9 +155,8 @@ fun PlanCard(
 
             // Botón
             if(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN.keySetting, "").toString() == plan?._id) {
-                /* Todo: add ending date */
                 Text(
-                    text = "CURRENT SUBSCRIPTION.",
+                    text = "CURRENT SUBSCRIPTION (ends at ${formatUtcToLocalWithDate(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, "").toString())}).",
                     style = TextStyle(fontWeight = FontWeight.Bold),
                     color = colors.primary
                 )
