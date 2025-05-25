@@ -5,6 +5,6 @@ data class PlanStatus(
     val _id: String,
     val createdAt: String,
     val updatedAt: String,
-    val loanStatus: PlanStatus
+    val planStatus: String
 
 )

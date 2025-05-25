@@ -21,6 +21,8 @@ interface UserService{
     @GET("user")
     suspend fun getUsers(
         @Header("Authorization") token: String,
+        @Query("page") page: String = "1",
+        @Query("limit") limit: String = "none"
     ): ApiResponse<List<User>>
 
     @GET("user/{id}")

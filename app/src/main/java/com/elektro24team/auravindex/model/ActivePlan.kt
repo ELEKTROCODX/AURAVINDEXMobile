@@ -7,7 +7,7 @@ data class ActivePlan(
     val updatedAt: String,
     val user: User,
     val plan: Plan,
-    val planStatus: PlanStatus,
-    val endingDate: String?,
-    val finishedDate: String?
+    val plan_status: PlanStatus?,
+    val ending_date: String?,
+    val finished_date: String?
 )

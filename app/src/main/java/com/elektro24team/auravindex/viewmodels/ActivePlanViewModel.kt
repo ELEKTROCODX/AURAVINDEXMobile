@@ -86,6 +86,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                 Result.failure(e)
             }
             if (result.isSuccess) {
+                Log.d("ActivePlanViewModel", "loadActivePlans: ${result.getOrNull()?.data}")
                 _activePlans.value = result.getOrNull()?.data
             } else {
                 val error = result.exceptionOrNull()

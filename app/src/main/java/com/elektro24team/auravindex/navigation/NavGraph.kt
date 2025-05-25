@@ -78,11 +78,12 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.ADMIN_DASHBOARD) {
-            AdminDashBoardScreen(
+            AdminDashboardScreen(
                 navController = navController,
                 bookViewModel = bookViewModel,
                 userViewModel = userViewModel,
                 planViewModel = planViewModel,
+                activePlanViewModel = activePlanViewModel,
                 auditLogViewModel = auditLogViewModel,
                 localSettingViewModel = localSettingViewModel,
                 objectName = "",
@@ -96,11 +97,12 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             )
         ) {
             val objectName = it.arguments?.getString("objectName") ?: ""
-            AdminDashBoardScreen(
+            AdminDashboardScreen(
                 navController = navController,
                 bookViewModel = bookViewModel,
                 userViewModel = userViewModel,
                 planViewModel = planViewModel,
+                activePlanViewModel = activePlanViewModel,
                 auditLogViewModel = auditLogViewModel,
                 localSettingViewModel = localSettingViewModel,
                 objectName = objectName,
@@ -116,11 +118,12 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         ) { backStackEntry ->
                 val objectName = backStackEntry.arguments?.getString("objectName") ?: ""
                 val objectId = backStackEntry.arguments?.getString("objectId") ?: ""
-                AdminDashBoardScreen(
+                AdminDashboardScreen(
                     navController = navController,
                     bookViewModel = bookViewModel,
                     userViewModel = userViewModel,
                     planViewModel = planViewModel,
+                    activePlanViewModel = activePlanViewModel,
                     auditLogViewModel = auditLogViewModel,
                     localSettingViewModel = localSettingViewModel,
                     objectName = objectName,
@@ -166,6 +169,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navController = navController,
                 authViewModel = authViewModel,
                 userViewModel = userViewModel,
+                activePlanViewModel = activePlanViewModel,
                 localSettingViewModel = localSettingViewModel
             )
         }

@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.ui.components.AdminActivePlanTable
 import com.elektro24team.auravindex.ui.components.AdminAuditLogTable
 import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
@@ -30,6 +31,7 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficentPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
@@ -40,11 +42,12 @@ import com.elektro24team.auravindex.viewmodels.PlanViewModel
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminDashBoardScreen(
+fun AdminDashboardScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
     userViewModel: UserViewModel,
     planViewModel: PlanViewModel,
+    activePlanViewModel: ActivePlanViewModel,
     auditLogViewModel: AuditLogViewModel,
     localSettingViewModel: LocalSettingViewModel,
     objectName: String?,
@@ -159,6 +162,16 @@ fun AdminDashBoardScreen(
                                         userViewModel.getUsers(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
                                     }
                                     AdminUserTable(navController, users ?: emptyList())
+                                }
+                                AdminDashboardObject.ACTIVE_PLAN.name.lowercase() -> {
+                                    ObserveTokenExpiration(activePlanViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficentPermissions(activePlanViewModel, navController)
+                                    ObserveError(activePlanViewModel)
+                                    val activePlans by activePlanViewModel.activePlans.observeAsState()
+                                    LaunchedEffect(Unit) {
+                                        activePlanViewModel.loadActivePlans(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
+                                    }
+                                    AdminActivePlanTable(navController, activePlans ?: emptyList())
                                 }
                                 AdminDashboardObject.AUDIT_LOG.name.lowercase() -> {
                                     ObserveTokenExpiration(auditLogViewModel, navController, localSettingViewModel)
