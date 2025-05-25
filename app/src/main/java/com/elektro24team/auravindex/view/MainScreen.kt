@@ -135,7 +135,7 @@ fun MainScreen(
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            if(isLoggedIn(localSettings) && recentBooks?.books != null ) {
+                            if(isLoggedIn(localSettings) && recentBooks?.books?.size!=0 ) {
                                 HomePageSection(
                                     "Recent searches",
                                     recentBooks?.books,
