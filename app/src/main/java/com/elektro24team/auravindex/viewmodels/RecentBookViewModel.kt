@@ -15,8 +15,8 @@ import kotlin.text.contains
 
 class RecentBookViewModel() : BaseViewModel() {
 
-    private val _recentBook = MutableLiveData<RecentBook>()
-    val recentBook: LiveData<RecentBook> = _recentBook
+    private val _recentBook = MutableLiveData<RecentBook?>()
+    val recentBook: LiveData<RecentBook?> = _recentBook
 
 
     fun loadRecentBooks(token: String, userId: String) {
@@ -44,5 +44,8 @@ class RecentBookViewModel() : BaseViewModel() {
                 }
             }
         }
+    }
+    override fun clearViewModelData() {
+        _recentBook.value = null
     }
 }

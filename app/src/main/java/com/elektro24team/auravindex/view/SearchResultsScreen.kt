@@ -37,9 +37,9 @@ fun SearchResultsScreen(
     }
     val itemsPerPage = 8
     val paginatedBooks = filteredBooks
-        .drop((currentPage - 1) * itemsPerPage)
-        .take(itemsPerPage)
-    val totalPages = (filteredBooks.size + itemsPerPage - 1) / itemsPerPage
+        ?.drop((currentPage - 1) * itemsPerPage)
+        ?.take(itemsPerPage)
+    val totalPages = (filteredBooks?.size?.plus(itemsPerPage)?.minus(1))?.div(itemsPerPage)
 
 
     Scaffold(
@@ -81,10 +81,10 @@ fun SearchResultsScreen(
                         .padding(8.dp), singleLine = true
                 )
 
-                if(filteredBooks.isNotEmpty()) {
+                if(filteredBooks?.isNullOrEmpty() == false) {
                     if(currentQuery.isNotEmpty()) {
                         Text(
-                            text = "${filteredBooks.size} results for \"$currentQuery\"",
+                            text = "${filteredBooks?.size} results for \"$currentQuery\"",
                             style = MaterialTheme.typography.titleSmall,
                             modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                         )
@@ -106,10 +106,10 @@ fun SearchResultsScreen(
                 Divider(modifier = Modifier.padding(horizontal = 8.dp))
 
                 // Resultados filtrados
-                if (filteredBooks.isNotEmpty()) {
+                if (filteredBooks?.isNotEmpty() == true) {
                     LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(paginatedBooks) { book ->
-                            BookCard(book, navController)
+                        items(paginatedBooks?.size ?: 0) { index ->
+                            BookCard(paginatedBooks?.get(index), navController)
                         }
                     }
                     // Paginación
@@ -118,31 +118,24 @@ fun SearchResultsScreen(
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        //repeat(totalPages) { pageIndex ->
-                        /*   Button(
-                               onClick = { currentPage = pageIndex + 1 },
-                               colors = ButtonDefaults.buttonColors(
-                                   containerColor = if (pageIndex + 1 == currentPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
-                               )
-                           ) {
-                               Text(text = "${pageIndex + 1}")
-                           } */
-                        (1..totalPages).forEach { page ->
-                            Button(onClick = { currentPage = page },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (page == currentPage)
-                                        MaterialTheme.colorScheme.primary
-                                    else
-                                        MaterialTheme.colorScheme.secondaryContainer,
-                                    contentColor = if (page == currentPage)
-                                        MaterialTheme.colorScheme.onPrimary
-                                    else
-                                        MaterialTheme.colorScheme.onSecondaryContainer
-                                ),
-                                modifier = Modifier
-                                    .padding(horizontal = 4.dp)
-                            ) {
-                                Text(text = "$page")
+                        if(totalPages != null) {
+                            (1..totalPages).forEach { page ->
+                                Button(onClick = { currentPage = page },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = if (page == currentPage)
+                                            MaterialTheme.colorScheme.primary
+                                        else
+                                            MaterialTheme.colorScheme.secondaryContainer,
+                                        contentColor = if (page == currentPage)
+                                            MaterialTheme.colorScheme.onPrimary
+                                        else
+                                            MaterialTheme.colorScheme.onSecondaryContainer
+                                    ),
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                ) {
+                                    Text(text = "$page")
+                                }
                             }
                         }
                     }

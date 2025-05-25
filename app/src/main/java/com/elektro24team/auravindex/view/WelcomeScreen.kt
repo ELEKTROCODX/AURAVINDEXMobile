@@ -9,6 +9,7 @@ import androidx.compose.ui.res.painterResource
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +23,8 @@ import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
@@ -63,7 +66,6 @@ fun WelcomeScreen(
         }
         isReadyToNavigate = true
     }
-
     Box(
         modifier = Modifier
             .clickable {

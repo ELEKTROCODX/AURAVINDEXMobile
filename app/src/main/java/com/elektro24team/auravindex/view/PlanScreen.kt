@@ -21,6 +21,8 @@ import com.elektro24team.auravindex.ui.components.PlanCard
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 
 
@@ -28,7 +30,9 @@ import com.elektro24team.auravindex.viewmodels.PlanViewModel
 @Composable
 fun PlanScreen(
     navController: NavController,
-    planViewModel: PlanViewModel
+    planViewModel: PlanViewModel,
+    activePlanViewModel: ActivePlanViewModel,
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -40,6 +44,7 @@ fun PlanScreen(
 
     LaunchedEffect(Unit) {
         planViewModel.loadPlans()
+        activePlanViewModel.clearNotifications()
     }
     ModalNavigationDrawer(
         drawerContent = {
@@ -99,8 +104,13 @@ fun PlanScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             contentPadding = PaddingValues(bottom = 80.dp)
                         ) {
-                            items(plans.size) { index ->
-                                PlanCard(plan = plans[index])
+                            items(plans?.size ?: 0) { index ->
+                                PlanCard(
+                                    plan = plans?.get(index),
+                                    navController,
+                                    localSettingViewModel,
+                                    activePlanViewModel
+                                )
                             }
                         }
                     }

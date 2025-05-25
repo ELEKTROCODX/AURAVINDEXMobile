@@ -67,14 +67,10 @@ fun SettingsScreen(
     LaunchedEffect(Unit) {
         localSettingViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
         localSettingViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
-        localSettingViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
         localSettingViewModel.loadSetting(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting)
         localSettingViewModel.loadSetting(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting)
         localSettingViewModel.loadSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting)
-        localSettingViewModel.loadSetting(SettingKey.ID.keySetting)
-        localSettingViewModel.loadSetting(SettingKey.EMAIL.keySetting)
-        localSettingViewModel.loadSetting(SettingKey.TOKEN.keySetting)
-        localSettingViewModel.loadSetting(SettingKey.ROLE_NAME.keySetting)
+        localSettingViewModel.loadUserSettings()
     }
     ModalNavigationDrawer(
         drawerContent = {
@@ -225,18 +221,22 @@ fun SettingsScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold),
                                     modifier = Modifier.align(Alignment.CenterVertically)
                                 )
-                                val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-                                formatter.timeZone = TimeZone.getTimeZone("UTC-6")
-                                val lastLoginMillis = localSettings.getOrDefault(
-                                    SettingKey.LAST_LOGIN.keySetting,
-                                    System.currentTimeMillis().toString()
-                                ).toLongOrNull() ?: System.currentTimeMillis()
-                                val formattedDate = Instant.ofEpochMilli(lastLoginMillis)
-                                    .atZone(ZoneId.of("America/El_Salvador"))
-                                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
-                                Text(
-                                    text = formattedDate,
-                                )
+                                if(!localSettings.getOrDefault(SettingKey.LAST_LOGIN.keySetting, "").isNullOrEmpty()) {
+                                    val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+                                    formatter.timeZone = TimeZone.getTimeZone("UTC-6")
+                                    val lastLoginMillis = localSettings.getOrDefault(
+                                        SettingKey.LAST_LOGIN.keySetting,
+                                        System.currentTimeMillis().toString()
+                                    ).toLongOrNull() ?: System.currentTimeMillis()
+                                    val formattedDate = Instant.ofEpochMilli(lastLoginMillis)
+                                        .atZone(ZoneId.of("America/El_Salvador"))
+                                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                                    Text(
+                                        text = formattedDate,
+                                    )
+                                } else {
+                                    Text("N/A")
+                                }
                             }
                             // User local data (temporarily displayed for testing purposes)
                             Spacer(modifier = Modifier.padding(16.dp))
@@ -282,6 +282,19 @@ fun SettingsScreen(
                                 )
                                 Text(
                                     text = if ((localSettings.containsKey(SettingKey.ROLE_NAME.keySetting)) && (localSettings[SettingKey.ROLE_NAME.keySetting] != "")) localSettings[SettingKey.ROLE_NAME.keySetting] ?: "N/A" else "N/A",
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Active plan: ",
+                                    style = TextStyle(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = if ((localSettings.containsKey(SettingKey.ACTIVE_PLAN.keySetting)) && (localSettings[SettingKey.ACTIVE_PLAN.keySetting] != "")) localSettings[SettingKey.ACTIVE_PLAN.keySetting] ?: "N/A" else "N/A",
                                 )
                             }
                             Row(

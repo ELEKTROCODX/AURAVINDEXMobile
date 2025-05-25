@@ -23,12 +23,12 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun BookCard(book: Book, navController: NavController) {
+fun BookCard(book: Book?, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { navController.navigate("book/${book._id}") },
+            .clickable { navController.navigate("book/${book?._id}") },
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
@@ -41,7 +41,7 @@ fun BookCard(book: Book, navController: NavController) {
                 .fillMaxWidth()
         ) {
             GlideImage(
-                imageModel = { IMG_url.trimEnd('/') + "/" + book.book_img.trimStart('/') },
+                imageModel = { IMG_url.trimEnd('/') + "/" + book?.book_img?.trimStart('/') },
                 modifier = Modifier
                     .width(90.dp)
                     .height(130.dp)
@@ -70,7 +70,7 @@ fun BookCard(book: Book, navController: NavController) {
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = book.title,
+                    text = book?.title.toString(),
                     style = MaterialTheme.typography.titleMedium,
                     color = BlackC,
                     maxLines = 2
@@ -79,7 +79,7 @@ fun BookCard(book: Book, navController: NavController) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = book.summary,
+                    text = book?.summary.toString(),
                     style = MaterialTheme.typography.bodySmall,
                     color = BrownC,
                     maxLines = 3
@@ -88,13 +88,13 @@ fun BookCard(book: Book, navController: NavController) {
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = "Authors: ${book.authors.joinToString { "${it.name} ${it.last_name}" }}",
+                    text = "Authors: ${book?.authors?.joinToString { "${it.name} ${it.last_name}" }}",
                     style = MaterialTheme.typography.bodySmall,
                     color = PurpleC
                 )
 
                 Text(
-                    text = "Genres: ${book.genres.joinToString()}",
+                    text = "Genres: ${book?.genres?.joinToString()}",
                     style = MaterialTheme.typography.bodySmall,
                     color = OrangeC
                 )

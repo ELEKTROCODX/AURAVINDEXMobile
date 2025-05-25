@@ -13,13 +13,17 @@ class BookCollectionViewModel(
     private val repository: BookCollectionRepository
 ) : BaseViewModel() {
 
-    private val _bookCollections = MutableLiveData<List<BookCollectionEntity>>()
-    val bookCollections: LiveData<List<BookCollectionEntity>> = _bookCollections
+    private val _bookCollections = MutableLiveData<List<BookCollectionEntity>?>()
+    val bookCollections: LiveData<List<BookCollectionEntity>?> = _bookCollections
 
     fun loadBookCollections() {
         viewModelScope.launch {
             val result = repository.getBookCollections()
             _bookCollections.postValue(result)
         }
+    }
+
+    override fun clearViewModelData() {
+        _bookCollections.value = null
     }
 }

@@ -145,7 +145,7 @@ fun MainScreen(
                             }
                             HomePageSection(
                                 "Recommendations",
-                                books.take(10),
+                                books?.take(10),
                                 seeMoreAction = { navController.navigate(Routes.SEARCH) },
                                 navController
                             )

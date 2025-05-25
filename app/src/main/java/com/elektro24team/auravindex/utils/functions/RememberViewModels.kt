@@ -11,10 +11,12 @@ import com.elektro24team.auravindex.data.repository.BookRepository
 import com.elektro24team.auravindex.data.repository.LocalSettingRepository
 import com.elektro24team.auravindex.data.repository.PlanRepository
 import com.elektro24team.auravindex.data.repository.UserRepository
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
@@ -90,5 +92,15 @@ fun rememberAuthViewModel(): AuthViewModel {
 
 @Composable
 fun rememberRecentBookViewModel(): RecentBookViewModel {
+    return viewModel()
+}
+
+@Composable
+fun rememberActivePlanViewModel(): ActivePlanViewModel {
+    return viewModel()
+}
+
+@Composable
+fun rememberLoanViewModel(): LoanViewModel {
     return viewModel()
 }

@@ -92,7 +92,7 @@ fun ProfileScreen(
         userViewModel.getUserById(localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), localSettings.value.getOrDefault(SettingKey.ID.keySetting, ""))
     }
     if(!isLoggedIn(localSettings.value)) {
-        mustBeLoggedInToast(AppAction.ACCESS_PROFILE_PAGE, navController, Routes.MAIN)
+        mustBeLoggedInToast(context, AppAction.ACCESS_PROFILE_PAGE, navController)
     }
     ModalNavigationDrawer(
         drawerContent = {
@@ -148,206 +148,208 @@ fun ProfileScreen(
                             ),
                             shape = androidx.compose.material.MaterialTheme.shapes.medium
                         ) {
-                            val imageUrl = IMG_url.trimEnd('/') + "/" + user?.value?.user_img?.trimStart('/')
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                            ) {
-                                GlideImage(
-                                    imageModel = { imageUrl },
+                            if(isLoggedIn(localSettings.value)) {
+                                val imageUrl = IMG_url.trimEnd('/') + "/" + user?.value?.user_img?.trimStart('/')
+                                Box(
                                     modifier = Modifier
-                                        .widthIn(max=200.dp)
-                                        .heightIn(max=300.dp)
-                                        .clip(RoundedCornerShape(16.dp))
-                                        .shadow(8.dp, RoundedCornerShape(16.dp))
-                                        .align(Alignment.Center),
-                                    imageOptions = ImageOptions(
-                                        contentScale = ContentScale.Crop
-                                    ),
-                                    loading = {
-                                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                                    },
-                                    failure = {
-                                        Image(
-                                            painter = painterResource(id = R.drawable.logo_app),
-                                            contentDescription = "Default img",
-                                            modifier = Modifier
-                                                .clip(RoundedCornerShape(16.dp))
-                                                .shadow(8.dp, RoundedCornerShape(16.dp))
-                                                .align(Alignment.Center)
+                                        .fillMaxWidth()
+                                        .padding(16.dp)
+                                ) {
+                                    GlideImage(
+                                        imageModel = { imageUrl },
+                                        modifier = Modifier
+                                            .widthIn(max=200.dp)
+                                            .heightIn(max=300.dp)
+                                            .clip(RoundedCornerShape(16.dp))
+                                            .shadow(8.dp, RoundedCornerShape(16.dp))
+                                            .align(Alignment.Center),
+                                        imageOptions = ImageOptions(
+                                            contentScale = ContentScale.Crop
+                                        ),
+                                        loading = {
+                                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                                        },
+                                        failure = {
+                                            Image(
+                                                painter = painterResource(id = R.drawable.logo_app),
+                                                contentDescription = "Default img",
+                                                modifier = Modifier
+                                                    .clip(RoundedCornerShape(16.dp))
+                                                    .shadow(8.dp, RoundedCornerShape(16.dp))
+                                                    .align(Alignment.Center)
+                                            )
+                                        }
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(20.dp))
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = "User Details",
+                                        style = TextStyle(
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 18.sp,
+                                            color = Color(0xFF572365)
+                                        ),
+                                        modifier = Modifier.padding(bottom = 12.dp)
+                                    )
+                                    Divider(color = Color.LightGray, thickness = 1.dp)
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "Name: ",
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 16.sp,
+                                                color = Color(0xFF572365)
+                                            ),
+                                        )
+                                        Text(
+                                            text = "${user.value?.name} ${user.value?.last_name}",
+                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                         )
                                     }
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "User Details",
-                                    style = TextStyle(
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 18.sp,
-                                        color = Color(0xFF572365)
-                                    ),
-                                    modifier = Modifier.padding(bottom = 12.dp)
-                                )
-                                Divider(color = Color.LightGray, thickness = 1.dp)
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = "Name: ",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color(0xFF572365)
-                                        ),
-                                    )
-                                    Text(
-                                        text = "${user.value?.name} ${user.value?.last_name}",
-                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                    )
-                                }
-                                Divider(color = Color.LightGray, thickness = 1.dp)
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = "Email: ",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color(0xFF572365)
-                                        ),
-                                    )
-                                    Text(
-                                        text = user.value?.email ?: "Not available",
-                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                    )
-                                }
-                                Divider(color = Color.LightGray, thickness = 1.dp)
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = buildAnnotatedString {
-                                            append("Biography: ")
-                                            withStyle(
-                                                SpanStyle(
-                                                    fontSize = 16.sp,
-                                                    color = Color.Black,
-                                                    fontWeight = FontWeight.Normal
-                                                )
-                                            ) {
-                                                append(user.value?.biography ?: "Not available")
-                                            }
-                                        },
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color(0xFF572365),
-                                            textAlign = TextAlign.Justify
+                                    Divider(color = Color.LightGray, thickness = 1.dp)
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "Email: ",
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 16.sp,
+                                                color = Color(0xFF572365)
+                                            ),
                                         )
-                                    )
+                                        Text(
+                                            text = user.value?.email ?: "Not available",
+                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                        )
+                                    }
+                                    Divider(color = Color.LightGray, thickness = 1.dp)
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = buildAnnotatedString {
+                                                append("Biography: ")
+                                                withStyle(
+                                                    SpanStyle(
+                                                        fontSize = 16.sp,
+                                                        color = Color.Black,
+                                                        fontWeight = FontWeight.Normal
+                                                    )
+                                                ) {
+                                                    append(user.value?.biography ?: "Not available")
+                                                }
+                                            },
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 16.sp,
+                                                color = Color(0xFF572365),
+                                                textAlign = TextAlign.Justify
+                                            )
+                                        )
+                                    }
+                                    Divider(color = Color.LightGray, thickness = 1.dp)
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "Gender: ",
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 16.sp,
+                                                color = Color(0xFF572365)
+                                            ),
+                                        )
+                                        Text(
+                                            text = user.value?.gender?.name ?: "Not available",
+                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                        )
+                                    }
+                                    Divider(color = Color.LightGray, thickness = 1.dp)
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "Birthdate: ",
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 16.sp,
+                                                color = Color(0xFF572365)
+                                            ),
+                                        )
+                                        Text(
+                                            text = formatUtcToLocalWithDate(user.value?.birthdate),
+                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                        )
+                                    }
+                                    Divider(color = Color.LightGray, thickness = 1.dp)
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "Address: ",
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 16.sp,
+                                                color = Color(0xFF572365)
+                                            ),
+                                        )
+                                        Text(
+                                            text = user.value?.address ?: "Not available",
+                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                        )
+                                    }
+                                    Divider(color = Color.LightGray, thickness = 1.dp)
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "Role: ",
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 16.sp,
+                                                color = Color(0xFF572365)
+                                            ),
+                                        )
+                                        Text(
+                                            text = user.value?.role?.name ?: "Not available",
+                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                        )
+                                    }
+                                    Divider(color = Color.LightGray, thickness = 1.dp)
                                 }
-                                Divider(color = Color.LightGray, thickness = 1.dp)
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                        .padding(16.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        text = "Gender: ",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color(0xFF572365)
-                                        ),
-                                    )
-                                    Text(
-                                        text = user.value?.gender?.name ?: "Not available",
-                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                    )
                                 }
-                                Divider(color = Color.LightGray, thickness = 1.dp)
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = "Birthdate: ",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color(0xFF572365)
-                                        ),
-                                    )
-                                    Text(
-                                        text = formatUtcToLocalWithDate(user.value?.birthdate),
-                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                    )
-                                }
-                                Divider(color = Color.LightGray, thickness = 1.dp)
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = "Address: ",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color(0xFF572365)
-                                        ),
-                                    )
-                                    Text(
-                                        text = user.value?.address ?: "Not available",
-                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                    )
-                                }
-                                Divider(color = Color.LightGray, thickness = 1.dp)
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = "Role: ",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color(0xFF572365)
-                                        ),
-                                    )
-                                    Text(
-                                        text = user.value?.role?.name ?: "Not available",
-                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                    )
-                                }
-                                Divider(color = Color.LightGray, thickness = 1.dp)
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
                             }
                         }
                     }

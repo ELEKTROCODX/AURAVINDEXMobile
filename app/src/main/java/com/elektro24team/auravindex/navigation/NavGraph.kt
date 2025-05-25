@@ -13,19 +13,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.elektro24team.auravindex.utils.functions.rememberActivePlanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberAuditLogViewModel
 import com.elektro24team.auravindex.utils.functions.rememberAuthViewModel
 import com.elektro24team.auravindex.utils.functions.rememberBookCollectionViewModel
 import com.elektro24team.auravindex.utils.functions.rememberBookViewModel
+import com.elektro24team.auravindex.utils.functions.rememberLoanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLocalSettingViewModel
 import com.elektro24team.auravindex.utils.functions.rememberPlanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberRecentBookViewModel
 import com.elektro24team.auravindex.utils.functions.rememberUserViewModel
 import com.elektro24team.auravindex.view.*
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
@@ -67,6 +71,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val localSettingViewModel: LocalSettingViewModel = rememberLocalSettingViewModel()
     val userViewModel : UserViewModel = rememberUserViewModel()
     val auditLogViewModel : AuditLogViewModel = rememberAuditLogViewModel()
+    val activePlanViewModel: ActivePlanViewModel = rememberActivePlanViewModel()
+    val loanViewModel: LoanViewModel = rememberLoanViewModel()
     val recentBookViewModel: RecentBookViewModel = rememberRecentBookViewModel()
     val localSettings by localSettingViewModel.settings.collectAsState()
 
@@ -165,6 +171,16 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         }
         composable(Routes.LOGOUT) {
             localSettingViewModel.clearUserSettings()
+            activePlanViewModel.clearViewModelData()
+            auditLogViewModel.clearViewModelData()
+            bookViewModel.clearViewModelData()
+            bookCollectionViewModel.clearViewModelData()
+            loanViewModel.clearViewModelData()
+            planViewModel.clearViewModelData()
+            recentBookViewModel.clearViewModelData()
+            userViewModel.clearViewModelData()
+            authViewModel.clearViewModelData()
+
             Toast.makeText(LocalContext.current, "Successfully logged out.", Toast.LENGTH_LONG).show()
             navController.navigate(Routes.WELCOME)
         }
@@ -183,7 +199,9 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.PLANS) {
             PlanScreen(
                 navController = navController,
-                planViewModel = planViewModel
+                planViewModel = planViewModel,
+                activePlanViewModel = activePlanViewModel,
+                localSettingViewModel = localSettingViewModel
             )
         }
         composable(Routes.PROFILE) {

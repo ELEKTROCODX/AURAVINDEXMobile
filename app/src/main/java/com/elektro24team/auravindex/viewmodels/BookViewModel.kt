@@ -18,14 +18,14 @@ class BookViewModel(
     private val repository: BookRepository
 ) : BaseViewModel() {
 
-    private val _books = MutableLiveData<List<Book>>()
-    private val _book = MutableLiveData<Book>()
-    private val _filteredBooks = MutableLiveData<List<Book>>()
-    private val _latestReleases = MutableLiveData<List<Book>>()
-    val books: MutableLiveData<List<Book>> = _books
-    val book: MutableLiveData<Book> = _book
-    val filteredBooks: MutableLiveData<List<Book>> = _filteredBooks
-    val latestReleases: MutableLiveData<List<Book>> = _latestReleases
+    private val _books = MutableLiveData<List<Book>?>()
+    private val _book = MutableLiveData<Book?>()
+    private val _filteredBooks = MutableLiveData<List<Book>?>()
+    private val _latestReleases = MutableLiveData<List<Book>?>()
+    val books: MutableLiveData<List<Book>?> = _books
+    val book: MutableLiveData<Book?> = _book
+    val filteredBooks: MutableLiveData<List<Book>?> = _filteredBooks
+    val latestReleases: MutableLiveData<List<Book>?> = _latestReleases
 
     suspend fun loadBooks(showDuplicates: Boolean, showLents: Boolean) {
         val result = repository.getAllBooks(showDuplicates, showLents)
@@ -144,5 +144,12 @@ class BookViewModel(
                 }
             }
         }
+    }
+    override fun clearViewModelData() {
+        _books.value = null
+        _book.value = null
+        _filteredBooks.value = null
+        _latestReleases.value = null
+
     }
 }

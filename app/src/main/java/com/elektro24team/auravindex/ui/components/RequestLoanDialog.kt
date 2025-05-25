@@ -15,8 +15,7 @@ import androidx.room.parser.Section.Text
 fun RequestLoanDialog(
     showNewToDoDialog: MutableState<Boolean>,
 ) {
-
-    AlertDialog(
+    /*AlertDialog(
         onDismissRequest = {
             showNewToDoDialog.value = true
             clearToDoInputs(toDoTitle, toDoDescription, toDoDate)
@@ -74,6 +73,5 @@ fun RequestLoanDialog(
                 Text("Cancel")
             }
         }
-
-    )
+    )*/
 }

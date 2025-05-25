@@ -11,6 +11,7 @@ import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
+import kotlinx.coroutines.delay
 
 object APIerrorHandlers {
     fun tokenExpirationHandler(
@@ -18,7 +19,7 @@ object APIerrorHandlers {
         navController: NavController,
         localSettingViewModel: LocalSettingViewModel
     ) {
-        Toast.makeText(context, "Session expired, please login again.", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Session expired, please login again.", Toast.LENGTH_SHORT).show()
         localSettingViewModel.clearSetting(SettingKey.TOKEN.keySetting)
         localSettingViewModel.clearSetting(SettingKey.EMAIL.keySetting)
         localSettingViewModel.clearSetting(SettingKey.ID.keySetting)
@@ -32,18 +33,22 @@ object APIerrorHandlers {
         context: Context,
         navController: NavController
     ) {
-        Toast.makeText(context, "You don't have permission to perform this action.", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "You don't have permission to perform this action.", Toast.LENGTH_SHORT).show()
         navController.navigate(Routes.MAIN) {
             popUpTo(Routes.MAIN) { inclusive = true }
         }
-
     }
-
+    fun successHandler(
+        context: Context,
+        message: String
+    ) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
     fun errorHandler(
         context: Context,
         message: String
     ) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     @Composable
@@ -58,6 +63,8 @@ object APIerrorHandlers {
         LaunchedEffect(tokenExpired.value) {
             if (tokenExpired.value == true) {
                 tokenExpirationHandler(context, navController, localSettingViewModel)
+                delay(3000)
+                viewModel.clearNotifications()
             }
         }
     }
@@ -72,10 +79,26 @@ object APIerrorHandlers {
         LaunchedEffect(insufficientPermissions.value) {
             if (insufficientPermissions.value == true) {
                 insufficientPermissionsHandler(context, navController)
+                delay(3000)
+                viewModel.clearNotifications()
             }
         }
     }
 
+    @Composable
+    fun ObserveSuccess(
+        viewModel: BaseViewModel,
+    ) {
+        val success = viewModel.success.observeAsState()
+        val context = LocalContext.current
+        LaunchedEffect(success.value) {
+            if (!success.value.isNullOrEmpty()) {
+                successHandler(context, success.value!!)
+                delay(3000)
+                viewModel.clearNotifications()
+            }
+        }
+    }
     @Composable
     fun ObserveError(
         viewModel: BaseViewModel,
@@ -83,8 +106,10 @@ object APIerrorHandlers {
         val error = viewModel.error.observeAsState()
         val context = LocalContext.current
         LaunchedEffect(error.value) {
-            if (error.value != null) {
+            if (!error.value.isNullOrEmpty()) {
                 errorHandler(context, error.value!!)
+                delay(3000)
+                viewModel.clearNotifications()
             }
         }
     }

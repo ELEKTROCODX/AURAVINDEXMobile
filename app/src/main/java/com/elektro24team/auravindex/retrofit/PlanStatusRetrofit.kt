@@ -1,8 +1,7 @@
 package com.elektro24team.auravindex.retrofit
 
 import com.elektro24team.auravindex.model.ApiResponse
-import com.elektro24team.auravindex.model.Loan
-import com.elektro24team.auravindex.model.LoanRequest
+import com.elektro24team.auravindex.model.PlanStatus
 import com.elektro24team.auravindex.utils.constants.URLs.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,33 +13,31 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 
-interface LoanService{
-    @GET("loan")
-    suspend fun getLoans(
-        @Header("Authorization") token: String,
+interface PlanStatusService{
+    @GET("plan_status")
+    suspend fun getPlanStatuses(
         @Query("page") page: String = "1",
         @Query("limit") limit: String = "none"
-    ): ApiResponse<List<Loan>>
+    ): ApiResponse<List<PlanStatus>>
 
-    @GET("loan/{id}")
-    suspend fun getLoanById(
-        @Header("Authorization") token: String,
+    @GET("plan_status/{id}")
+    suspend fun getPlanStatusById(
         @Path("id") id: String
-    ): Loan
+    ): PlanStatus
 
-    @POST("loan")
-    suspend fun createLoan(
-        @Header("Authorization") token: String,
-        @Body loan: LoanRequest
-    )
+    @GET("plan_status")
+    suspend fun getPlanStatusByName(
+        @Query("filter_field") filterField: String = "plan_status",
+        @Query("filter_value") filterValue: String,
+    ): ApiResponse<List<PlanStatus>>
 }
 
-object LoanClient{
-    val apiService: LoanService by lazy{
+object PlanStatusClient{
+    val apiService: PlanStatusService by lazy{
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(LoanService::class.java)
+            .create(PlanStatusService::class.java)
     }
 }
