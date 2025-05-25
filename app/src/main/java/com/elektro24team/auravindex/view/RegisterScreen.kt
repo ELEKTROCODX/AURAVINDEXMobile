@@ -1,9 +1,11 @@
 package com.elektro24team.auravindex.view
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.Text
@@ -41,16 +44,22 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import com.elektro24team.auravindex.retrofit.RegisterInfo
+import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(genderViewModel: GenderViewModel = viewModel()){
+fun RegisterScreen(genderViewModel: GenderViewModel, authViewModel: AuthViewModel, navController: NavController){
     val context = LocalContext.current
     val userName = remember { mutableStateOf("") }
     val userLastname = remember { mutableStateOf("") }
@@ -70,6 +79,7 @@ fun RegisterScreen(genderViewModel: GenderViewModel = viewModel()){
     }
     val userAddress = remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val userBiography = remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         genderViewModel.getGendersList()
@@ -211,7 +221,7 @@ fun RegisterScreen(genderViewModel: GenderViewModel = viewModel()){
                     item {
                         TextField(
                             value = userPassword.value,
-                            onValueChange = { userEmail.value = it },
+                            onValueChange = { userPassword.value = it },
                             label = { Text("Password") },
                             placeholder = { Text("password") },
                             modifier = Modifier.padding(16.dp)
@@ -220,14 +230,44 @@ fun RegisterScreen(genderViewModel: GenderViewModel = viewModel()){
                     item {
                         Button(
                             onClick = {
-                                photoPickerLauncher.launch("image/")
+                                photoPickerLauncher.launch("image/*")
                             }
                         ) {
                             Text("Select profile image")
                         }
+                        imageUri.let {
+                            Image(
+                                painter = rememberAsyncImagePainter(it),
+                                contentDescription = "Selected image",
+                                modifier = Modifier.size(100.dp).clip(CircleShape)
+                            )
+                        }
+
+                    }
+                    item {
+                        TextField(
+                            value = userBiography.value,
+                            onValueChange = { userBiography.value = it },
+                            label = { Text("Biography") },
+                            placeholder = { Text("biography") },
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    item {
+                        Button(
+                            onClick = {
+                                val user = RegisterInfo(userName.value,userLastname.value,userEmail.value,userBiography.value,userGender.toString(),formattedUserBirthdate,imageUri.toString(),userAddress.value,userPassword.value)
+                                authViewModel.register(user)
+                                if(authViewModel.registerResult.value != ""){
+                                        Toast.makeText(context, "Successfully register.", Toast.LENGTH_SHORT).show()
+                                        navController.navigate(Routes.LOGIN)
+                                }
+                            }
+                        ) { Text("Register")}
                     }
                 }
             }
+
         }
     )
 }

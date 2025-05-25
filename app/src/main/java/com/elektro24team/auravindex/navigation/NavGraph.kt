@@ -230,7 +230,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             )
         }
         composable(Routes.SIGNUP){
-            RegisterScreen(genderViewModel)
+            RegisterScreen(genderViewModel,authViewModel,navController)
         }
 
     }

@@ -3,6 +3,8 @@ package com.elektro24team.auravindex.utils.functions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.data.local.AuraVindexDatabase
 import com.elektro24team.auravindex.data.repository.AuditLogRepository
@@ -100,5 +102,6 @@ fun rememberRecentBookViewModel(): RecentBookViewModel {
 fun rememberGenderViewModel(): GenderViewModel{
     val repository = remember { GenderRepository() }
     val factory = remember { GenderViewModelFactory(repository) }
-    return  viewModel(factory = factory)
+    val owner = LocalViewModelStoreOwner.current!!
+    return  ViewModelProvider(owner, factory)[GenderViewModel::class.java]
 }
