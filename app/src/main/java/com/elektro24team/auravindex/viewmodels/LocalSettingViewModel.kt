@@ -23,9 +23,15 @@ class LocalSettingViewModel(
         SettingKey.ROLE_NAME.keySetting,
         SettingKey.ROLE_ID.keySetting,
         SettingKey.ACTIVE_PLAN.keySetting,
+        SettingKey.ACTIVE_PLAN_ID.keySetting,
+        SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting,
         SettingKey.LAST_LOGIN.keySetting,
     )
-
+    var userActivePlanKeys = listOf(
+        SettingKey.ACTIVE_PLAN.keySetting,
+        SettingKey.ACTIVE_PLAN_ID.keySetting,
+        SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting,
+    )
     suspend fun loadSettings(vararg keys: String): Map<String, String> {
         val results = mutableMapOf<String, String>()
         keys.forEach { key ->
@@ -44,8 +50,12 @@ class LocalSettingViewModel(
     }
     fun loadUserSettings() {
         viewModelScope.launch {
-
             loadSettings(*userKeys.toTypedArray())
+        }
+    }
+    fun loadUserActivePlanSettings() {
+        viewModelScope.launch {
+            loadSettings(*userActivePlanKeys.toTypedArray())
         }
     }
 
@@ -71,6 +81,11 @@ class LocalSettingViewModel(
     fun clearUserSettings() {
         viewModelScope.launch {
             clearSettings(*userKeys.toTypedArray())
+        }
+    }
+    fun clearUserActivePlanSettings() {
+        viewModelScope.launch {
+            clearSettings(*userActivePlanKeys.toTypedArray())
         }
     }
 }

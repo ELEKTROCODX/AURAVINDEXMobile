@@ -10,6 +10,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -39,6 +40,21 @@ interface ActivePlanService{
     suspend fun createActivePlan(
         @Header("Authorization") token: String,
         @Body activePlan: ActivePlanRequest
+    )
+    @PUT("active_plan/{id}/renewal")
+    suspend fun renewActivePlan(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+    @PUT("active_plan/{id}/finish")
+    suspend fun finishActivePlan(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+    @PUT("active_plan/{id}/cancel")
+    suspend fun cancelActivePlan(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
     )
 }
 

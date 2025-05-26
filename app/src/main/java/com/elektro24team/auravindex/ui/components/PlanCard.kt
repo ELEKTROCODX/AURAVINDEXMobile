@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.Plan
+import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.enums.AppAction
@@ -156,7 +157,7 @@ fun PlanCard(
             // Botón
             if(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN.keySetting, "").toString() == plan?._id) {
                 Text(
-                    text = "CURRENT SUBSCRIPTION (ends at ${formatUtcToLocalWithDate(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, "").toString())}).",
+                    text = "CURRENT SUBSCRIPTION (ends on ${formatUtcToLocalWithDate(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, "").toString())}).",
                     style = TextStyle(fontWeight = FontWeight.Bold),
                     color = colors.primary
                 )
@@ -166,9 +167,12 @@ fun PlanCard(
                     Button(
                         onClick = {
                             if(isLoggedIn(localSettings.value)) {
-
+                                activePlanViewModel.renewActivePlan(
+                                    localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                                    localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ID.keySetting, "")
+                                )
                             } else {
-                                mustBeLoggedInToast(context, AppAction.SUBSCRIBE_TO_PLAN, navController)
+                                mustBeLoggedInToast(context, AppAction.RENEW_ACTIVE_PLAN, navController)
                             }
                         },
                         modifier = Modifier
@@ -187,9 +191,14 @@ fun PlanCard(
                     Button(
                         onClick = {
                             if(isLoggedIn(localSettings.value)) {
-
+                                activePlanViewModel.cancelActivePlan(
+                                    localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                                    localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ID.keySetting, "")
+                                )
+                                activePlanViewModel.clearViewModelData()
+                                localSettingViewModel.clearUserActivePlanSettings()
                             } else {
-                                mustBeLoggedInToast(context, AppAction.SUBSCRIBE_TO_PLAN, navController)
+                                mustBeLoggedInToast(context, AppAction.CANCEL_ACTIVE_PLAN, navController)
                             }
                         },
                         modifier = Modifier
@@ -200,7 +209,6 @@ fun PlanCard(
                     ) {
                         Text(
                             text = "CANCEL",
-
                             style = MaterialTheme.typography.labelLarge,
                             color = colors.onPrimary
                         )

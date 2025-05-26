@@ -61,7 +61,11 @@ class ActivePlanViewModel() : BaseViewModel() {
             }
             if (result.isSuccess) {
                 if(result.getOrNull()?.data?.isNotEmpty() == true) {
-                    _activePlan.value = result.getOrNull()?.data?.get(0)
+                    result.getOrNull()?.data?.forEach { ap ->
+                        if(ap.plan_status?.plan_status == "ACTIVE") {
+                            _activePlan.value = ap
+                        }
+                    }
                 }
             } else {
                 val error = result.exceptionOrNull()
@@ -115,7 +119,7 @@ class ActivePlanViewModel() : BaseViewModel() {
             }
             if (result.isSuccess) {
                 loadActivePlanByUserId(token, userId)
-                notifySuccess("The active plan has been created successfully")
+                notifySuccess("You have successfully subscribed to the plan.")
             } else {
                 val error = result.exceptionOrNull()
                 if (error is HttpException) {
@@ -124,6 +128,83 @@ class ActivePlanViewModel() : BaseViewModel() {
                         403 -> notifyInsufficentPermissions()
                         404 -> notifyError(error.message())
                         409 -> notifyError("You are already subscribed to a plan")
+                        else -> notifyError("HTTP error: ${error.code()}")
+                    }
+                } else {
+                    notifyError("Network error: ${error?.message}")
+                }
+            }
+        }
+    }
+    fun renewActivePlan(token: String, activePlanId: String) {
+        viewModelScope.launch {
+            val result = try {
+                val remote = ActivePlanClient.apiService.renewActivePlan(token = "Bearer $token", activePlanId)
+                Result.success(remote)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+            if (result.isSuccess) {
+                loadActivePlanById(token, activePlanId)
+                notifySuccess("Your plan has been successfully renewed.")
+            } else {
+                val error = result.exceptionOrNull()
+                if (error is HttpException) {
+                    when (error.code()) {
+                        401 -> notifyTokenExpired()
+                        403 -> notifyInsufficentPermissions()
+                        404 -> notifyError(error.message())
+                        else -> notifyError("HTTP error: ${error.code()}")
+                    }
+                } else {
+                    notifyError("Network error: ${error?.message}")
+                }
+            }
+        }
+    }
+    fun finishActivePlan(token: String, activePlanId: String) {
+        viewModelScope.launch {
+            val result = try {
+                val remote = ActivePlanClient.apiService.finishActivePlan(token = "Bearer $token", activePlanId)
+                Result.success(remote)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+            if (result.isSuccess) {
+                loadActivePlanById(token, activePlanId)
+                notifySuccess("Your plan has been successfully finished.")
+            } else {
+                val error = result.exceptionOrNull()
+                if (error is HttpException) {
+                    when (error.code()) {
+                        401 -> notifyTokenExpired()
+                        403 -> notifyInsufficentPermissions()
+                        404 -> notifyError(error.message())
+                        else -> notifyError("HTTP error: ${error.code()}")
+                    }
+                } else {
+                    notifyError("Network error: ${error?.message}")
+                }
+            }
+        }
+    }
+    fun cancelActivePlan(token: String, activePlanId: String) {
+        viewModelScope.launch {
+            val result = try {
+                val remote = ActivePlanClient.apiService.cancelActivePlan(token = "Bearer $token", activePlanId)
+                Result.success(remote)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+            if (result.isSuccess) {
+                notifySuccess("Your plan has been successfully canceled.")
+            } else {
+                val error = result.exceptionOrNull()
+                if (error is HttpException) {
+                    when (error.code()) {
+                        401 -> notifyTokenExpired()
+                        403 -> notifyInsufficentPermissions()
+                        404 -> notifyError(error.message())
                         else -> notifyError("HTTP error: ${error.code()}")
                     }
                 } else {
