@@ -556,7 +556,7 @@ fun BookScreen(
                                                             mustBeLoggedInToast(context, AppAction.LOAN_BOOK, navController)
                                                         } else if(activePlan.value == null) {
                                                             mustBeSubscribedToast(context, AppAction.LOAN_BOOK, navController)
-                                                        } else if(loan.loan_status.loan_status != "ACTIVE") {
+                                                        } else if(loan.loan_status.loan_status != "ACTIVE" && loan.loan_status.loan_status != "RENEWED") {
                                                             Toast.makeText(context, "This loan is currently not active.", Toast.LENGTH_SHORT).show()
                                                         } else {
                                                             loanViewModel.renewLoan(
