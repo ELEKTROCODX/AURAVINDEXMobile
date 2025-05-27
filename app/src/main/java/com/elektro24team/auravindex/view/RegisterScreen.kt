@@ -54,6 +54,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.elektro24team.auravindex.retrofit.RegisterInfo
+import com.elektro24team.auravindex.utils.functions.isValidEmail
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import java.util.TimeZone
 
@@ -80,6 +81,30 @@ fun RegisterScreen(genderViewModel: GenderViewModel, authViewModel: AuthViewMode
     val userAddress = remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val userBiography = remember { mutableStateOf("") }
+
+    val userAge = remember(formattedUserBirthdate) {
+        try {
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            val birthDate = sdf.parse(formattedUserBirthdate)
+
+            birthDate?.let {
+                val birthCalendar = Calendar.getInstance().apply { time = it }
+                val today = Calendar.getInstance()
+
+                var age = today.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
+
+                if (today.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+                    age--
+                }
+
+                age
+            } ?: 0
+        } catch (e: Exception) {
+            0
+        }
+    }
+
 
     LaunchedEffect(Unit) {
         genderViewModel.getGendersList()
@@ -256,12 +281,54 @@ fun RegisterScreen(genderViewModel: GenderViewModel, authViewModel: AuthViewMode
                     item {
                         Button(
                             onClick = {
+                                val emptyFields = listOfNotNull(
+                                    if (userName.value.isBlank()) "Name" else null,
+                                    if (userLastname.value.isBlank()) "Last Name" else null,
+                                    if (userBirthdate.value == null) "Birth Date" else null,
+                                    if (userGender == null) "Gender" else null,
+                                    if (userAddress.value.isBlank()) "Address" else null,
+                                    if (userEmail.value.isBlank()) "Email" else null,
+                                    if (userPassword.value.isBlank()) "Password" else null,
+                                )
+                                if(emptyFields.size == 7){
+                                    Toast.makeText(context, "Need to fill the form", Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+                                if (emptyFields.isNotEmpty()){
+                                    val message = emptyFields.joinToString(", ") + " required"
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+                                val tooLongFields = listOfNotNull(
+                                    if (userName.value.length > 30) "Name (${userName.value.length}/30)" else null,
+                                    if (userLastname.value.length > 30) "Last Name (${userLastname.value.length}/30)" else null,
+                                    if (userAddress.value.length > 500) "Address (${userAddress.value.length}/500)" else null,
+                                    if (userEmail.value.length > 50) "Email (${userEmail.value.length}/50)" else null,
+                                    if (userBiography.value.length > 300) "Biography (${userBiography.value.length}/300)" else null
+                                )
+
+                                if(tooLongFields.isNotEmpty()){
+                                    val message = "Are too long: \n" + tooLongFields.joinToString("\n")
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+                                if(userPassword.value.length < 6){
+                                    Toast.makeText(context, "Password too short, need to be at least 6 characters",Toast.LENGTH_SHORT).show()
+                                }
+                                if(userAge < 16){
+                                    Toast.makeText(context, "You need to be 16 years",Toast.LENGTH_SHORT).show()
+                                }
+                                if(!isValidEmail(userEmail.value)){
+                                    Toast.makeText(context, "The email need to be a real one",Toast.LENGTH_SHORT).show()
+                                }
+
                                 val user = RegisterInfo(userName.value,userLastname.value,userEmail.value,userBiography.value,userGender.toString(),formattedUserBirthdate,imageUri.toString(),userAddress.value,userPassword.value)
                                 authViewModel.register(user)
-                                if(authViewModel.registerResult.value != ""){
-                                        Toast.makeText(context, "Successfully register.", Toast.LENGTH_SHORT).show()
-                                        navController.navigate(Routes.LOGIN)
+                                if(authViewModel.registerResult.value == "User registered successfully"){
+                                    Toast.makeText(context, "Successfully register.", Toast.LENGTH_SHORT).show()
+                                    navController.navigate(Routes.LOGIN)
                                 }
+
                             }
                         ) { Text("Register")}
                     }
