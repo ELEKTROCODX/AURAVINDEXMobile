@@ -80,7 +80,6 @@ fun PlanCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Título del plan
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -93,10 +92,7 @@ fun PlanCard(
                     color = PurpleC
                 )
             }
-
             HorizontalDivider(thickness = 1.dp, color = colors.outlineVariant)
-
-            // Beneficios
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
                     text = "Inscription fee: $${plan?.fixed_price}",
@@ -104,7 +100,6 @@ fun PlanCard(
                     fontSize = 14.sp,
                     color = colors.primary
                 )
-
                 Text(
                     text = "Monthly price: $${plan?.monthly_price}",
                     fontStyle = FontStyle.Italic,
@@ -118,7 +113,6 @@ fun PlanCard(
                     fontWeight = FontWeight.SemiBold,
                     color = colors.onSurface
                 )
-
                 Text(
                     text = buildAnnotatedString {
                         append("Up to ")
@@ -129,7 +123,6 @@ fun PlanCard(
                     fontSize = 14.sp,
                     color = colors.onSurface
                 )
-
                 Text(
                     text = buildAnnotatedString {
                         append("Return books in up to ")
@@ -140,12 +133,11 @@ fun PlanCard(
                     fontSize = 14.sp,
                     color = colors.onSurface
                 )
-
                 Text(
                     text = buildAnnotatedString {
-                        append("Renovate up to ")
+                        append("Renew up to ")
                         withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = colors.primary)) {
-                            append("${plan?.max_renovations_per_loan} times")
+                            append("${plan?.max_renewals_per_loan} times")
                         }
                         append(" per loan")
                     },
@@ -153,8 +145,6 @@ fun PlanCard(
                     color = colors.onSurface
                 )
             }
-
-            // Botón
             if(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN.keySetting, "").toString() == plan?._id) {
                 Text(
                     text = "CURRENT SUBSCRIPTION (ends on ${formatUtcToLocalWithDate(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, "").toString())}).",
@@ -240,7 +230,6 @@ fun PlanCard(
                     )
                 }
             }
-
         }
     }
 }

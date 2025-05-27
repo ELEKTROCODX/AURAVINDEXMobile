@@ -10,68 +10,47 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
 import androidx.room.parser.Section.Text
+import com.elektro24team.auravindex.model.Book
+import com.elektro24team.auravindex.model.Plan
+import com.elektro24team.auravindex.model.User
+import com.elektro24team.auravindex.viewmodels.LoanViewModel
 
 @Composable
 fun RequestLoanDialog(
-    showNewToDoDialog: MutableState<Boolean>,
+    showRequestLoanDialog: MutableState<Boolean>,
+    loanViewModel: LoanViewModel,
+    book: Book,
+    plan: Plan,
+    user_id: String
 ) {
-    /*AlertDialog(
+    AlertDialog(
         onDismissRequest = {
-            showNewToDoDialog.value = true
-            clearToDoInputs(toDoTitle, toDoDescription, toDoDate)
+            showRequestLoanDialog.value = true
         },
-        title = { Text(text = "New To Do") },
+        title = { Text(text = "Loan book") },
         text = {
             Column {
-                TextField(
-                    value = toDoTitle.value,
-                    onValueChange = { toDoTitle.value = it },
-                    label = { Text("Title") },
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
+                Text(
+                    "Please confirm the information below to request the loan." +
+                            "\n1. You are requesting the book ${book.title} from ${book.authors.joinToString { "${it.name} ${it.last_name}" }}." +
+                            "\n2. You must return the book within ${plan.max_return_days} days." +
+                            "\n3. You can renew "
                 )
-                TextField(
-                    value = toDoDescription.value,
-                    onValueChange = { toDoDescription.value = it },
-                    label = { Text("Description") },
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
-                )
-                Button(
-                    onClick = { showDatePickerDialog.value = false }
-                ) {
-                    Text("Select Date")
-                }
-                if (toDoDate.value != "") {
-                    var formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                    formatter.timeZone = TimeZone.getTimeZone("UTC-6")
-                    Text(text = "Selected date: " + formatter.format(toDoDate.value.toLong()))
-                }
             }
         },
         confirmButton = {
             TextButton(onClick = {
-                if (toDoDate.value == "") {
-                    toDoDate.value = System.currentTimeMillis().toString()
-                }
-                viewModel.insert(
-                    ToDo(
-                        title = toDoTitle.value,
-                        description = toDoDescription.value,
-                        finishDate = toDoDate.value.toLong()
-                    )
-                )
-                showNewToDoDialog.value = true
-                clearToDoInputs(toDoTitle, toDoDescription, toDoDate)
+                showRequestLoanDialog.value = true
             }) {
-                Text("Add")
+                Text("Request loan")
             }
         },
         dismissButton = {
             TextButton(onClick = {
-                showNewToDoDialog.value = true
-                clearToDoInputs(toDoTitle, toDoDescription, toDoDate)
+                showRequestLoanDialog.value = true
             }) {
                 Text("Cancel")
             }
         }
-    )*/
+    )
 }
