@@ -3,11 +3,14 @@ package com.elektro24team.auravindex.utils.functions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.data.local.AuraVindexDatabase
 import com.elektro24team.auravindex.data.repository.AuditLogRepository
 import com.elektro24team.auravindex.data.repository.BookCollectionRepository
 import com.elektro24team.auravindex.data.repository.BookRepository
+import com.elektro24team.auravindex.data.repository.GenderRepository
 import com.elektro24team.auravindex.data.repository.LocalSettingRepository
 import com.elektro24team.auravindex.data.repository.PlanRepository
 import com.elektro24team.auravindex.data.repository.UserRepository
@@ -18,6 +21,7 @@ import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
+import com.elektro24team.auravindex.viewmodels.GenderViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
@@ -26,6 +30,7 @@ import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.factories.AuditLogViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.BookCollectionViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.BookViewModelFactory
+import com.elektro24team.auravindex.viewmodels.factories.GenderViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.LocalSettingViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.PlanViewModelFactory
 import com.elektro24team.auravindex.viewmodels.factories.UserViewModelFactory
@@ -115,4 +120,12 @@ fun rememberLoanStatusViewModel(): LoanStatusViewModel {
 @Composable
 fun rememberPlanStatusViewModel(): PlanStatusViewModel {
     return viewModel()
+}
+
+@Composable
+fun rememberGenderViewModel(): GenderViewModel{
+    val repository = remember { GenderRepository() }
+    val factory = remember { GenderViewModelFactory(repository) }
+    val owner = LocalViewModelStoreOwner.current!!
+    return  ViewModelProvider(owner, factory)[GenderViewModel::class.java]
 }

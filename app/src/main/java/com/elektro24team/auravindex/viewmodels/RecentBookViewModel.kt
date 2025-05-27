@@ -29,7 +29,13 @@ class RecentBookViewModel() : BaseViewModel() {
                 Result.failure(e)
             }
             if (result.isSuccess) {
+                val book = result.getOrNull()?.data
                 _recentBook.value = result.getOrNull()?.data?.get(0)
+                if (!book.isNullOrEmpty()){
+                    _recentBook.value = book[0]
+                }else{
+                    notifyError("No RECENT")
+                }
             } else {
                 val error = result.exceptionOrNull()
                 if (error is HttpException) {

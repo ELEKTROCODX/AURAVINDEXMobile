@@ -1,6 +1,8 @@
 package com.elektro24team.auravindex.view
 
+import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +33,7 @@ import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
+import kotlin.math.log
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,13 +52,19 @@ fun LoginScreen(
     val userPassword = remember { mutableStateOf("") }
     ObserveError(authViewModel)
     LaunchedEffect(loginResult) {
+        Log.d("LOGIN DEBUG", "loginResult changed: $loginResult")
         if (loginResult != null && loginResult != "") {
+            Log.d("LoginDebug", "Calling getUserByEmail: $loginResult")
             localSettingViewModel.clearUserSettings()
             userViewModel.getUserByEmail(loginResult!!, userEmail.value)
         }
+
+
     }
     LaunchedEffect(user) {
+        Log.d("LoginDebug", "User changed: $user")
         if (user != null) {
+
             localSettingViewModel.saveSetting(SettingKey.TOKEN.keySetting, loginResult!!)
             localSettingViewModel.saveSetting(SettingKey.EMAIL.keySetting, userEmail.value)
             localSettingViewModel.saveSetting(SettingKey.ID.keySetting, user?._id.toString())
@@ -105,9 +114,13 @@ fun LoginScreen(
                         placeholder = { Text("password")},
                         modifier = Modifier.padding(16.dp)
                     )
+                    Text(text = "No account? Sign Up now!", modifier = Modifier.clickable {
+                        navController.navigate(Routes.SIGNUP)
+                    })
                     Button(
                         onClick = {
-                            authViewModel.login(userEmail.value, userPassword.value)
+                            Log.d("LOGIN","Email: ${userEmail.value}, Password: ${userPassword.value}")
+                            authViewModel.login(userEmail.value.trim(), userPassword.value)
                         },
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {

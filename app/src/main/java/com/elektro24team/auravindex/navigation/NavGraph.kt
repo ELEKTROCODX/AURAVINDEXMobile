@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,6 +22,7 @@ import com.elektro24team.auravindex.utils.functions.rememberBookCollectionViewMo
 import com.elektro24team.auravindex.utils.functions.rememberBookViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLoanStatusViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLoanViewModel
+import com.elektro24team.auravindex.utils.functions.rememberGenderViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLocalSettingViewModel
 import com.elektro24team.auravindex.utils.functions.rememberPlanStatusViewModel
 import com.elektro24team.auravindex.utils.functions.rememberPlanViewModel
@@ -33,6 +36,7 @@ import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
+import com.elektro24team.auravindex.viewmodels.GenderViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
@@ -50,6 +54,7 @@ object Routes {
     const val LISTS = "lists"
     const val LOANS = "loans"
     const val LOGIN = "login"
+    const val SIGNUP ="signup"
     const val LOGOUT = "logout"
     const val MAIN = "main"
     const val NOTIFICATIONS = "notifications"
@@ -81,6 +86,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val recentBookViewModel: RecentBookViewModel = rememberRecentBookViewModel()
     val loanStatusViewModel: LoanStatusViewModel = rememberLoanStatusViewModel()
     val planStatusViewModel: PlanStatusViewModel = rememberPlanStatusViewModel()
+    val genderViewModel : GenderViewModel = rememberGenderViewModel()
     val localSettings by localSettingViewModel.settings.collectAsState()
 
     NavHost(navController = navController, startDestination = startDestination) {
@@ -264,6 +270,9 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 bookCollectionViewModel = bookCollectionViewModel,
                 localSettingViewModel = localSettingViewModel
             )
+        }
+        composable(Routes.SIGNUP){
+            RegisterScreen(genderViewModel,authViewModel,navController)
         }
 
     }

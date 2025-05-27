@@ -1,6 +1,8 @@
 package com.elektro24team.auravindex.utils.functions
 
+
 import android.content.Context
+import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -20,4 +22,8 @@ fun mustBeSubscribedToast(context: Context, appAction: AppAction, navController:
         navController?.navigate(route)
     }
 
+}
+
+fun isValidEmail(email: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
