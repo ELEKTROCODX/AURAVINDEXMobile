@@ -115,9 +115,9 @@ class BookViewModel(
         }?.sortedByDescending { it.second }?.map { it.first }
         _filteredBooks.postValue(filtered ?: emptyList())
     }
-    fun loadBook(bookId: String) {
+    fun loadBook(bookId: String, forceApiRequest: Boolean = false) {
         viewModelScope.launch {
-            if( _books.value?.find{ it._id == bookId } == null) {
+            if( _books.value?.find{ it._id == bookId } == null || forceApiRequest) {
                 val result = repository.getBookById(bookId)
                 _books.postValue(listOf(result))
                 _book.postValue(result)

@@ -25,6 +25,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.LibraryAdd
 import androidx.compose.material3.DrawerValue
@@ -77,6 +78,7 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
@@ -109,7 +111,9 @@ fun BookScreen(
     val showRequestLoanDialog = remember { mutableStateOf(false) }
     val book = bookViewModel.book.observeAsState()
     val loanStatus = loanStatusViewModel.loanStatus.observeAsState()
+    val activePlan = activePlanViewModel.activePlan.observeAsState()
     val settings = localSettingViewModel.settings.collectAsState()
+    val userLoans = loanViewModel.userLoans.observeAsState()
     LaunchedEffect(bookId) {
         if(isLoggedIn(settings.value)) {
             bookViewModel.fetchBookWithAuth(settings.value[SettingKey.TOKEN.keySetting].toString(), bookId)
@@ -121,6 +125,12 @@ fun BookScreen(
             activePlanViewModel.loadActivePlanById(settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ACTIVE_PLAN_ID.keySetting].toString())
         } else if(settings.value[SettingKey.ACTIVE_PLAN_ID.keySetting].isNullOrEmpty()) {
             activePlanViewModel.loadActivePlanByUserId(
+                settings.value[SettingKey.TOKEN.keySetting].toString(),
+                settings.value[SettingKey.ID.keySetting].toString()
+            )
+        }
+        if(isLoggedIn(settings.value)) {
+            loanViewModel.loadUserLoans(
                 settings.value[SettingKey.TOKEN.keySetting].toString(),
                 settings.value[SettingKey.ID.keySetting].toString()
             )
@@ -185,6 +195,7 @@ fun BookScreen(
                             RequestLoanDialog(
                                 showRequestLoanDialog = showRequestLoanDialog,
                                 loanViewModel = loanViewModel,
+                                bookViewModel = bookViewModel,
                                 loanStatus = loanStatus.value!!,
                                 token = settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
                                 book = book.value!!,
@@ -392,7 +403,8 @@ fun BookScreen(
                                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                                 )
                                 Text(
-                                    text = book.value?.book_status?.book_status?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } ?: "Not available",
+                                    /*text = book.value?.book_status?.book_status?.lowercase()?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } ?: "Not available",*/
+                                    text = book.value?.book_status?.book_status ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
@@ -467,27 +479,116 @@ fun BookScreen(
                                     )
                                 }
                             }
+                        }
+                        if(isLoggedIn(settings.value) && (book.value?.book_status?.book_status?.lowercase() == "lent")) {
+                            userLoans.value?.forEach { loan ->
+                                if(loan?.book?._id == bookId && loan?.loan_status?.loan_status?.lowercase() != "finished") {
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Text(
+                                            "Loan Details",
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 18.sp,
+                                                color = Color(0xFF572365)
+                                            ),
+                                            modifier = Modifier.padding(bottom = 12.dp)
+                                        )
+                                        Divider(color = Color.LightGray, thickness = 1.dp)
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 4.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                text = "Loan status: ",
+                                                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                                            )
+                                            Text(
+                                                text = loan.loan_status.loan_status ?: "Not available",
+                                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                            )
+                                        }
+                                        Divider(color = Color.LightGray, thickness = 1.dp)
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 4.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                text = "Return date: ",
+                                                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                                            )
+                                            Text(
+                                                text = formatUtcToLocalWithDate(loan.return_date),
+                                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                            )
+                                        }
+                                        Divider(color = Color.LightGray, thickness = 1.dp)
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 4.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                text = "Renewals left: ",
+                                                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                                            )
+                                            Text(
+                                                text = "${activePlanViewModel.activePlan.value?.plan?.max_renewals_per_loan?.toInt()
+                                                    ?.minus(loan.renewals.toInt())}/${activePlanViewModel.activePlan.value?.plan?.max_renewals_per_loan}",
+                                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                            )
+                                        }
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(16.dp),
+                                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            if(loan.renewals.toInt() < activePlanViewModel.activePlan.value?.plan?.max_renewals_per_loan?.toInt()!!) {
+                                                Button(
+                                                    onClick = {
+                                                        if(!isLoggedIn(settings.value)) {
+                                                            mustBeLoggedInToast(context, AppAction.LOAN_BOOK, navController)
+                                                        } else if(activePlan.value == null) {
+                                                            mustBeSubscribedToast(context, AppAction.LOAN_BOOK, navController)
+                                                        } else if(loan.loan_status.loan_status != "ACTIVE") {
+                                                            Toast.makeText(context, "This loan is currently not active.", Toast.LENGTH_SHORT).show()
+                                                        } else {
+                                                            loanViewModel.renewLoan(
+                                                                settings.value[SettingKey.TOKEN.keySetting].toString(),
+                                                                loan._id
+                                                            )
+                                                        }
+                                                    },
+                                                    modifier = Modifier
+                                                        .height(48.dp)
+                                                        .weight(1f),
+                                                    colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
+                                                    shape = RoundedCornerShape(12.dp),
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Filled.Autorenew,
+                                                        contentDescription = "Renew",
+                                                        tint = Color.White,
+                                                        modifier = Modifier.padding(end = 8.dp)
+                                                    )
+                                                    Text(
+                                                        text = "Renew",
+                                                        color = Color.White,
+                                                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                                    )
+                                                }
+                                            }
 
-                            /*Button(
-                                onClick = { *//* Acción para "Cancel"*//*  },
-                                modifier = Modifier
-                                    .height(48.dp)
-                                    .weight(1f),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = OrangeC),
-                                shape = RoundedCornerShape(12.dp),
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Cancel,
-                                    contentDescription = "Cancel",
-                                    tint = Color.White,
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
-                                Text(
-                                    text = "Cancel",
-                                    color = Color.White,
-                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                )
-                            }*/
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

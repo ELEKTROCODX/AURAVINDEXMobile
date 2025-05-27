@@ -18,6 +18,7 @@ import com.elektro24team.auravindex.ui.components.AdminActivePlanTable
 import com.elektro24team.auravindex.ui.components.AdminAuditLogTable
 import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
+import com.elektro24team.auravindex.ui.components.AdminLoanTable
 import com.elektro24team.auravindex.ui.components.AdminPlanCard
 import com.elektro24team.auravindex.ui.components.AdminPlanTable
 import com.elektro24team.auravindex.ui.components.AdminUserCard
@@ -34,6 +35,7 @@ import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveToke
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
@@ -46,6 +48,7 @@ fun AdminDashboardScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
     userViewModel: UserViewModel,
+    loanViewModel: LoanViewModel,
     planViewModel: PlanViewModel,
     activePlanViewModel: ActivePlanViewModel,
     auditLogViewModel: AuditLogViewModel,
@@ -164,6 +167,16 @@ fun AdminDashboardScreen(
                                     }
                                     AdminUserTable(navController, users ?: emptyList())
                                 }
+                                AdminDashboardObject.LOAN.name.lowercase() -> {
+                                    ObserveTokenExpiration(loanViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficientPermissions(loanViewModel, navController)
+                                    ObserveError(loanViewModel)
+                                    val loans by loanViewModel.loans.observeAsState()
+                                    LaunchedEffect(Unit) {
+                                        loanViewModel.loadLoans(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
+                                    }
+                                    AdminLoanTable(navController, loans ?: emptyList())
+                                }
                                 AdminDashboardObject.ACTIVE_PLAN.name.lowercase() -> {
                                     ObserveTokenExpiration(activePlanViewModel, navController, localSettingViewModel)
                                     ObserveInsufficientPermissions(activePlanViewModel, navController)
@@ -196,6 +209,8 @@ fun AdminDashboardScreen(
                                     AdminBookCard(
                                         navController = navController,
                                         bookViewModel = bookViewModel,
+                                        loanViewModel = loanViewModel,
+                                        localSettingViewModel = localSettingViewModel,
                                         bookId = objectId,
                                     )
                                 }

@@ -35,6 +35,7 @@ import com.elektro24team.auravindex.model.LoanStatus
 import com.elektro24team.auravindex.model.Plan
 import com.elektro24team.auravindex.model.User
 import com.elektro24team.auravindex.utils.functions.formatApiDateFormat
+import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -47,6 +48,7 @@ import java.util.Locale
 fun RequestLoanDialog(
     showRequestLoanDialog: MutableState<Boolean>,
     loanViewModel: LoanViewModel,
+    bookViewModel: BookViewModel,
     loanStatus: LoanStatus,
     token: String,
     book: Book,
@@ -119,6 +121,7 @@ fun RequestLoanDialog(
                     token = token,
                     loan = loanRequest
                 )
+                bookViewModel.loadBook(book._id)
             }) {
                 Text("Request loan")
             }
