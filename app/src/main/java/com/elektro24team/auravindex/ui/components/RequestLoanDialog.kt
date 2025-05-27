@@ -115,7 +115,6 @@ fun RequestLoanDialog(
                     loan_status = loanStatus._id,
                     return_date = formattedDate
                 )
-                Log.d("LoanRequest", "Request: $loanRequest")
                 loanViewModel.createLoan(
                     token = token,
                     loan = loanRequest

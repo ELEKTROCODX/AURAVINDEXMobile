@@ -21,8 +21,10 @@ class LoanViewModel() : BaseViewModel() {
 
     private val _loan = MutableLiveData<Loan?>()
     private val _loans = MutableLiveData<List<Loan>?>()
+    private val _userLoans = MutableLiveData<List<Loan>?>()
     val loan: LiveData<Loan?> = _loan
     val loans: LiveData<List<Loan>?> = _loans
+    val userLoans: LiveData<List<Loan>?> = _userLoans
 
     fun loadLoanById(token: String, loanId: String) {
         viewModelScope.launch {
@@ -49,7 +51,31 @@ class LoanViewModel() : BaseViewModel() {
             }
         }
     }
-
+    fun loadUserLoans(token: String, userId: String) {
+        viewModelScope.launch {
+            val result = try {
+                val remote = LoanClient.apiService.getUserLoans(token = "Bearer $token", filterValue = userId)
+                Result.success(remote)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+            if (result.isSuccess) {
+                _userLoans.value = result.getOrNull()?.data
+            } else {
+                val error = result.exceptionOrNull()
+                Log.d("LoanViewModel", "Error: ${error}")
+                if (error is HttpException) {
+                    when (error.code()) {
+                        401 -> notifyTokenExpired()
+                        403 -> notifyInsufficentPermissions()
+                        else -> notifyError("HTTP error: ${error.code()}")
+                    }
+                } else {
+                    notifyError("Network error: ${error?.message}")
+                }
+            }
+        }
+    }
     fun loadLoans(token: String) {
         viewModelScope.launch {
             val result = try {
@@ -74,6 +100,7 @@ class LoanViewModel() : BaseViewModel() {
             }
         }
     }
+
     fun createLoan(token: String, loan: LoanRequest) {
         viewModelScope.launch {
             val result = try {

@@ -8,7 +8,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.navigation.Routes
-import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.delay
@@ -65,7 +64,7 @@ object APIerrorHandlers {
         }
     }
     @Composable
-    fun ObserveInsufficentPermissions(
+    fun ObserveInsufficientPermissions(
         viewModel: BaseViewModel,
         navController: NavController
     ) {

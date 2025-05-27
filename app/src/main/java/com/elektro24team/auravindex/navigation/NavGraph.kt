@@ -48,6 +48,7 @@ object Routes {
     const val BOOK = "book/{bookId}"
     const val COLLECTION_BOOKS = "collection_books/{collectionName}/{collectionId}"
     const val LISTS = "lists"
+    const val LOANS = "loans"
     const val LOGIN = "login"
     const val LOGOUT = "logout"
     const val MAIN = "main"
@@ -172,6 +173,13 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
            ListsScreen(
                navController = navController
            )
+        }
+        composable(Routes.LOANS) {
+            LoansScreen(
+                navController = navController,
+                loanViewModel = loanViewModel,
+                localSettingViewModel = localSettingViewModel
+            )
         }
         composable(Routes.LOGIN) {
             LoginScreen(

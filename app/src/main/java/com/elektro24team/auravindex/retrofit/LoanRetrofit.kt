@@ -22,6 +22,15 @@ interface LoanService{
         @Query("limit") limit: String = "none"
     ): ApiResponse<List<Loan>>
 
+    @GET("loan")
+    suspend fun getUserLoans(
+        @Header("Authorization") token: String,
+        @Query("page") page: String = "1",
+        @Query("limit") limit: String = "none",
+        @Query("filter_field") filterField: String = "user",
+        @Query("filter_value") filterValue: String
+    ): ApiResponse<List<Loan>>
+
     @GET("loan/{id}")
     suspend fun getLoanById(
         @Header("Authorization") token: String,

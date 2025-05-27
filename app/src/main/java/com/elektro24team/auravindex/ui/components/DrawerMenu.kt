@@ -136,7 +136,7 @@ fun DrawerMenu(
             val menuItems = listOf(
                 DefaultMenuItem("Home", Icons.Default.Home, Routes.MAIN),
                 DefaultMenuItem("Profile", Icons.Default.Person, Routes.PROFILE),
-                DefaultMenuItem("My Loans", Icons.AutoMirrored.Filled.LibraryBooks, Routes.NOTIFICATIONS),
+                DefaultMenuItem("My Loans", Icons.AutoMirrored.Filled.LibraryBooks, Routes.LOANS),
                 DefaultMenuItem("Terms of Services", Icons.Default.Newspaper, Routes.TERMS),
                 DefaultMenuItem("Privacy Policy", Icons.Filled.PrivacyTip, Routes.PRIVACY),
                 DefaultMenuItem("Team", Icons.Filled.Groups, Routes.TEAM),

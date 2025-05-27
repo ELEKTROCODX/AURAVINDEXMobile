@@ -285,6 +285,26 @@ fun AdminBookCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
+                    text = "Location: ",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF572365)
+                    ),
+                )
+                Text(
+                    text = book.value?.location ?: "Not available",
+                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                )
+            }
+            Divider(color = Color.LightGray, thickness = 1.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
                     text = "Status: ",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,

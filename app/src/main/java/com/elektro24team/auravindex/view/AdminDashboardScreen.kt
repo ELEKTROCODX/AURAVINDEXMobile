@@ -29,7 +29,7 @@ import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
-import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficentPermissions
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
@@ -138,7 +138,7 @@ fun AdminDashboardScreen(
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
                                     ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficentPermissions(bookViewModel, navController)
+                                    ObserveInsufficientPermissions(bookViewModel, navController)
                                     val books by bookViewModel.books.observeAsState()
                                     LaunchedEffect(Unit) {
                                         bookViewModel.loadBooks(showDuplicates = true, showLents = true)
@@ -147,7 +147,7 @@ fun AdminDashboardScreen(
                                 }
                                 AdminDashboardObject.PLAN.name.lowercase() -> {
                                     ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficentPermissions(planViewModel, navController)
+                                    ObserveInsufficientPermissions(planViewModel, navController)
                                     val plans by planViewModel.plans.observeAsState()
                                     LaunchedEffect(Unit) {
                                         planViewModel.loadPlans()
@@ -156,7 +156,7 @@ fun AdminDashboardScreen(
                                 }
                                 AdminDashboardObject.USER.name.lowercase() -> {
                                     ObserveTokenExpiration(userViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficentPermissions(userViewModel, navController)
+                                    ObserveInsufficientPermissions(userViewModel, navController)
                                     ObserveError(userViewModel)
                                     val users by userViewModel.users.observeAsState()
                                     LaunchedEffect(Unit) {
@@ -166,7 +166,7 @@ fun AdminDashboardScreen(
                                 }
                                 AdminDashboardObject.ACTIVE_PLAN.name.lowercase() -> {
                                     ObserveTokenExpiration(activePlanViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficentPermissions(activePlanViewModel, navController)
+                                    ObserveInsufficientPermissions(activePlanViewModel, navController)
                                     ObserveError(activePlanViewModel)
                                     val activePlans by activePlanViewModel.activePlans.observeAsState()
                                     LaunchedEffect(Unit) {
@@ -176,7 +176,7 @@ fun AdminDashboardScreen(
                                 }
                                 AdminDashboardObject.AUDIT_LOG.name.lowercase() -> {
                                     ObserveTokenExpiration(auditLogViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficentPermissions(auditLogViewModel, navController)
+                                    ObserveInsufficientPermissions(auditLogViewModel, navController)
                                     ObserveError(auditLogViewModel)
                                     val auditLogs by auditLogViewModel.auditLogs.observeAsState()
                                     LaunchedEffect(Unit) {
@@ -192,7 +192,7 @@ fun AdminDashboardScreen(
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
                                     ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficentPermissions(bookViewModel, navController)
+                                    ObserveInsufficientPermissions(bookViewModel, navController)
                                     AdminBookCard(
                                         navController = navController,
                                         bookViewModel = bookViewModel,
@@ -201,7 +201,7 @@ fun AdminDashboardScreen(
                                 }
                                 AdminDashboardObject.PLAN.name.lowercase() -> {
                                     ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficentPermissions(planViewModel, navController)
+                                    ObserveInsufficientPermissions(planViewModel, navController)
                                     AdminPlanCard(
                                         navController = navController,
                                         planViewModel = planViewModel,
@@ -210,7 +210,7 @@ fun AdminDashboardScreen(
                                 }
                                 AdminDashboardObject.USER.name.lowercase() -> {
                                     ObserveTokenExpiration(userViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficentPermissions(userViewModel, navController)
+                                    ObserveInsufficientPermissions(userViewModel, navController)
                                     AdminUserCard(
                                         navController = navController,
                                         userViewModel = userViewModel,

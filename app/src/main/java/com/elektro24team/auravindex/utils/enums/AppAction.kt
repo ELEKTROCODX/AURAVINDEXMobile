@@ -5,6 +5,7 @@ enum class AppAction(val appActionTitle: String) {
     RENEW_ACTIVE_PLAN("renew your plan"),
     CANCEL_ACTIVE_PLAN("cancel your plan"),
     LOAN_BOOK("loan a book"),
+    ACCESS_LOANS("access your loans"),
     CHECK_LISTS("check your lists"),
     ACCESS_ADMIN_DASHBOARD("access the admin dashboard"),
     ACCESS_PROFILE_PAGE("access the profile page"), ;

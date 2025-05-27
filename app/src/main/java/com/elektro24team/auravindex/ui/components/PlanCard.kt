@@ -23,17 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.Plan
-import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
-import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
-import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficentPermissions
-import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
-import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
-import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
