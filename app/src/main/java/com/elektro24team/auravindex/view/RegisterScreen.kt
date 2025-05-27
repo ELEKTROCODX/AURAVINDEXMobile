@@ -1,0 +1,341 @@
+package com.elektro24team.auravindex.view
+
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.elektro24team.auravindex.AuraVindexApp
+import com.elektro24team.auravindex.navigation.Routes
+import com.elektro24team.auravindex.ui.components.ConnectionAlert
+import com.elektro24team.auravindex.viewmodels.GenderViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.RadioButton
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import com.elektro24team.auravindex.retrofit.RegisterInfo
+import com.elektro24team.auravindex.utils.functions.isValidEmail
+import com.elektro24team.auravindex.viewmodels.AuthViewModel
+import java.util.TimeZone
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RegisterScreen(genderViewModel: GenderViewModel, authViewModel: AuthViewModel, navController: NavController){
+    val context = LocalContext.current
+    val userName = remember { mutableStateOf("") }
+    val userLastname = remember { mutableStateOf("") }
+    val userEmail = remember { mutableStateOf("") }
+    val userPassword = remember { mutableStateOf("") }
+    val userBirthdate = remember { mutableStateOf<Long?>(null)}
+    val genders by genderViewModel.genders.observeAsState(emptyList())
+    var userGender by remember { mutableStateOf<String?>(null) }
+    val showDatePicker = remember { mutableStateOf(false) }
+    val formattedUserBirthdate = remember(userBirthdate.value) {
+        userBirthdate.value?.let {
+            val calendar = Calendar.getInstance().apply { timeInMillis = it }
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            sdf.format(calendar.time)
+        } ?: "no date"
+    }
+    val userAddress = remember { mutableStateOf("") }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val userBiography = remember { mutableStateOf("") }
+
+    val userAge = remember(formattedUserBirthdate) {
+        try {
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            val birthDate = sdf.parse(formattedUserBirthdate)
+
+            birthDate?.let {
+                val birthCalendar = Calendar.getInstance().apply { time = it }
+                val today = Calendar.getInstance()
+
+                var age = today.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
+
+                if (today.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+                    age--
+                }
+
+                age
+            } ?: 0
+        } catch (e: Exception) {
+            0
+        }
+    }
+
+
+    LaunchedEffect(Unit) {
+        genderViewModel.getGendersList()
+    }
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        uri: Uri? ->
+        imageUri = uri
+    }
+
+    Scaffold(
+        content = { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                LazyColumn (
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    item {
+                        Text(
+                            text = "Signup page",
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    item {
+                        TextField(
+                            value = userName.value,
+                            onValueChange = { userName.value = it },
+                            label = { Text("Name") },
+                            placeholder = { Text("name") },
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    item {
+                        TextField(
+                            value = userLastname.value,
+                            onValueChange = { userLastname.value = it },
+                            label = { Text("Last Name") },
+                            placeholder = { Text("email") },
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    item {
+                        TextField(
+                            value = formattedUserBirthdate,
+                            readOnly = true,
+                            onValueChange = {},
+                            label = { Text("Birth Date") },
+                            placeholder = { Text("birthdate") },
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    item {
+                        Button(
+                            onClick = {
+                                showDatePicker.value = true
+                            }
+                        ) {
+                            Text("Select birthdate")
+                        }
+                        if (showDatePicker.value) {
+                            val datePickerState = rememberDatePickerState(
+                                initialSelectedDateMillis = userBirthdate.value
+                                    ?: System.currentTimeMillis()
+                            )
+                            DatePickerDialog(
+                                onDismissRequest = { showDatePicker.value = false },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            userBirthdate.value = datePickerState.selectedDateMillis
+                                            showDatePicker.value = false
+                                        }
+                                    ) {
+                                        Text("Accept")
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(
+                                        onClick = { showDatePicker.value = false }
+                                    ) {
+                                        Text("Cancel")
+                                    }
+                                }
+                            ) {
+                                DatePicker(state = datePickerState)
+                            }
+                        }
+                    }
+                    item {
+                        Text("Gender:")
+                        genders.forEach { gender ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { userGender = gender._id }
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                RadioButton(
+                                    selected = userGender == gender._id,
+                                    onClick = {
+                                        userGender = gender._id
+                                    }
+                                )
+                                Text(
+                                    text = gender.name,
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                            }
+                        }
+                    }
+                    item {
+                        TextField(
+                            value = userAddress.value,
+                            onValueChange = { userAddress.value = it },
+                            label = { Text("Address") },
+                            placeholder = { Text("adress") },
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    item {
+                        TextField(
+                            value = userEmail.value,
+                            onValueChange = { userEmail.value = it },
+                            label = { Text("Email") },
+                            placeholder = { Text("email") },
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    item {
+                        TextField(
+                            value = userPassword.value,
+                            onValueChange = { userPassword.value = it },
+                            label = { Text("Password") },
+                            placeholder = { Text("password") },
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    item {
+                        Button(
+                            onClick = {
+                                photoPickerLauncher.launch("image/*")
+                            }
+                        ) {
+                            Text("Select profile image")
+                        }
+                        imageUri.let {
+                            Image(
+                                painter = rememberAsyncImagePainter(it),
+                                contentDescription = "Selected image",
+                                modifier = Modifier.size(100.dp).clip(CircleShape)
+                            )
+                        }
+
+                    }
+                    item {
+                        TextField(
+                            value = userBiography.value,
+                            onValueChange = { userBiography.value = it },
+                            label = { Text("Biography") },
+                            placeholder = { Text("biography") },
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    item {
+                        Button(
+                            onClick = {
+                                val emptyFields = listOfNotNull(
+                                    if (userName.value.isBlank()) "Name" else null,
+                                    if (userLastname.value.isBlank()) "Last Name" else null,
+                                    if (userBirthdate.value == null) "Birth Date" else null,
+                                    if (userGender == null) "Gender" else null,
+                                    if (userAddress.value.isBlank()) "Address" else null,
+                                    if (userEmail.value.isBlank()) "Email" else null,
+                                    if (userPassword.value.isBlank()) "Password" else null,
+                                )
+                                if(emptyFields.size == 7){
+                                    Toast.makeText(context, "Need to fill the form", Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+                                if (emptyFields.isNotEmpty()){
+                                    val message = emptyFields.joinToString(", ") + " required"
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+                                val tooLongFields = listOfNotNull(
+                                    if (userName.value.length > 30) "Name (${userName.value.length}/30)" else null,
+                                    if (userLastname.value.length > 30) "Last Name (${userLastname.value.length}/30)" else null,
+                                    if (userAddress.value.length > 500) "Address (${userAddress.value.length}/500)" else null,
+                                    if (userEmail.value.length > 50) "Email (${userEmail.value.length}/50)" else null,
+                                    if (userBiography.value.length > 300) "Biography (${userBiography.value.length}/300)" else null
+                                )
+
+                                if(tooLongFields.isNotEmpty()){
+                                    val message = "Are too long: \n" + tooLongFields.joinToString("\n")
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+                                if(userPassword.value.length < 6){
+                                    Toast.makeText(context, "Password too short, need to be at least 6 characters",Toast.LENGTH_SHORT).show()
+                                }
+                                if(userAge < 16){
+                                    Toast.makeText(context, "You need to be 16 years",Toast.LENGTH_SHORT).show()
+                                }
+                                if(!isValidEmail(userEmail.value)){
+                                    Toast.makeText(context, "The email need to be a real one",Toast.LENGTH_SHORT).show()
+                                }
+
+                                val user = RegisterInfo(userName.value,userLastname.value,userEmail.value,userBiography.value,userGender.toString(),formattedUserBirthdate,imageUri.toString(),userAddress.value,userPassword.value)
+                                authViewModel.register(user)
+                                if(authViewModel.registerResult.value == "User registered successfully"){
+                                    Toast.makeText(context, "Successfully register.", Toast.LENGTH_SHORT).show()
+                                    navController.navigate(Routes.LOGIN)
+                                }
+
+                            }
+                        ) { Text("Register")}
+                    }
+                }
+            }
+
+        }
+    )
+}
+
