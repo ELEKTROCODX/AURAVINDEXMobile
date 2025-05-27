@@ -146,6 +146,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navController = navController,
                 bookId = bookId ?: "",
                 bookViewModel = bookViewModel,
+                activePlanViewModel = activePlanViewModel,
                 loanViewModel = loanViewModel,
                 loanStatusViewModel = loanStatusViewModel,
                 localSettingViewModel = localSettingViewModel

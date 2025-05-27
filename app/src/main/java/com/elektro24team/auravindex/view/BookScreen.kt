@@ -1,6 +1,8 @@
 package com.elektro24team.auravindex.view
 
 import android.os.Build
+import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -70,9 +72,16 @@ import com.elektro24team.auravindex.ui.theme.MediumPadding
 import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
+import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
+import com.elektro24team.auravindex.utils.functions.mustBeSubscribedToast
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
@@ -87,6 +96,7 @@ fun BookScreen(
     navController: NavController,
     bookId: String,
     bookViewModel: BookViewModel,
+    activePlanViewModel: ActivePlanViewModel,
     loanViewModel: LoanViewModel,
     loanStatusViewModel: LoanStatusViewModel,
     localSettingViewModel: LocalSettingViewModel,
@@ -98,6 +108,7 @@ fun BookScreen(
     val showTeamDialog = remember { mutableStateOf(false) }
     val showRequestLoanDialog = remember { mutableStateOf(false) }
     val book = bookViewModel.book.observeAsState()
+    val loanStatus = loanStatusViewModel.loanStatus.observeAsState()
     val settings = localSettingViewModel.settings.collectAsState()
     LaunchedEffect(bookId) {
         if(isLoggedIn(settings.value)) {
@@ -105,8 +116,25 @@ fun BookScreen(
         } else {
             bookViewModel.loadBook(bookId)
         }
+        loanStatusViewModel.loadLoanStatusByName("PENDING")
+        if(isLoggedIn(settings.value) && !settings.value[SettingKey.ACTIVE_PLAN_ID.keySetting].isNullOrEmpty()) {
+            activePlanViewModel.loadActivePlanById(settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ACTIVE_PLAN_ID.keySetting].toString())
+        } else if(settings.value[SettingKey.ACTIVE_PLAN_ID.keySetting].isNullOrEmpty()) {
+            activePlanViewModel.loadActivePlanByUserId(
+                settings.value[SettingKey.TOKEN.keySetting].toString(),
+                settings.value[SettingKey.ID.keySetting].toString()
+            )
+        }
     }
-
+    ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
+    ObserveTokenExpiration(activePlanViewModel, navController, localSettingViewModel)
+    ObserveTokenExpiration(loanViewModel, navController, localSettingViewModel)
+    ObserveTokenExpiration(loanStatusViewModel, navController, localSettingViewModel)
+    ObserveError(bookViewModel)
+    ObserveError(loanStatusViewModel)
+    ObserveError(activePlanViewModel)
+    ObserveError(loanViewModel)
+    ObserveSuccess(loanViewModel)
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -157,10 +185,10 @@ fun BookScreen(
                             RequestLoanDialog(
                                 showRequestLoanDialog = showRequestLoanDialog,
                                 loanViewModel = loanViewModel,
-                                loanStatus = TODO(),
+                                loanStatus = loanStatus.value!!,
                                 token = settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
                                 book = book.value!!,
-                                plan = TODO(),
+                                plan = activePlanViewModel.activePlan.value?.plan!!,
                                 userId = settings.value.getOrDefault(SettingKey.ID.keySetting, ""),
                             )
                         }
@@ -211,7 +239,7 @@ fun BookScreen(
                         Spacer(modifier = Modifier.height(20.dp))
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Text(
-                                text = "Book Details",
+                                "Book Details",
                                 style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF572365)),
                                 modifier = Modifier.padding(bottom = 12.dp)
                             )
@@ -386,19 +414,19 @@ fun BookScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp), // Espaciado entre botones
-                            verticalAlignment = Alignment.CenterVertically // Alineación vertical
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             if(isLoggedIn(settings.value) && book.value?.book_status?.book_status == "AVAILABLE") {
                                 Button(
                                     onClick = {
-                                        /* Is logged in */
-
-                                        /* Has active plan */
-
-                                        /* Is book available */
-
-                                        showRequestLoanDialog.value = true
+                                        if(!isLoggedIn(settings.value)) {
+                                            mustBeLoggedInToast(context, AppAction.LOAN_BOOK, navController)
+                                        } else if(activePlanViewModel.activePlan.value == null) {
+                                            mustBeSubscribedToast(context, AppAction.LOAN_BOOK, navController)
+                                        } else if(book.value?.book_status?.book_status != "AVAILABLE") {
+                                            Toast.makeText(context, "The book is not available.", Toast.LENGTH_SHORT).show()
+                                        } else showRequestLoanDialog.value = true
                                     },
                                     modifier = Modifier
                                         .height(48.dp)

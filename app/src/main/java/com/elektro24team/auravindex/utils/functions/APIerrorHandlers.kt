@@ -20,11 +20,7 @@ object APIerrorHandlers {
         localSettingViewModel: LocalSettingViewModel
     ) {
         Toast.makeText(context, "Session expired, please login again.", Toast.LENGTH_SHORT).show()
-        localSettingViewModel.clearSetting(SettingKey.TOKEN.keySetting)
-        localSettingViewModel.clearSetting(SettingKey.EMAIL.keySetting)
-        localSettingViewModel.clearSetting(SettingKey.ID.keySetting)
-        localSettingViewModel.clearSetting(SettingKey.ROLE_NAME.keySetting)
-        localSettingViewModel.clearSetting(SettingKey.ROLE_ID.keySetting)
+        localSettingViewModel.clearUserSettings()
         navController.navigate(Routes.LOGIN) {
             popUpTo(Routes.MAIN) { inclusive = true }
         }

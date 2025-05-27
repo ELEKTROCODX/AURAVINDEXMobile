@@ -29,3 +29,18 @@ fun formatUtcToLocalWithDate(input: String?): String {
         return "Unknown"
     }
 }
+
+fun formatApiDateFormat(input: String?): String {
+    if(!input.isNullOrEmpty()) {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+        val outputFormat = SimpleDateFormat("YYYY-MM-DD", Locale.getDefault())
+        outputFormat.timeZone = TimeZone.getTimeZone("UTC-6")
+
+        val date = inputFormat.parse(input)
+        return outputFormat.format(date!!)
+    } else {
+        return "Unknown"
+    }
+}

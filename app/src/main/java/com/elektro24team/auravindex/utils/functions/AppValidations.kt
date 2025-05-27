@@ -14,3 +14,10 @@ fun mustBeLoggedInToast(context: Context, appAction: AppAction, navController: N
         navController?.navigate(route)
     }
 }
+fun mustBeSubscribedToast(context: Context, appAction: AppAction, navController: NavController?, route: String? = "") {
+    Toast.makeText(context, "You must be subscribed to a plan to ${appAction.appActionTitle}.", Toast.LENGTH_SHORT).show()
+    if(!route.isNullOrEmpty()) {
+        navController?.navigate(route)
+    }
+
+}
