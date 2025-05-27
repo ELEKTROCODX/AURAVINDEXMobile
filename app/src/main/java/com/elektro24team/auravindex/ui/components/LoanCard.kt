@@ -2,8 +2,19 @@ package com.elektro24team.auravindex.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,22 +24,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.R
-import com.elektro24team.auravindex.model.Book
+import com.elektro24team.auravindex.model.Loan
 import com.elektro24team.auravindex.ui.theme.BlackC
 import com.elektro24team.auravindex.ui.theme.BrownC
 import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
+
 @Composable
-fun BookCard(book: Book?, navController: NavController) {
+fun LoanCard(loan: Loan?, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { navController.navigate("book/${book?._id}") },
+            .clickable { navController.navigate("book/${loan?.book?._id}") },
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
@@ -41,7 +54,7 @@ fun BookCard(book: Book?, navController: NavController) {
                 .fillMaxWidth()
         ) {
             GlideImage(
-                imageModel = { IMG_url.trimEnd('/') + "/" + book?.book_img?.trimStart('/') },
+                imageModel = { IMG_url.trimEnd('/') + "/" + loan?.book?.book_img?.trimStart('/') },
                 modifier = Modifier
                     .width(90.dp)
                     .height(130.dp)
@@ -67,34 +80,35 @@ fun BookCard(book: Book?, navController: NavController) {
                     )
                 }
             )
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = book?.title.toString(),
+                    text = loan?.book?.title.toString(),
                     style = MaterialTheme.typography.titleMedium,
                     color = BlackC,
                     maxLines = 2
                 )
-
                 Spacer(modifier = Modifier.height(4.dp))
-
                 Text(
-                    text = book?.summary.toString(),
+                    text = loan?.book?.summary.toString(),
                     style = MaterialTheme.typography.bodySmall,
                     color = BrownC,
                     maxLines = 3
                 )
-
                 Spacer(modifier = Modifier.height(6.dp))
-
                 Text(
-                    text = "Authors: ${book?.authors?.joinToString { "${it.name} ${it.last_name}" }}",
+                    text = "Authors: ${loan?.book?.authors?.joinToString { "${it.name} ${it.last_name}" }}",
                     style = MaterialTheme.typography.bodySmall,
                     color = PurpleC
                 )
-
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = "Genres: ${book?.genres?.joinToString()}",
+                    text = "Status: ${loan?.loan_status?.loan_status}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = OrangeC
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = "Due date: ${formatUtcToLocalWithDate(loan?.return_date)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = OrangeC
                 )

@@ -14,10 +14,10 @@ class PlanViewModel(
     private val repository: PlanRepository
 ) : BaseViewModel() {
 
-    private val _plans = MutableLiveData<List<Plan>>()
-    private val _plan = MutableLiveData<Plan>()
-    val plans: LiveData<List<Plan>> = _plans
-    val plan: LiveData<Plan> = _plan
+    private val _plans = MutableLiveData<List<Plan>?>()
+    private val _plan = MutableLiveData<Plan?>()
+    val plans: LiveData<List<Plan>?> = _plans
+    val plan: LiveData<Plan?> = _plan
 
     fun loadPlans() {
         viewModelScope.launch {
@@ -35,5 +35,10 @@ class PlanViewModel(
                 _plan.postValue(_plans.value?.find{ it._id == planId })
             }
         }
+    }
+    override fun clearViewModelData() {
+        _plans.value = null
+        _plan.value = null
+
     }
 }

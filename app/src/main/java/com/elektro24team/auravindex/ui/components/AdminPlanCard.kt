@@ -187,7 +187,7 @@ fun AdminPlanCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Max renovations per loan: ",
+                    text = "Max renewals per loan: ",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
@@ -195,7 +195,7 @@ fun AdminPlanCard(
                     ),
                 )
                 Text(
-                    text = "${plan.value?.max_renovations_per_loan.toString()}" ?: "Not available",
+                    text = "${plan.value?.max_renewals_per_loan.toString()} times" ?: "Not available",
                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                 )
             }

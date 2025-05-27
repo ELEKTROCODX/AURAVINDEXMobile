@@ -2,7 +2,6 @@ package com.elektro24team.auravindex.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,22 +22,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.model.AuditLog
-import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.model.ActivePlan
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AdminAuditLogTable(
+fun AdminActivePlanTable(
     navController: NavController,
-    auditLogs: List<AuditLog>
+    activePlans: List<ActivePlan>
 ) {
     var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
-    var totalPages = (auditLogs.size + rowsPerPage - 1) / rowsPerPage
-    val currentPageAuditLogs = auditLogs.drop(currentPage * rowsPerPage).take(rowsPerPage)
+    var totalPages = (activePlans.size + rowsPerPage - 1) / rowsPerPage
+    val currentPageActivePlans = activePlans.drop(currentPage * rowsPerPage).take(rowsPerPage)
     Text(
         text = "API Audit logs",
         style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
@@ -56,20 +54,20 @@ fun AdminAuditLogTable(
             ) {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
                     TableHeaderCell("User", 180.dp)
-                    TableHeaderCell("Action", 180.dp)
-                    TableHeaderCell("Object", 180.dp)
-                    TableHeaderCell("Date", 160.dp)
+                    TableHeaderCell("Plan", 180.dp)
+                    TableHeaderCell("Status", 180.dp)
+                    TableHeaderCell("Ending date", 180.dp)
                 }
                 Divider()
-                currentPageAuditLogs.forEach { auditLog ->
+                currentPageActivePlans.forEach { activePlan ->
                     Row(
                         modifier = Modifier
                             .padding(vertical = 6.dp)
                     ) {
-                        TableCell(auditLog.user?.email ?: "Unknown", 180.dp)
-                        TableCell(auditLog.action.action_code, 180.dp)
-                        TableCell(auditLog.affected_object, 180.dp)
-                        TableCell(formatUtcToLocalWithHour(auditLog.createdAt), 160.dp)
+                        TableCell(activePlan.user?.email ?: "Unknown", 180.dp)
+                        TableCell(activePlan.plan?.name ?: "Unknown", 180.dp)
+                        TableCell(activePlan.plan_status?.plan_status ?: "Unknown", 180.dp)
+                        TableCell(formatUtcToLocalWithHour(activePlan.ending_date), 180.dp)
                     }
                     Divider()
                 }

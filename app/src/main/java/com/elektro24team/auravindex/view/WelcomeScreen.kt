@@ -9,16 +9,22 @@ import androidx.compose.ui.res.painterResource
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
@@ -34,19 +40,10 @@ fun WelcomeScreen(
     localSettingViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
+    val settings by localSettingViewModel.settings.collectAsState()
     var isReadyToNavigate by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        localSettingViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
-        localSettingViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
-        localSettingViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
-        localSettingViewModel.loadUserSettings()
-
-        bookViewModel.loadBooks(showDuplicates = true, showLents = true)
-        bookViewModel.fetchLatestReleases()
-        planViewModel.loadPlans()
-        bookCollectionViewModel.loadBookCollections()
-    }
+    val app = LocalContext.current.applicationContext as AuraVindexApp
+    val isConnected by app.networkLiveData.observeAsState(true)
     LaunchedEffect(Unit) {
         val keys = arrayOf(
             SettingKey.DARK_MODE.keySetting,
@@ -54,6 +51,14 @@ fun WelcomeScreen(
             SettingKey.LAST_LOGIN.keySetting
         )
         val loaded = localSettingViewModel.loadSettings(*keys)
+        localSettingViewModel.loadUserSettings()
+        if(isConnected) {
+            bookViewModel.loadBooks(showDuplicates = true, showLents = true)
+            bookViewModel.fetchLatestReleases()
+            planViewModel.loadPlans()
+            bookCollectionViewModel.loadBookCollections()
+        }
+
         if (loaded[SettingKey.DARK_MODE.keySetting].isNullOrBlank()) {
             localSettingViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, "false")
         }
@@ -62,16 +67,23 @@ fun WelcomeScreen(
         }
         isReadyToNavigate = true
     }
-
     Box(
         modifier = Modifier
             .clickable {
                 if(isReadyToNavigate) {
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.WELCOME) {
-                            inclusive = true
-                        }
-                    }
+                   if(isLoggedIn(settings)) {
+                       navController.navigate(Routes.MAIN) {
+                           popUpTo(Routes.WELCOME) {
+                               inclusive = true
+                           }
+                       }
+                   } else {
+                       navController.navigate(Routes.LOGIN) {
+                           popUpTo(Routes.WELCOME) {
+                               inclusive = true
+                           }
+                       }
+                   }
                 }
             }
     ) {

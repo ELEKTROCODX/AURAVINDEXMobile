@@ -134,20 +134,16 @@ fun SearchScreen(
                                 }
                             )
                         )
-
-                        // Filtrado de libros según el texto de búsqueda
                         if(bookQuery.isNotEmpty()){
-
-                            //LIBROS BUSCADOS POR EL FILTRO DE 3 Y SEARCHBAR
                             LazyColumn {
-                                items(filteredBooks.size) { index ->
-                                    val book = filteredBooks[index]
+                                items(filteredBooks?.size ?: 0) { index ->
+                                    val book = filteredBooks?.get(index)
                                     Card(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(horizontal = 12.dp, vertical = 6.dp)
                                             .clickable {
-                                                navController.navigate("book/${book._id}")
+                                                navController.navigate("book/${book?._id}")
                                             },
                                         colors = CardDefaults.cardColors(containerColor = WhiteC),
                                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -159,7 +155,7 @@ fun SearchScreen(
                                                 .fillMaxWidth()
                                         ) {
                                             GlideImage(
-                                                imageModel = { IMG_url.trimEnd('/') + "/" + book.book_img.trimStart('/') },
+                                                imageModel = { IMG_url.trimEnd('/') + "/" + book?.book_img?.trimStart('/') },
                                                 modifier = Modifier
                                                     .height(130.dp)
                                                     .width(95.dp)
@@ -190,26 +186,26 @@ fun SearchScreen(
                                                     .align(Alignment.CenterVertically)
                                             ) {
                                                 Text(
-                                                    text = book.title,
+                                                    text = book?.title.toString(),
                                                     style = MaterialTheme.typography.titleMedium,
                                                     color = PurpleC,
                                                     maxLines = 2
                                                 )
                                                 Spacer(modifier = Modifier.height(4.dp))
                                                 Text(
-                                                    text = book.summary,
+                                                    text = book?.summary.toString(),
                                                     style = MaterialTheme.typography.bodySmall,
                                                     color = BlackC,
                                                     maxLines = 3
                                                 )
                                                 Spacer(modifier = Modifier.height(6.dp))
                                                 Text(
-                                                    text = "Authors: ${book.authors.joinToString { it.name + " " + it.last_name }}",
+                                                    text = "Authors: ${book?.authors?.joinToString { it.name + " " + it.last_name }}",
                                                     style = MaterialTheme.typography.labelSmall,
                                                     color = BrownC
                                                 )
                                                 Text(
-                                                    text = "Genres: ${book.genres.joinToString()}",
+                                                    text = "Genres: ${book?.genres?.joinToString()}",
                                                     style = MaterialTheme.typography.labelSmall,
                                                     color = OrangeC
                                                 )

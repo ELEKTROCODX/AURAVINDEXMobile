@@ -14,11 +14,10 @@ class UserViewModel(
     private val repository: UserRepository
 
 ): BaseViewModel() {
-    private val _users = MutableLiveData<List<User>>()
-    private val _user = MutableLiveData<User>()
-    val users: MutableLiveData<List<User>> = _users
-    val user: MutableLiveData<User> = _user
-
+    private val _users = MutableLiveData<List<User>?>()
+    private val _user = MutableLiveData<User?>()
+    val users: MutableLiveData<List<User>?> = _users
+    val user: MutableLiveData<User?> = _user
     fun getUserByEmail(token: String, email: String) {
         viewModelScope.launch {
             val result = repository.getUser(token, email)
@@ -58,7 +57,6 @@ class UserViewModel(
             }
         }
     }
-
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     fun getUsers(token: String){
         viewModelScope.launch {
@@ -80,5 +78,10 @@ class UserViewModel(
                 }
             }
         }
+    }
+    override fun clearViewModelData() {
+        _users.value = null
+        _user.value = null
+
     }
 }

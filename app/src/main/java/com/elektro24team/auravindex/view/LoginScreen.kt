@@ -29,6 +29,7 @@ import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
@@ -41,6 +42,7 @@ fun LoginScreen(
     navController: NavController,
     authViewModel: AuthViewModel,
     userViewModel: UserViewModel,
+    activePlanViewModel: ActivePlanViewModel,
     localSettingViewModel: LocalSettingViewModel
 ) {
     val context = LocalContext.current

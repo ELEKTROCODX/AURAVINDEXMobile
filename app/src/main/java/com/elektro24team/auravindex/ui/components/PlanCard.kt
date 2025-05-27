@@ -2,26 +2,64 @@ package com.elektro24team.auravindex.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.Plan
-import com.elektro24team.auravindex.model.local.PlanEntity
+import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
+import com.elektro24team.auravindex.utils.enums.AppAction
+import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 
 @Composable
-fun PlanCard(plan: Plan) {
+fun PlanCard(
+    plan: Plan?,
+    navController: NavController,
+    localSettingViewModel: LocalSettingViewModel,
+    activePlanViewModel: ActivePlanViewModel
+) {
     val colors = MaterialTheme.colorScheme
-
+    val context = LocalContext.current
+    val localSettings = localSettingViewModel.settings.collectAsState()
+    val activePlan = activePlanViewModel.activePlan.observeAsState()
+    LaunchedEffect(activePlan.value) {
+        if(!activePlan.value?.plan?._id.isNullOrEmpty()) {
+            localSettingViewModel.saveSetting(
+                SettingKey.ACTIVE_PLAN.keySetting,
+                activePlan.value?.plan?._id.toString()
+            )
+            localSettingViewModel.saveSetting(
+                SettingKey.ACTIVE_PLAN_ID.keySetting,
+                activePlan.value?._id.toString()
+            )
+            localSettingViewModel.saveSetting(
+                SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting,
+                activePlan.value?.ending_date.toString()
+            )
+        }
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -36,33 +74,28 @@ fun PlanCard(plan: Plan) {
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Título del plan
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = plan.name,
+                    text = plan?.name.toString(),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = PurpleC
                 )
             }
-
             HorizontalDivider(thickness = 1.dp, color = colors.outlineVariant)
-
-            // Beneficios
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    text = "Inscription fee: $${plan.fixed_price}",
+                    text = "Inscription fee: $${plan?.fixed_price}",
                     fontStyle = FontStyle.Italic,
                     fontSize = 14.sp,
                     color = colors.primary
                 )
-
                 Text(
-                    text = "Monthly price: $${plan.monthly_price}",
+                    text = "Monthly price: $${plan?.monthly_price}",
                     fontStyle = FontStyle.Italic,
                     fontSize = 14.sp,
                     color = colors.primary
@@ -74,34 +107,31 @@ fun PlanCard(plan: Plan) {
                     fontWeight = FontWeight.SemiBold,
                     color = colors.onSurface
                 )
-
                 Text(
                     text = buildAnnotatedString {
                         append("Up to ")
                         withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = colors.primary)) {
-                            append("${plan.max_simultaneous_loans} simultaneous loans")
+                            append("${plan?.max_simultaneous_loans} simultaneous loans")
                         }
                     },
                     fontSize = 14.sp,
                     color = colors.onSurface
                 )
-
                 Text(
                     text = buildAnnotatedString {
                         append("Return books in up to ")
                         withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = colors.primary)) {
-                            append("${plan.max_return_days} days")
+                            append("${plan?.max_return_days} days")
                         }
                     },
                     fontSize = 14.sp,
                     color = colors.onSurface
                 )
-
                 Text(
                     text = buildAnnotatedString {
-                        append("Renovate up to ")
+                        append("Renew up to ")
                         withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = colors.primary)) {
-                            append("${plan.max_renovations_per_loan} times")
+                            append("${plan?.max_renewals_per_loan} times")
                         }
                         append(" per loan")
                     },
@@ -109,20 +139,90 @@ fun PlanCard(plan: Plan) {
                     color = colors.onSurface
                 )
             }
-
-            // Botón
-            Button(
-                onClick = { /* TODO: Acción de suscripción */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                shape = RoundedCornerShape(12.dp)
-            ) {
+            if(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN.keySetting, "").toString() == plan?._id) {
                 Text(
-                    text = "SUBSCRIBE",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = colors.onPrimary
+                    text = "CURRENT SUBSCRIPTION (ends on ${formatUtcToLocalWithDate(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, "").toString())}).",
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    color = colors.primary
                 )
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = {
+                            if(isLoggedIn(localSettings.value)) {
+                                activePlanViewModel.renewActivePlan(
+                                    localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                                    localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ID.keySetting, "")
+                                )
+                            } else {
+                                mustBeLoggedInToast(context, AppAction.RENEW_ACTIVE_PLAN, navController)
+                            }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(4.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
+
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(
+                            text = "RENEW",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = colors.onPrimary
+                        )
+                    }
+                    Button(
+                        onClick = {
+                            if(isLoggedIn(localSettings.value)) {
+                                activePlanViewModel.cancelActivePlan(
+                                    localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                                    localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ID.keySetting, "")
+                                )
+                                activePlanViewModel.clearViewModelData()
+                                localSettingViewModel.clearUserActivePlanSettings()
+                            } else {
+                                mustBeLoggedInToast(context, AppAction.CANCEL_ACTIVE_PLAN, navController)
+                            }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(4.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = OrangeC),
+                        shape = RoundedCornerShape(12.dp),
+                    ) {
+                        Text(
+                            text = "CANCEL",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = colors.onPrimary
+                        )
+                    }
+                }
+            } else {
+                Button(
+                    onClick = {
+                        if(isLoggedIn(localSettings.value)) {
+                            activePlanViewModel.createActivePlan(
+                                token = localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                                userId = localSettings.value.getOrDefault(SettingKey.ID.keySetting, ""),
+                                planId = plan?._id.toString(),
+                            )
+                        } else {
+                            mustBeLoggedInToast(context, AppAction.SUBSCRIBE_TO_PLAN, navController)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
+                    ) {
+                    Text(
+                        text = "SUBSCRIBE",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = colors.onPrimary
+                    )
+                }
             }
         }
     }

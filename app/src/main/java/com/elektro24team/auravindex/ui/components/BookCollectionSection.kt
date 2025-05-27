@@ -45,12 +45,12 @@ fun BookCollectionsSection(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(bookCollections.size) { index ->
-                var name = bookCollections[index].name
-                var id = bookCollections[index]._id
+            items(bookCollections?.size ?: 0) { index ->
+                var name = bookCollections?.get(index)?.name
+                var id = bookCollections?.get(index)?._id
                 CollectionCard(
-                    name = name,
-                    id = id,
+                    name = name.toString(),
+                    id = id.toString(),
                     onClick = {
                         navController.navigate("collection_books/${name}/${id}")
                     }

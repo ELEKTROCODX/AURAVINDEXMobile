@@ -17,10 +17,10 @@ class AuditLogViewModel(
     private val repository: AuditLogRepository
 
 ): BaseViewModel() {
-    private val _auditLogs = MutableLiveData<List<AuditLog>>()
-    private val _auditLog = MutableLiveData<AuditLog>()
-    val auditLogs: MutableLiveData<List<AuditLog>> = _auditLogs
-    val auditLog: MutableLiveData<AuditLog> = _auditLog
+    private val _auditLogs = MutableLiveData<List<AuditLog>?>()
+    private val _auditLog = MutableLiveData<AuditLog?>()
+    val auditLogs: MutableLiveData<List<AuditLog>?> = _auditLogs
+    val auditLog: MutableLiveData<AuditLog?> = _auditLog
 
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     fun getAuditLogById(token: String, auditLogId: String){
@@ -50,7 +50,6 @@ class AuditLogViewModel(
                 result.isSuccess -> _auditLogs.value = result.getOrNull()
                 result.isFailure -> {
                     val error = result.exceptionOrNull()
-                    Log.e("AuditLogViewModel", "Error getting audit logs: $error")
                     when (error) {
                         is HttpException -> {
                             when(error.code()) {
@@ -64,5 +63,9 @@ class AuditLogViewModel(
                 }
             }
         }
+    }
+    override fun clearViewModelData() {
+        _auditLog.value = null
+        _auditLogs.value = null
     }
 }

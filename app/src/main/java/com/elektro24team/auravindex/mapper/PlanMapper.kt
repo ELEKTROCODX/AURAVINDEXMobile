@@ -12,7 +12,7 @@ fun Plan.toEntity(): PlanEntity {
         name = this.name,
         fixed_price = this.fixed_price,
         monthly_price = this.monthly_price,
-        max_renovations_per_loan = this.max_renovations_per_loan,
+        max_renewals_per_loan = this.max_renewals_per_loan,
         max_return_days = this.max_return_days,
         max_simultaneous_loans = this.max_simultaneous_loans
     )
@@ -27,7 +27,7 @@ fun PlanEntity.toDomain(): Plan {
         name = this.name,
         fixed_price = this.fixed_price,
         monthly_price = this.monthly_price,
-        max_renovations_per_loan = this.max_renovations_per_loan,
+        max_renewals_per_loan = this.max_renewals_per_loan,
         max_return_days = this.max_return_days,
         max_simultaneous_loans = this.max_simultaneous_loans
     )

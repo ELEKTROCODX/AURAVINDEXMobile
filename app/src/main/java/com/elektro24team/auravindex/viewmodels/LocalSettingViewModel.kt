@@ -1,7 +1,5 @@
 package com.elektro24team.auravindex.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.LocalSettingRepository
@@ -17,7 +15,23 @@ class LocalSettingViewModel(
 ) : ViewModel() {
     private val _settings = MutableStateFlow<Map<String, String>>(emptyMap())
     val settings: StateFlow<Map<String, String>> = _settings.asStateFlow()
-
+    var userKeys = listOf(
+        SettingKey.ID.keySetting,
+        SettingKey.EMAIL.keySetting,
+        SettingKey.PROFILE_IMAGE.keySetting,
+        SettingKey.TOKEN.keySetting,
+        SettingKey.ROLE_NAME.keySetting,
+        SettingKey.ROLE_ID.keySetting,
+        SettingKey.ACTIVE_PLAN.keySetting,
+        SettingKey.ACTIVE_PLAN_ID.keySetting,
+        SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting,
+        SettingKey.LAST_LOGIN.keySetting,
+    )
+    var userActivePlanKeys = listOf(
+        SettingKey.ACTIVE_PLAN.keySetting,
+        SettingKey.ACTIVE_PLAN_ID.keySetting,
+        SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting,
+    )
     suspend fun loadSettings(vararg keys: String): Map<String, String> {
         val results = mutableMapOf<String, String>()
         keys.forEach { key ->
@@ -36,15 +50,12 @@ class LocalSettingViewModel(
     }
     fun loadUserSettings() {
         viewModelScope.launch {
-            var keys = listOf(
-                SettingKey.ID.keySetting,
-                SettingKey.EMAIL.keySetting,
-                SettingKey.PROFILE_IMAGE.keySetting,
-                SettingKey.TOKEN.keySetting,
-                SettingKey.ROLE_NAME.keySetting,
-                SettingKey.ROLE_ID.keySetting,
-            )
-            loadSettings(*keys.toTypedArray())
+            loadSettings(*userKeys.toTypedArray())
+        }
+    }
+    fun loadUserActivePlanSettings() {
+        viewModelScope.launch {
+            loadSettings(*userActivePlanKeys.toTypedArray())
         }
     }
 
@@ -69,15 +80,12 @@ class LocalSettingViewModel(
     }
     fun clearUserSettings() {
         viewModelScope.launch {
-            var keys = listOf(
-                SettingKey.ID.keySetting,
-                SettingKey.EMAIL.keySetting,
-                SettingKey.PROFILE_IMAGE.keySetting,
-                SettingKey.TOKEN.keySetting,
-                SettingKey.ROLE_NAME.keySetting,
-                SettingKey.ROLE_ID.keySetting,
-            )
-            clearSettings(*keys.toTypedArray())
+            clearSettings(*userKeys.toTypedArray())
+        }
+    }
+    fun clearUserActivePlanSettings() {
+        viewModelScope.launch {
+            clearSettings(*userActivePlanKeys.toTypedArray())
         }
     }
 }

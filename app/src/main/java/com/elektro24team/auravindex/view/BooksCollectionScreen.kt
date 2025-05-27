@@ -71,7 +71,7 @@ fun BooksCollectionScreen(
                     .background(WhiteC)
             ) {
                 Text(
-                    text = "${books.size} results for \"$bookCollectionName\"",
+                    text = "${books?.size} results for \"$bookCollectionName\"",
                     style = MaterialTheme.typography.titleMedium,
                     color = PurpleC,
                     modifier = Modifier.padding(start = 16.dp, top = 12.dp, bottom = 8.dp)
@@ -80,8 +80,8 @@ fun BooksCollectionScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(books) { book ->
-                        BookCard(book = book, navController = navController)
+                    items(books?.size ?: 0) { index ->
+                        BookCard(book = books?.get(index), navController = navController)
                     }
                 }
             }

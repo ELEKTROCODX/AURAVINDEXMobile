@@ -77,8 +77,8 @@ fun AdminPlanTable(
                             .padding(vertical = 6.dp)
                     ) {
                         TableCell(plan.name, 220.dp)
-                        TableCell(plan.fixed_price, 120.dp)
-                        TableCell(plan.monthly_price, 120.dp)
+                        TableCell("$${plan.fixed_price}", 120.dp)
+                        TableCell("$${plan.monthly_price}", 120.dp)
                     }
                     Divider()
                 }

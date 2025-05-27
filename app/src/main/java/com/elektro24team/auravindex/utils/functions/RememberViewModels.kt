@@ -14,12 +14,16 @@ import com.elektro24team.auravindex.data.repository.GenderRepository
 import com.elektro24team.auravindex.data.repository.LocalSettingRepository
 import com.elektro24team.auravindex.data.repository.PlanRepository
 import com.elektro24team.auravindex.data.repository.UserRepository
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
+import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.GenderViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.PlanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
@@ -95,6 +99,26 @@ fun rememberAuthViewModel(): AuthViewModel {
 
 @Composable
 fun rememberRecentBookViewModel(): RecentBookViewModel {
+    return viewModel()
+}
+
+@Composable
+fun rememberActivePlanViewModel(): ActivePlanViewModel {
+    return viewModel()
+}
+
+@Composable
+fun rememberLoanViewModel(): LoanViewModel {
+    return viewModel()
+}
+
+@Composable
+fun rememberLoanStatusViewModel(): LoanStatusViewModel {
+    return viewModel()
+}
+
+@Composable
+fun rememberPlanStatusViewModel(): PlanStatusViewModel {
     return viewModel()
 }
 

@@ -18,14 +18,14 @@ class BookViewModel(
     private val repository: BookRepository
 ) : BaseViewModel() {
 
-    private val _books = MutableLiveData<List<Book>>()
-    private val _book = MutableLiveData<Book>()
-    private val _filteredBooks = MutableLiveData<List<Book>>()
-    private val _latestReleases = MutableLiveData<List<Book>>()
-    val books: MutableLiveData<List<Book>> = _books
-    val book: MutableLiveData<Book> = _book
-    val filteredBooks: MutableLiveData<List<Book>> = _filteredBooks
-    val latestReleases: MutableLiveData<List<Book>> = _latestReleases
+    private val _books = MutableLiveData<List<Book>?>()
+    private val _book = MutableLiveData<Book?>()
+    private val _filteredBooks = MutableLiveData<List<Book>?>()
+    private val _latestReleases = MutableLiveData<List<Book>?>()
+    val books: MutableLiveData<List<Book>?> = _books
+    val book: MutableLiveData<Book?> = _book
+    val filteredBooks: MutableLiveData<List<Book>?> = _filteredBooks
+    val latestReleases: MutableLiveData<List<Book>?> = _latestReleases
 
     suspend fun loadBooks(showDuplicates: Boolean, showLents: Boolean) {
         val result = repository.getAllBooks(showDuplicates, showLents)
@@ -115,9 +115,9 @@ class BookViewModel(
         }?.sortedByDescending { it.second }?.map { it.first }
         _filteredBooks.postValue(filtered ?: emptyList())
     }
-    fun loadBook(bookId: String) {
+    fun loadBook(bookId: String, forceApiRequest: Boolean = false) {
         viewModelScope.launch {
-            if( _books.value?.find{ it._id == bookId } == null) {
+            if( _books.value?.find{ it._id == bookId } == null || forceApiRequest) {
                 val result = repository.getBookById(bookId)
                 _books.postValue(listOf(result))
                 _book.postValue(result)
@@ -144,5 +144,12 @@ class BookViewModel(
                 }
             }
         }
+    }
+    override fun clearViewModelData() {
+        _books.value = null
+        _book.value = null
+        _filteredBooks.value = null
+        _latestReleases.value = null
+
     }
 }

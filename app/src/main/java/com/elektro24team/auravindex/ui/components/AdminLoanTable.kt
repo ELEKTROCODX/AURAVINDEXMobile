@@ -23,24 +23,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.model.AuditLog
-import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.model.Loan
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AdminAuditLogTable(
+fun AdminLoanTable(
     navController: NavController,
-    auditLogs: List<AuditLog>
+    loans: List<Loan>
 ) {
     var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
-    var totalPages = (auditLogs.size + rowsPerPage - 1) / rowsPerPage
-    val currentPageAuditLogs = auditLogs.drop(currentPage * rowsPerPage).take(rowsPerPage)
+    var totalPages = (loans.size + rowsPerPage - 1) / rowsPerPage
+    val currentPageLoans = loans.drop(currentPage * rowsPerPage).take(rowsPerPage)
     Text(
-        text = "API Audit logs",
+        text = "Loans",
         style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
         modifier = Modifier.padding(start = 4.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
     )
@@ -56,20 +56,21 @@ fun AdminAuditLogTable(
             ) {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
                     TableHeaderCell("User", 180.dp)
-                    TableHeaderCell("Action", 180.dp)
-                    TableHeaderCell("Object", 180.dp)
+                    TableHeaderCell("Book", 180.dp)
+                    TableHeaderCell("Status", 180.dp)
                     TableHeaderCell("Date", 160.dp)
                 }
                 Divider()
-                currentPageAuditLogs.forEach { auditLog ->
+                currentPageLoans.forEach { loan ->
                     Row(
                         modifier = Modifier
                             .padding(vertical = 6.dp)
+                            .clickable { navController.navigate("admin_dashboard/book/${loan.book._id}") }
                     ) {
-                        TableCell(auditLog.user?.email ?: "Unknown", 180.dp)
-                        TableCell(auditLog.action.action_code, 180.dp)
-                        TableCell(auditLog.affected_object, 180.dp)
-                        TableCell(formatUtcToLocalWithHour(auditLog.createdAt), 160.dp)
+                        TableCell(loan.user?.email ?: "Unknown", 180.dp)
+                        TableCell(loan.book.title, 180.dp)
+                        TableCell(loan.loan_status.loan_status, 180.dp)
+                        TableCell(formatUtcToLocalWithHour(loan.createdAt), 160.dp)
                     }
                     Divider()
                 }
@@ -101,6 +102,5 @@ fun AdminAuditLogTable(
                 Text(">")
             }
         }
-
     }
 }
