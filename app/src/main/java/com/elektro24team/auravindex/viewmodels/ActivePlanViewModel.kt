@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.AuditLogRepository
 import com.elektro24team.auravindex.model.AuditLog
 import com.elektro24team.auravindex.model.ActivePlan
-import com.elektro24team.auravindex.model.ActivePlanRequest
+import com.elektro24team.auravindex.model.api.ActivePlanRequest
 import com.elektro24team.auravindex.retrofit.ActivePlanClient
 import com.elektro24team.auravindex.retrofit.RecentBookClient
 import com.elektro24team.auravindex.utils.enums.SettingKey

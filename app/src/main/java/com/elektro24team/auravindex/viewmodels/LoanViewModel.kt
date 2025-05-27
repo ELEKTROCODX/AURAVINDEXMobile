@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.AuditLogRepository
 import com.elektro24team.auravindex.model.AuditLog
 import com.elektro24team.auravindex.model.Loan
-import com.elektro24team.auravindex.model.LoanRequest
+import com.elektro24team.auravindex.model.api.LoanRequest
 import com.elektro24team.auravindex.retrofit.LoanClient
 import com.elektro24team.auravindex.retrofit.RecentBookClient
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
@@ -73,33 +73,31 @@ class LoanViewModel() : BaseViewModel() {
                 }
             }
         }
-
-        fun createLoan(token: String, loan: LoanRequest) {
-            viewModelScope.launch {
-                val result = try {
-                    val remote = LoanClient.apiService.createLoan(token = "Bearer $token", loan)
-                    Result.success(remote)
-                } catch (e: Exception) {
-                    Result.failure(e)
-                }
-                if (result.isSuccess) {
-                    notifySuccess("The loan request has been sent successfully")
-                } else {
-                    val error = result.exceptionOrNull()
-                    if (error is HttpException) {
-                        when (error.code()) {
-                            401 -> notifyTokenExpired()
-                            403 -> notifyInsufficentPermissions()
-                            404 -> notifyError(error.message())
-                            else -> notifyError("HTTP error: ${error.code()}")
-                        }
-                    } else {
-                        notifyError("Network error: ${error?.message}")
+    }
+    fun createLoan(token: String, loan: LoanRequest) {
+        viewModelScope.launch {
+            val result = try {
+                val remote = LoanClient.apiService.createLoan(token = "Bearer $token", loan)
+                Result.success(remote)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+            if (result.isSuccess) {
+                notifySuccess("The loan request has been sent successfully")
+            } else {
+                val error = result.exceptionOrNull()
+                if (error is HttpException) {
+                    when (error.code()) {
+                        401 -> notifyTokenExpired()
+                        403 -> notifyInsufficentPermissions()
+                        404 -> notifyError(error.message())
+                        else -> notifyError("HTTP error: ${error.code()}")
                     }
+                } else {
+                    notifyError("Network error: ${error?.message}")
                 }
             }
         }
-
     }
     override fun clearViewModelData() {
         _loan.value = null

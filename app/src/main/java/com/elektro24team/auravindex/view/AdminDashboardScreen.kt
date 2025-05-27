@@ -132,6 +132,7 @@ fun AdminDashboardScreen(
                             * Admin actions:
                             * Send notifications
                             * Check statistics
+                            * Check pending loans
                             * */
                         } else if(objectId == null || objectId == "") {
                             when(objectName) {

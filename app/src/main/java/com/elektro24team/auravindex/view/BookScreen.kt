@@ -1,5 +1,7 @@
 package com.elektro24team.auravindex.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -61,6 +63,7 @@ import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
+import com.elektro24team.auravindex.ui.components.RequestLoanDialog
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.ui.theme.MediumPadding
@@ -71,23 +74,29 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
+import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookScreen(
     navController: NavController,
     bookId: String,
     bookViewModel: BookViewModel,
-    localSettingViewModel: LocalSettingViewModel
+    loanViewModel: LoanViewModel,
+    loanStatusViewModel: LoanStatusViewModel,
+    localSettingViewModel: LocalSettingViewModel,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
+    val showRequestLoanDialog = remember { mutableStateOf(false) }
     val book = bookViewModel.book.observeAsState()
     val settings = localSettingViewModel.settings.collectAsState()
     LaunchedEffect(bookId) {
@@ -144,7 +153,17 @@ fun BookScreen(
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
-
+                        if(showRequestLoanDialog.value) {
+                            RequestLoanDialog(
+                                showRequestLoanDialog = showRequestLoanDialog,
+                                loanViewModel = loanViewModel,
+                                loanStatus = TODO(),
+                                token = settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                                book = book.value!!,
+                                plan = TODO(),
+                                userId = settings.value.getOrDefault(SettingKey.ID.keySetting, ""),
+                            )
+                        }
                         val imageUrl = IMG_url.trimEnd('/') + "/" + book.value?.book_img?.trimStart('/')
                         Text(
                             text = book.value?.title ?: "Title",
@@ -189,21 +208,14 @@ fun BookScreen(
                                 }
                             )
                         }
-
-
                         Spacer(modifier = Modifier.height(20.dp))
-
                         Column(modifier = Modifier.fillMaxWidth()) {
-
-                            // Título de la tabla
                             Text(
                                 text = "Book Details",
                                 style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF572365)),
                                 modifier = Modifier.padding(bottom = 12.dp)
                             )
-
                             Divider(color = Color.LightGray, thickness = 1.dp)
-                            // Fila para Summary
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -221,7 +233,6 @@ fun BookScreen(
                                 )
                             }
                             Divider(color = Color.LightGray, thickness = 1.dp)
-                            // Fila para Authors
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -237,10 +248,7 @@ fun BookScreen(
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
-
                             Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para Editorial
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -256,10 +264,7 @@ fun BookScreen(
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
-
                             Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para Collection
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -275,10 +280,7 @@ fun BookScreen(
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
-
                             Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para Genres
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -294,10 +296,7 @@ fun BookScreen(
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black, textAlign = TextAlign.Justify)
                                 )
                             }
-
                             Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para Edition
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -313,10 +312,7 @@ fun BookScreen(
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
-
                             Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para Language
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -325,17 +321,18 @@ fun BookScreen(
                             ) {
                                 Text(
                                     text = "Language: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = Color(0xFF572365)
+                                    ),
                                 )
                                 Text(
                                     text = book.value?.language ?: "Not available",
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
-
                             Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para Status
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -351,10 +348,7 @@ fun BookScreen(
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
-
                             Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para Classification
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -370,10 +364,7 @@ fun BookScreen(
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
-
                             Divider(color = Color.LightGray, thickness = 1.dp)
-
-                            // Fila para ISBN
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -389,10 +380,8 @@ fun BookScreen(
                                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                                 )
                             }
-
                             Divider(color = Color.LightGray, thickness = 1.dp)
                         }
-
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -402,7 +391,15 @@ fun BookScreen(
                         ) {
                             if(isLoggedIn(settings.value) && book.value?.book_status?.book_status == "AVAILABLE") {
                                 Button(
-                                    onClick = {  /* Acción para "Loan" */ },
+                                    onClick = {
+                                        /* Is logged in */
+
+                                        /* Has active plan */
+
+                                        /* Is book available */
+
+                                        showRequestLoanDialog.value = true
+                                    },
                                     modifier = Modifier
                                         .height(48.dp)
                                         .weight(1f),

@@ -18,8 +18,10 @@ import com.elektro24team.auravindex.utils.functions.rememberAuditLogViewModel
 import com.elektro24team.auravindex.utils.functions.rememberAuthViewModel
 import com.elektro24team.auravindex.utils.functions.rememberBookCollectionViewModel
 import com.elektro24team.auravindex.utils.functions.rememberBookViewModel
+import com.elektro24team.auravindex.utils.functions.rememberLoanStatusViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLoanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.utils.functions.rememberPlanStatusViewModel
 import com.elektro24team.auravindex.utils.functions.rememberPlanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberRecentBookViewModel
 import com.elektro24team.auravindex.utils.functions.rememberUserViewModel
@@ -29,8 +31,10 @@ import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.PlanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
@@ -74,6 +78,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val activePlanViewModel: ActivePlanViewModel = rememberActivePlanViewModel()
     val loanViewModel: LoanViewModel = rememberLoanViewModel()
     val recentBookViewModel: RecentBookViewModel = rememberRecentBookViewModel()
+    val loanStatusViewModel: LoanStatusViewModel = rememberLoanStatusViewModel()
+    val planStatusViewModel: PlanStatusViewModel = rememberPlanStatusViewModel()
     val localSettings by localSettingViewModel.settings.collectAsState()
 
     NavHost(navController = navController, startDestination = startDestination) {
@@ -140,6 +146,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navController = navController,
                 bookId = bookId ?: "",
                 bookViewModel = bookViewModel,
+                loanViewModel = loanViewModel,
+                loanStatusViewModel = loanStatusViewModel,
                 localSettingViewModel = localSettingViewModel
             )
         }
