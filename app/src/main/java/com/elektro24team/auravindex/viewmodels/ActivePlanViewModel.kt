@@ -127,7 +127,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                         401 -> notifyTokenExpired()
                         403 -> notifyInsufficentPermissions()
                         404 -> notifyError(error.message())
-                        409 -> notifyError("You are already subscribed to a plan")
+                        409 -> notifyError(error.message())
                         else -> notifyError("HTTP error: ${error.code()}")
                     }
                 } else {
@@ -154,6 +154,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                         401 -> notifyTokenExpired()
                         403 -> notifyInsufficentPermissions()
                         404 -> notifyError(error.message())
+                        409 -> notifyError(error.message())
                         else -> notifyError("HTTP error: ${error.code()}")
                     }
                 } else {
@@ -180,6 +181,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                         401 -> notifyTokenExpired()
                         403 -> notifyInsufficentPermissions()
                         404 -> notifyError(error.message())
+                        409 -> notifyError(error.message())
                         else -> notifyError("HTTP error: ${error.code()}")
                     }
                 } else {
@@ -205,6 +207,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                         401 -> notifyTokenExpired()
                         403 -> notifyInsufficentPermissions()
                         404 -> notifyError(error.message())
+                        409 -> notifyError(error.message())
                         else -> notifyError("HTTP error: ${error.code()}")
                     }
                 } else {

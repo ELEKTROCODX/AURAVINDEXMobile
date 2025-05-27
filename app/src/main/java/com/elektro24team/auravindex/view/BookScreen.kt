@@ -123,7 +123,7 @@ fun BookScreen(
         loanStatusViewModel.loadLoanStatusByName("PENDING")
         if(isLoggedIn(settings.value) && !settings.value[SettingKey.ACTIVE_PLAN_ID.keySetting].isNullOrEmpty()) {
             activePlanViewModel.loadActivePlanById(settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ACTIVE_PLAN_ID.keySetting].toString())
-        } else if(settings.value[SettingKey.ACTIVE_PLAN_ID.keySetting].isNullOrEmpty()) {
+        } else if(isLoggedIn(settings.value) && settings.value[SettingKey.ACTIVE_PLAN_ID.keySetting].isNullOrEmpty()) {
             activePlanViewModel.loadActivePlanByUserId(
                 settings.value[SettingKey.TOKEN.keySetting].toString(),
                 settings.value[SettingKey.ID.keySetting].toString()

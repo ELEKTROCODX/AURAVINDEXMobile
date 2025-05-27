@@ -97,10 +97,12 @@ fun LoansScreen(
     val userLoans by loanViewModel.userLoans.observeAsState()
     val settings by localSettingViewModel.settings.collectAsState()
     LaunchedEffect(Unit) {
-        loanViewModel.loadUserLoans(
-            settings.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-            settings.getOrDefault(SettingKey.ID.keySetting, "")
-        )
+        if(isLoggedIn(settings)) {
+            loanViewModel.loadUserLoans(
+                settings.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                settings.getOrDefault(SettingKey.ID.keySetting, "")
+            )
+        }
     }
     ObserveTokenExpiration(loanViewModel, navController, localSettingViewModel)
     ObserveInsufficientPermissions(loanViewModel, navController)
@@ -155,7 +157,7 @@ fun LoansScreen(
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
                         Text(
-                            text = "Active loans",
+                            text = "My loans",
                             style = MaterialTheme.typography.headlineMedium,
                             modifier = Modifier.padding(vertical = 16.dp).align(Alignment.CenterHorizontally)
                         )

@@ -142,6 +142,7 @@ class LoanViewModel() : BaseViewModel() {
                         401 -> notifyTokenExpired()
                         403 -> notifyInsufficentPermissions()
                         404 -> notifyError(error.message())
+                        409 -> notifyError(error.message())
                         else -> notifyError("HTTP error: ${error.code()}")
                     }
                 } else {
@@ -195,6 +196,7 @@ class LoanViewModel() : BaseViewModel() {
                         401 -> notifyTokenExpired()
                         403 -> notifyInsufficentPermissions()
                         404 -> notifyError(error.message())
+                        409 -> notifyError(error.message())
                         else -> notifyError("HTTP error: ${error.code()}")
                     }
                 }
@@ -219,6 +221,7 @@ class LoanViewModel() : BaseViewModel() {
                         401 -> notifyTokenExpired()
                         403 -> notifyInsufficentPermissions()
                         404 -> notifyError(error.message())
+                        409 -> notifyError(error.message())
                         else -> notifyError("HTTP error: ${error.code()}")
                     }
                 }
