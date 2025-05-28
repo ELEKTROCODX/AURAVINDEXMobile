@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,9 +23,11 @@ import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.model.RecentBook
+import com.elektro24team.auravindex.model.local.NotificationEntity
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.utils.NotificationHandler
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
@@ -35,6 +38,7 @@ import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
+@RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
 @Composable
 fun MainScreen(
     navController: NavController,
@@ -63,6 +67,20 @@ fun MainScreen(
         if(isLoggedIn(localSettings)) {
             recentBookViewModel.loadRecentBooks(localSettings[SettingKey.TOKEN.keySetting] ?: "", localSettings[SettingKey.ID.keySetting] ?: "")
         }
+        NotificationHandler.showNotification(
+            context = context,
+            notification = NotificationEntity(
+                _id = "1",
+                __v = 1,
+                receiver_id = "1",
+                title = "Your loan has been successfully sent!",
+                message = "Welcome.",
+                notificationType = "TEST",
+                isRead = false,
+                createdAt = "",
+                updatedAt = "",
+            )
+        )
     }
     ObserveError(bookViewModel)
     ObserveError(userViewModel)

@@ -4,6 +4,7 @@ import android.icu.util.TimeZone
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -44,6 +46,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
+@RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
 @Composable
 fun RequestLoanDialog(
     showRequestLoanDialog: MutableState<Boolean>,
@@ -55,6 +58,7 @@ fun RequestLoanDialog(
     plan: Plan,
     userId: String
 ) {
+    val context = LocalContext.current
     AlertDialog(
         onDismissRequest = {
             showRequestLoanDialog.value = false
@@ -119,7 +123,8 @@ fun RequestLoanDialog(
                 )
                 loanViewModel.createLoan(
                     token = token,
-                    loan = loanRequest
+                    loan = loanRequest,
+                    context = context
                 )
                 bookViewModel.loadBook(book._id)
             }) {

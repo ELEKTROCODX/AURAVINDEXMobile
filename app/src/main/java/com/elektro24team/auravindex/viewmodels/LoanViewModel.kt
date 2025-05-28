@@ -1,12 +1,19 @@
 package com.elektro24team.auravindex.viewmodels
 
+import android.Manifest
+import android.content.Context
 import android.util.Log
+import androidx.annotation.RequiresPermission
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.model.Loan
+import com.elektro24team.auravindex.model.Notification
 import com.elektro24team.auravindex.model.api.LoanRequest
+import com.elektro24team.auravindex.model.local.NotificationEntity
 import com.elektro24team.auravindex.retrofit.LoanClient
+import com.elektro24team.auravindex.utils.NotificationHandler
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -124,7 +131,8 @@ class LoanViewModel() : BaseViewModel() {
             }
         }
     }
-    fun createLoan(token: String, loan: LoanRequest) {
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    fun createLoan(token: String, loan: LoanRequest, context: Context) {
         viewModelScope.launch {
             val result = try {
                 val remote = LoanClient.apiService.createLoan(token = "Bearer $token", loan)
@@ -134,6 +142,20 @@ class LoanViewModel() : BaseViewModel() {
             }
             if (result.isSuccess) {
                 notifySuccess("The loan request has been sent successfully")
+                NotificationHandler.showNotification(
+                    context = context,
+                    notification = NotificationEntity(
+                        _id = "1",
+                        __v = 1,
+                        receiver_id = loan.user,
+                        title = "Your loan has been successfully sent!",
+                        message = "You've requested the book ${loan.book} and is waiting for approval. We'll notify you once it gets approved.",
+                        notificationType = "LOAN",
+                        isRead = false,
+                        createdAt = "",
+                        updatedAt = "",
+                    )
+                )
             } else {
                 val error = result.exceptionOrNull()
                 if (error is HttpException) {

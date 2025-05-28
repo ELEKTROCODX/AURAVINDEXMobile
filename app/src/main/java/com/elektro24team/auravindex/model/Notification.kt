@@ -9,6 +9,5 @@ data class Notification(
     val notification_type: String,
     val is_read: Boolean,
     val createdAt: String,
-    val updatedAt: String,
-
-    )
+    val updatedAt: String
+)

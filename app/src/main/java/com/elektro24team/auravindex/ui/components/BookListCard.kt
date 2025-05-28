@@ -33,6 +33,7 @@ import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
+/*
 
 @Composable
 fun BookListCard(bookList: BookList?, navController: NavController) {
@@ -113,4 +114,4 @@ fun BookListCard(bookList: BookList?, navController: NavController) {
             }
         }
     }
-}
+}*/
