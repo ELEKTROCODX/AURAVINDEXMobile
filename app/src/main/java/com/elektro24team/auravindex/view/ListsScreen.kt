@@ -4,8 +4,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -72,6 +78,15 @@ fun ListsScreen(
                     onItemClick = { route -> navController.navigate(route) }
                 )
             },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        
+                    }
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Create")
+                }
+            },
             content = { paddingValues ->
                 Box(
                     modifier = Modifier
@@ -91,6 +106,13 @@ fun ListsScreen(
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterHorizontally)
                         )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
+                        ) {
+
+                        }
                     }
                 }
             }
