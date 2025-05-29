@@ -122,13 +122,10 @@ fun DrawerMenu(
                 }
             }
         }
-
-
         val commonModifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .height(48.dp)
-
         if (isInAdminDashboard(currentRoute)) {
             val adminMenuItems = listOf(
                 AdminMenuItem("Books", Icons.AutoMirrored.Filled.MenuBook, AdminDashboardObject.BOOK),
@@ -175,7 +172,9 @@ fun DrawerMenu(
                 DefaultMenuItem("Terms of Services", Icons.Default.Newspaper, Routes.TERMS),
                 DefaultMenuItem("Privacy Policy", Icons.Default.PrivacyTip, Routes.PRIVACY),
                 DefaultMenuItem("Team", Icons.Default.Groups, Routes.TEAM),
+/*
                 DefaultMenuItem("Settings", Icons.Default.Settings, Routes.SETTINGS)
+*/
             )
 
             menuItems.forEach { item ->
