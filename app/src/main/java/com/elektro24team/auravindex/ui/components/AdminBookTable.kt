@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -83,7 +84,7 @@ fun AdminBookTable(
                         Icon(
                             imageVector = bookStatusIcons.find { it.book_status == book.book_status.book_status }?.icon ?: Icons.Default.CheckCircle,
                             contentDescription = book.book_status.book_status,
-                            tint = MaterialTheme.colors.secondary,
+                            tint = Color(0xFF9C27B0),
                             modifier = Modifier.size(30.dp),
                         )
                         Spacer(modifier = Modifier.width(15.dp))

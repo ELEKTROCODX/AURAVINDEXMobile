@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.view
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -26,10 +27,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Text
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.ui.theme.BlackC
@@ -40,6 +47,7 @@ import com.elektro24team.auravindex.ui.theme.WhiteC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -50,7 +58,8 @@ import com.skydoves.landscapist.glide.GlideImage
 fun SearchScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
-    bookCollectionViewModel: BookCollectionViewModel
+    bookCollectionViewModel: BookCollectionViewModel,
+    userViewModel: UserViewModel, // <-- AGREGA ESTO
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -68,15 +77,18 @@ fun SearchScreen(
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
+                userViewModel = userViewModel,
                 onItemSelected = { route ->
-                hamburguerMenuNavigator(
-                    route,
-                    navController,
-                    showTermsDialog,
-                    showPrivacyDialog,
-                    showTeamDialog
-                )
-            })
+                    hamburguerMenuNavigator(
+                        route,
+                        navController,
+                        showTermsDialog,
+                        showPrivacyDialog,
+                        showTeamDialog
+                    )
+                }
+            )
+
         },
         drawerState = drawerState
     ) {
@@ -97,12 +109,17 @@ fun SearchScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 10.dp)
                         .padding(paddingValues)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
+                            )
+                        )
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxSize()
+                            .padding(10.dp),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -134,89 +151,111 @@ fun SearchScreen(
                                 }
                             )
                         )
-                        if(bookQuery.isNotEmpty()){
+                        if (bookQuery.isNotEmpty()) {
                             LazyColumn {
                                 items(filteredBooks?.size ?: 0) { index ->
                                     val book = filteredBooks?.get(index)
                                     Card(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                                            .padding(horizontal = 8.dp, vertical = 5.dp)
                                             .clickable {
                                                 navController.navigate("book/${book?._id}")
                                             },
                                         colors = CardDefaults.cardColors(containerColor = WhiteC),
                                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                                        shape = RoundedCornerShape(16.dp)
+                                        shape = RoundedCornerShape(12.dp)
                                     ) {
                                         Row(
                                             modifier = Modifier
-                                                .padding(12.dp)
                                                 .fillMaxWidth()
+                                                .padding(8.dp)
                                         ) {
+
+                                            // Imagen a la izquierda
                                             GlideImage(
                                                 imageModel = { IMG_url.trimEnd('/') + "/" + book?.book_img?.trimStart('/') },
                                                 modifier = Modifier
-                                                    .height(130.dp)
-                                                    .width(95.dp)
-                                                    .clip(RoundedCornerShape(12.dp)),
-                                                imageOptions = ImageOptions(
-                                                    contentScale = ContentScale.Crop
-                                                ),
+                                                    .size(width=100.dp, height = 150.dp)
+                                                    .clip(RoundedCornerShape(10.dp))
+                                                ,
+                                                imageOptions = ImageOptions(contentScale = ContentScale.Crop),
                                                 loading = {
-                                                    CircularProgressIndicator(color = PurpleC, strokeWidth = 2.dp)
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .size(90.dp),
+                                                        contentAlignment = Alignment.Center
+                                                    ) {
+                                                        CircularProgressIndicator(color = PurpleC, strokeWidth = 2.dp)
+                                                    }
                                                 },
                                                 failure = {
                                                     Image(
                                                         painter = painterResource(id = R.mipmap.ic_launcher),
                                                         contentDescription = "Default img",
                                                         modifier = Modifier
-                                                            .height(130.dp)
-                                                            .width(95.dp)
-                                                            .clip(RoundedCornerShape(12.dp))
+                                                            .size(90.dp)
+                                                            .clip(RoundedCornerShape(10.dp))
                                                     )
                                                 }
                                             )
 
-                                            Spacer(modifier = Modifier.width(12.dp))
-
+                                            // Info textual a la derecha
                                             Column(
                                                 modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .align(Alignment.CenterVertically)
+                                                    .padding(start = 12.dp, end = 8.dp)
+                                                    .fillMaxWidth(),
+                                                verticalArrangement = Arrangement.spacedBy(4.dp)
                                             ) {
                                                 Text(
-                                                    text = book?.title.toString(),
+                                                    text = book?.title ?: "",
                                                     style = MaterialTheme.typography.titleMedium,
-                                                    color = PurpleC,
-                                                    maxLines = 2
+                                                    color = OrangeC,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
                                                 )
-                                                Spacer(modifier = Modifier.height(4.dp))
                                                 Text(
-                                                    text = book?.summary.toString(),
+                                                    text = book?.authors?.joinToString { "${it.name} ${it.last_name}" } ?: "",
+                                                    style = MaterialTheme.typography.labelMedium,
+                                                    color = BrownC,
+                                                    maxLines = 1
+                                                )
+                                                Spacer(modifier = Modifier.height(5.dp))
+                                                Row{
+                                                    book?.genres?.forEach { genre ->
+                                                        Card(
+                                                            shape = RoundedCornerShape(10.dp),
+                                                            colors = CardDefaults.cardColors(containerColor = Color(0xFFEDE7F6)),
+                                                            elevation = CardDefaults.cardElevation(4.dp)
+                                                        ) {
+                                                            Text(
+                                                                text = genre,
+                                                                modifier = Modifier
+                                                                    .padding(
+                                                                        horizontal = 8.dp,
+                                                                        vertical = 4.dp
+                                                                    ),
+                                                                color = Color(0xFF5E35B1),
+                                                                fontSize = 9.sp,
+                                                                textAlign = TextAlign.Center,
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                                Spacer(modifier = Modifier.height(5.dp))
+                                                Text(
+                                                    text = book?.summary ?: "",
                                                     style = MaterialTheme.typography.bodySmall,
                                                     color = BlackC,
-                                                    maxLines = 3
-                                                )
-                                                Spacer(modifier = Modifier.height(6.dp))
-                                                Text(
-                                                    text = "Authors: ${book?.authors?.joinToString { it.name + " " + it.last_name }}",
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    color = BrownC
-                                                )
-                                                Text(
-                                                    text = "Genres: ${book?.genres?.joinToString()}",
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    color = OrangeC
+                                                    maxLines = 3,
+                                                    overflow = TextOverflow.Ellipsis
                                                 )
                                             }
                                         }
                                     }
                                 }
                             }
-
-
-                        }else{
+                        } else{
                             BookCollectionsSection(navController, bookCollectionViewModel)
                         }
                     }

@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.view
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -76,6 +79,7 @@ import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -87,6 +91,8 @@ fun LoansScreen(
     navController: NavController,
     loanViewModel: LoanViewModel,
     localSettingViewModel: LocalSettingViewModel,
+    userViewModel: UserViewModel,
+
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -115,6 +121,7 @@ fun LoansScreen(
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
+                userViewModel = userViewModel, // <- este es el parámetro faltante
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,
@@ -123,7 +130,8 @@ fun LoansScreen(
                         showPrivacyDialog,
                         showTeamDialog
                     )
-                })
+                }
+            )
         },
         drawerState = drawerState
     ) {
@@ -144,8 +152,12 @@ fun LoansScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 10.dp)
                         .padding(paddingValues)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
+                            )
+                        )
                 ) {
                     Column(
                         modifier = Modifier

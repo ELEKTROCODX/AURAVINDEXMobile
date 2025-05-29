@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.view
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -29,6 +31,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -43,19 +47,24 @@ import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.UserViewModel
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.TimeZone
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.unit.Dp
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    localSettingViewModel: LocalSettingViewModel
+    localSettingViewModel: LocalSettingViewModel,
+    userViewModel: UserViewModel, // <-- AGREGA ESTO
 ) {
     val colors = MaterialTheme.colorScheme
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -77,15 +86,17 @@ fun SettingsScreen(
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
+                userViewModel = userViewModel,
                 onItemSelected = { route ->
-                hamburguerMenuNavigator(
-                    route,
-                    navController,
-                    showTermsDialog,
-                    showPrivacyDialog,
-                    showTeamDialog
-                )
-            })
+                    hamburguerMenuNavigator(
+                        route,
+                        navController,
+                        showTermsDialog,
+                        showPrivacyDialog,
+                        showTeamDialog
+                    )
+                }
+            )
 
         },
         drawerState = drawerState
@@ -108,11 +119,15 @@ fun SettingsScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
+                            )
+                        )
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 16.dp)
                     ) {
 
                         val app = context.applicationContext as AuraVindexApp
@@ -121,199 +136,153 @@ fun SettingsScreen(
 
                         Column(
                             modifier = Modifier
-                                .padding(16.dp)
                                 .fillMaxSize()
+                                .padding(16.dp)
                                 .verticalScroll(rememberScrollState()),
                         ) {
-                            // Settings
-                            Text(
-                                text = "Settings: ",
-                                style = MaterialTheme.typography.titleLarge,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Dark mode: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                Switch(
-                                    checked = localSettings.getOrDefault(SettingKey.DARK_MODE.keySetting, "false").toBoolean(),
-                                    onCheckedChange = {
-                                        localSettingViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, it.toString())
-                                    }
-                                )
 
-                            }
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                                shape = MaterialTheme.shapes.medium
                             ) {
-                                Text(
-                                    text = "Language: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                Text(
-                                    text = localSettings.getOrDefault(
-                                        SettingKey.LANGUAGE.keySetting,
-                                        "English"
-                                    )
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Receive push notifications: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                Switch(
-                                    checked = localSettings.getOrDefault(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, "false").toBoolean(),
-                                    onCheckedChange = {
-                                        localSettingViewModel.saveSetting(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, it.toString())
-                                    }
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Receive email notifications: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                Switch(
-                                    checked = localSettings.getOrDefault(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, "false").toBoolean(),
-                                    onCheckedChange = {
-                                        localSettingViewModel.saveSetting(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, it.toString())
-                                    }
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Receive SMS notifications: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                Switch(
-                                    checked = localSettings.getOrDefault(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, "false").toBoolean(),
-                                    onCheckedChange = {
-                                        localSettingViewModel.saveSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, it.toString())
-                                    }
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Last login: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                if(!localSettings.getOrDefault(SettingKey.LAST_LOGIN.keySetting, "").isNullOrEmpty()) {
-                                    val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-                                    formatter.timeZone = TimeZone.getTimeZone("UTC-6")
-                                    val lastLoginMillis = localSettings.getOrDefault(
-                                        SettingKey.LAST_LOGIN.keySetting,
-                                        System.currentTimeMillis().toString()
-                                    ).toLongOrNull() ?: System.currentTimeMillis()
-                                    val formattedDate = Instant.ofEpochMilli(lastLoginMillis)
-                                        .atZone(ZoneId.of("America/El_Salvador"))
-                                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                                Column(modifier = Modifier.padding(16.dp)) {
                                     Text(
-                                        text = formattedDate,
+                                        text = "Settings",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        modifier = Modifier.padding(bottom = 12.dp)
                                     )
-                                } else {
-                                    Text("N/A")
+
+                                    SettingRow(
+                                        label = "Dark mode:",
+                                        checked = localSettings.getOrDefault(SettingKey.DARK_MODE.keySetting, "false").toBoolean(),
+                                        onCheckedChange = {
+                                            localSettingViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, it.toString())
+                                        }
+                                    )
+
+                                    SettingRow(
+                                        label = "Language:",
+                                        value = localSettings.getOrDefault(SettingKey.LANGUAGE.keySetting, "English")
+                                    )
+
+                                    SettingRow(
+                                        label = "Receive push notifications:",
+                                        checked = localSettings.getOrDefault(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, "false").toBoolean(),
+                                        onCheckedChange = {
+                                            localSettingViewModel.saveSetting(SettingKey.RECEIVE_PUSH_NOTIFICATIONS.keySetting, it.toString())
+                                        }
+                                    )
+
+                                    SettingRow(
+                                        label = "Receive email notifications:",
+                                        checked = localSettings.getOrDefault(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, "false").toBoolean(),
+                                        onCheckedChange = {
+                                            localSettingViewModel.saveSetting(SettingKey.RECEIVE_EMAIL_NOTIFICATIONS.keySetting, it.toString())
+                                        }
+                                    )
+
+                                    SettingRow(
+                                        label = "Receive SMS notifications:",
+                                        checked = localSettings.getOrDefault(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, "false").toBoolean(),
+                                        onCheckedChange = {
+                                            localSettingViewModel.saveSetting(SettingKey.RECEIVE_SMS_NOTIFICATIONS.keySetting, it.toString())
+                                        }
+                                    )
+
+                                    SettingRow(
+                                        label = "Last login:",
+                                        value = run {
+                                            val lastLoginStr = localSettings.getOrDefault(SettingKey.LAST_LOGIN.keySetting, "")
+                                            if(lastLoginStr.isNotEmpty()) {
+                                                val lastLoginMillis = lastLoginStr.toLongOrNull() ?: System.currentTimeMillis()
+                                                val formattedDate = Instant.ofEpochMilli(lastLoginMillis)
+                                                    .atZone(ZoneId.of("America/El_Salvador"))
+                                                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                                                formattedDate
+                                            } else {
+                                                "N/A"
+                                            }
+                                        }
+                                    )
                                 }
                             }
-                            // User local data (temporarily displayed for testing purposes)
-                            Spacer(modifier = Modifier.padding(16.dp))
-                            Text(
-                                text = "User local data (temp): ",
-                                style = MaterialTheme.typography.titleLarge,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            // -------- CARD User local data --------
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                                shape = MaterialTheme.shapes.medium
                             ) {
-                                Text(
-                                    text = "User ID: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                Text(
-                                    text = if ((localSettings.containsKey(SettingKey.ID.keySetting)) && (localSettings[SettingKey.ID.keySetting] != "")) localSettings[SettingKey.ID.keySetting] ?: "N/A" else "N/A",
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "User email: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                Text(
-                                    text = if ((localSettings.containsKey(SettingKey.EMAIL.keySetting)) && (localSettings[SettingKey.EMAIL.keySetting] != "")) localSettings[SettingKey.EMAIL.keySetting] ?: "N/A" else "N/A",
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "User role: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                Text(
-                                    text = if ((localSettings.containsKey(SettingKey.ROLE_NAME.keySetting)) && (localSettings[SettingKey.ROLE_NAME.keySetting] != "")) localSettings[SettingKey.ROLE_NAME.keySetting] ?: "N/A" else "N/A",
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Active plan: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                Text(
-                                    text = if ((localSettings.containsKey(SettingKey.ACTIVE_PLAN.keySetting)) && (localSettings[SettingKey.ACTIVE_PLAN.keySetting] != "")) localSettings[SettingKey.ACTIVE_PLAN.keySetting] ?: "N/A" else "N/A",
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "User token: ",
-                                    style = TextStyle(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                Text(
-                                    text = if ((localSettings.containsKey(SettingKey.TOKEN.keySetting)) && (localSettings[SettingKey.TOKEN.keySetting] != "")) localSettings[SettingKey.TOKEN.keySetting] ?: "N/A" else "N/A",
-                                )
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    Text(
+                                        text = "User local data (temp)",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        modifier = Modifier.padding(bottom = 12.dp)
+                                    )
+
+                                    SimpleTextRow("User ID:", localSettings[SettingKey.ID.keySetting])
+                                    SimpleTextRow("User email:", localSettings[SettingKey.EMAIL.keySetting])
+                                    SimpleTextRow("User role:", localSettings[SettingKey.ROLE_NAME.keySetting])
+                                    SimpleTextRow("Active plan:", localSettings[SettingKey.ACTIVE_PLAN.keySetting])
+                                    SimpleTextRow("User token:", localSettings[SettingKey.TOKEN.keySetting])
+                                }
                             }
                         }
                     }
                 }
             }
         )
+    }
+}
+
+@Composable
+fun SettingRow(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = TextStyle(fontWeight = FontWeight.Bold)
+        )
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+}
+
+// Composable auxiliar para filas solo texto valor fijo
+@Composable
+fun SettingRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = TextStyle(fontWeight = FontWeight.Bold)
+        )
+        Text(text = value)
+    }
+}
+
+// Para campos que podrían ser null o vacíos
+@Composable
+fun SimpleTextRow(label: String, value: String?) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = label, style = TextStyle(fontWeight = FontWeight.Bold))
+        Text(text = if (!value.isNullOrEmpty()) value else "N/A")
     }
 }

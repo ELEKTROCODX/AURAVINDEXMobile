@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -19,6 +20,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,13 +49,26 @@ fun SearchResultsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Results") },
+                title = {
+                    Text(
+                        text = "Results",
+                        color = Color.White // Título en blanco
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color.White
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = PurpleC
+                )
             )
+
         },
         bottomBar = {
             BottomNavBar(
@@ -65,6 +82,11 @@ fun SearchResultsScreen(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
+                        )
+                    )
             ) {
                 // Barra de búsqueda local (filtra entre los resultados previos)
                 TextField(
