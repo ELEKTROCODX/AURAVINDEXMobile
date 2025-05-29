@@ -73,7 +73,7 @@ class LocalSettingViewModel(
         }
     }
     suspend fun clearSettings(vararg keys: String) {
-        val results = mutableMapOf<String, String>()
+        mutableMapOf<String, String>()
         keys.forEach { key ->
             repository.clearSetting(key)
         }

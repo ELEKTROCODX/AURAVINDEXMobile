@@ -66,7 +66,7 @@ fun SettingsScreen(
     localSettingViewModel: LocalSettingViewModel,
     userViewModel: UserViewModel, // <-- AGREGA ESTO
 ) {
-    val colors = MaterialTheme.colorScheme
+    MaterialTheme.colorScheme
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }

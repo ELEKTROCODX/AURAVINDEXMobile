@@ -54,7 +54,7 @@ fun PlanCard(
     localSettingViewModel: LocalSettingViewModel,
     activePlanViewModel: ActivePlanViewModel
 ) {
-    val colors = MaterialTheme.colorScheme
+    MaterialTheme.colorScheme
     val context = LocalContext.current
     val localSettings = localSettingViewModel.settings.collectAsState()
     val activePlan = activePlanViewModel.activePlan.observeAsState()

@@ -11,7 +11,6 @@ interface GenderService{
     @GET("gender")
     suspend fun getGenders(): ApiResponse<List<Gender>>
 }
-
 object GenderClient{
     val apiService : GenderService by lazy {
         Retrofit.Builder()

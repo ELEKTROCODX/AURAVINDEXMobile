@@ -63,8 +63,7 @@ fun AdminBookTable(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
         ) {
-            Column(
-            ) {
+            Column {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
                     TableHeaderCell("Title", 220.dp)
                     TableHeaderCell("Classification", 120.dp)

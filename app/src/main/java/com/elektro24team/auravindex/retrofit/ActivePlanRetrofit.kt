@@ -14,7 +14,6 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-
 interface ActivePlanService{
     @GET("active_plan")
     suspend fun getActivePlans(
@@ -22,20 +21,17 @@ interface ActivePlanService{
         @Query("page") page: String = "1",
         @Query("limit") limit: String = "none"
     ): ApiResponse<List<ActivePlan>>
-
     @GET("active_plan")
     suspend fun getActivePlanByUserId(
         @Header("Authorization") token: String,
         @Query("filter_field") filterField: String? = "user",
         @Query("filter_value") filterValue: String
     ): ApiResponse<List<ActivePlan>>
-
     @GET("active_plan/{id}")
     suspend fun getActivePlanById(
         @Header("Authorization") token: String,
         @Path("id") id: String
     ): ActivePlan
-
     @POST("active_plan")
     suspend fun createActivePlan(
         @Header("Authorization") token: String,
@@ -57,7 +53,6 @@ interface ActivePlanService{
         @Path("id") id: String
     )
 }
-
 object ActivePlanClient{
     val apiService: ActivePlanService by lazy{
         Retrofit.Builder()

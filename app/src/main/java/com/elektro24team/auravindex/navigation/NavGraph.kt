@@ -5,11 +5,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,13 +34,10 @@ import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.GenderViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
-import com.elektro24team.auravindex.viewmodels.PlanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
-
-// RUTAS
 object Routes {
     const val ADMIN_DASHBOARD = "admin_dashboard"
     const val ADMIN_DASHBOARD_OBJECTS = "admin_dashboard/{objectName}"
@@ -85,9 +78,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val loanViewModel: LoanViewModel = rememberLoanViewModel()
     val recentBookViewModel: RecentBookViewModel = rememberRecentBookViewModel()
     val loanStatusViewModel: LoanStatusViewModel = rememberLoanStatusViewModel()
-    val planStatusViewModel: PlanStatusViewModel = rememberPlanStatusViewModel()
+    rememberPlanStatusViewModel()
     val genderViewModel : GenderViewModel = rememberGenderViewModel()
-    val localSettings by localSettingViewModel.settings.collectAsState()
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.ADMIN_DASHBOARD) {
@@ -280,6 +272,5 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.SIGNUP){
             RegisterScreen(genderViewModel,authViewModel,navController)
         }
-
     }
 }

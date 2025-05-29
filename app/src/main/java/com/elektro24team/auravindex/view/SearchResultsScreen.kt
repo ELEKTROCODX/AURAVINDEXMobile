@@ -32,7 +32,7 @@ fun SearchResultsScreen(
     bookViewModel: BookViewModel,
     query: String
 ) {
-    val context = LocalContext.current
+    LocalContext.current
     var currentQuery by remember { mutableStateOf(query) }
     var currentPage by remember { mutableIntStateOf(1) }
     val filteredBooks by bookViewModel.filteredBooks.observeAsState(emptyList())

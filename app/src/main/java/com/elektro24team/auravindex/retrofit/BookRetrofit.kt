@@ -18,23 +18,19 @@ interface BookService{
         @Query("page") page: String = "1",
         @Query("limit") limit: String = "none"
     ): ApiResponse<List<Book>>
-
     @GET("book/latest_releases")
     suspend fun getLatestReleases(
         @Query("limit") limit: String = "10",
     ): ApiResponse<List<Book>>
-
     @GET("book/{id}")
     suspend fun getBookById(
         @Path("id") id: String
     ): Book
-
     @GET("book/{id}")
     suspend fun getBookByIdWithAuth(
         @Header("Authorization") token: String,
         @Path("id") id: String
     ): Book
-
     @GET("book")
     suspend fun getFilteredBooks(
         @Query("show_duplicates") showDuplicates: Boolean = true,
@@ -45,7 +41,6 @@ interface BookService{
         @Query("limit") limit: String = "none"
     ):ApiResponse<List<Book>>
 }
-
 object BookClient{
     val apiService: BookService by lazy{
         Retrofit.Builder()

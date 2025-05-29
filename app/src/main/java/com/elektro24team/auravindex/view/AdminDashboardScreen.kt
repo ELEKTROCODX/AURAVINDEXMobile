@@ -60,7 +60,7 @@ fun AdminDashboardScreen(
     objectId: String?
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+    rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
@@ -69,7 +69,7 @@ fun AdminDashboardScreen(
     val isLoggedIn = localSettings.getOrDefault(SettingKey.TOKEN.keySetting, "").isNotEmpty()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
     var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.ACCESS_ADMIN_DASHBOARD) }
-    val colors = MaterialTheme.colorScheme
+    MaterialTheme.colorScheme
     LaunchedEffect(Unit) {
         localSettingViewModel.loadSettings(
             SettingKey.TOKEN.keySetting,

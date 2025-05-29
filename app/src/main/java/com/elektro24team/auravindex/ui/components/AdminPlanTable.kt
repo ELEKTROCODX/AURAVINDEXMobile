@@ -62,8 +62,7 @@ fun AdminPlanTable(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
         ) {
-            Column(
-            ) {
+            Column {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
                     TableHeaderCell("Name", 220.dp)
                     TableHeaderCell("Fixed price", 120.dp)

@@ -48,8 +48,7 @@ fun AdminUserTable(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
         ) {
-            Column(
-            ) {
+            Column {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
                     TableHeaderCell("Name", 120.dp)
                     TableHeaderCell("Email", 180.dp)

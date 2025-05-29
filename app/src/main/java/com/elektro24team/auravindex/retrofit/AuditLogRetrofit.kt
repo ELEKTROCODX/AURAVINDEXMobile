@@ -10,7 +10,6 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-//Interface with API calls
 interface AuditLogService{
     @GET("audit_log")
     suspend fun getAuditLogs(
@@ -25,7 +24,6 @@ interface AuditLogService{
         @Path("id") id: String
     ): AuditLog
 }
-//Object that manage the AuditLogService, is a singleton instance
 object AuditLogClient{
     val apiService: AuditLogService by lazy{
         Retrofit.Builder()
