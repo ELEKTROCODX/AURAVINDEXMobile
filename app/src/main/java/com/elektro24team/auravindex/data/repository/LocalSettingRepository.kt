@@ -12,4 +12,9 @@ class LocalSettingRepository(private val dao: LocalSettingDao) {
     suspend fun setSetting(keySetting: String, keyValue: String) {
         dao.upsertSetting(LocalSettingEntity(keySetting, keyValue))
     }
+
+    suspend fun clearSetting(keySetting: String) {
+        dao.deleteSetting(keySetting)
+    }
+
 }

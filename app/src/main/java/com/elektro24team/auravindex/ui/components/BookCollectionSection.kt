@@ -1,25 +1,33 @@
 package com.elektro24team.auravindex.ui.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.CollectionsBookmark
+import androidx.compose.material.icons.filled.PermMedia
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.ui.theme.PurpleC
-import com.elektro24team.auravindex.utils.rememberBookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 
 @Composable
@@ -33,22 +41,18 @@ fun BookCollectionsSection(
         bookCollectionViewModel.loadBookCollections()
     }
 
-    Row(
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(bookCollections.size) { index ->
-                var name = bookCollections[index].name
-                var id = bookCollections[index]._id
+        bookCollections?.let { collections ->
+            items(collections.size) { index ->
+                val name = collections[index].name
+                val id = collections[index]._id
                 CollectionCard(
                     name = name,
                     id = id,
@@ -66,32 +70,52 @@ fun CollectionCard(name: String, id: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .height(140.dp) // un poco más alta para el fondo
             .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(containerColor = PurpleC),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = name,
-                style = MaterialTheme.typography.titleMedium,
-                color = Color.White
+            // Imagen de fondo
+            Image(
+                painter = painterResource(id = R.drawable.bg),
+                contentDescription = "BG",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
-            Icon(
-                imageVector = Icons.Default.CollectionsBookmark,
-                contentDescription = "Collection Icon",
+
+            Box(
                 modifier = Modifier
-                    .size(60.dp)
-                    .alpha(0.15f), // Transparente
-                tint = Color.White
+                    .fillMaxSize()
+                    .background(Color(0x1D000000)) // negro con transparencia
             )
+
+            // Contenido sobre el fondo
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Bookmarks,
+                    contentDescription = "Collection Icon",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .alpha(0.15f),
+                    tint = Color.White
+                )
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }

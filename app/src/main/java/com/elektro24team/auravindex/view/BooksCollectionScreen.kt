@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -21,7 +22,6 @@ import com.elektro24team.auravindex.ui.components.BookCard
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.theme.*
 import com.elektro24team.auravindex.viewmodels.BookViewModel
-import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,9 +70,14 @@ fun BooksCollectionScreen(
                     .padding(paddingValues)
                     .fillMaxSize()
                     .background(WhiteC)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
+                        )
+                    )
             ) {
                 Text(
-                    text = "${books.size} results for \"$bookCollectionName\"",
+                    text = "${books?.size} results for \"$bookCollectionName\"",
                     style = MaterialTheme.typography.titleMedium,
                     color = PurpleC,
                     modifier = Modifier.padding(start = 16.dp, top = 12.dp, bottom = 8.dp)
@@ -81,8 +86,8 @@ fun BooksCollectionScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(books) { book ->
-                        BookCard(book = book, navController = navController)
+                    items(books?.size ?: 0) { index ->
+                        BookCard(book = books?.get(index), navController = navController)
                     }
                 }
             }

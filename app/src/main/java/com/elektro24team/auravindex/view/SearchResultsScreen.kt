@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -14,12 +15,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.viewmodels.BookViewModelOld
 import com.elektro24team.auravindex.ui.components.BookCard
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +32,7 @@ fun SearchResultsScreen(
     bookViewModel: BookViewModel,
     query: String
 ) {
-    val context = LocalContext.current
+    LocalContext.current
     var currentQuery by remember { mutableStateOf(query) }
     var currentPage by remember { mutableIntStateOf(1) }
     val filteredBooks by bookViewModel.filteredBooks.observeAsState(emptyList())
@@ -38,21 +41,34 @@ fun SearchResultsScreen(
     }
     val itemsPerPage = 8
     val paginatedBooks = filteredBooks
-        .drop((currentPage - 1) * itemsPerPage)
-        .take(itemsPerPage)
-    val totalPages = (filteredBooks.size + itemsPerPage - 1) / itemsPerPage
+        ?.drop((currentPage - 1) * itemsPerPage)
+        ?.take(itemsPerPage)
+    val totalPages = (filteredBooks?.size?.plus(itemsPerPage)?.minus(1))?.div(itemsPerPage)
 
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Results") },
+                title = {
+                    Text(
+                        text = "Results",
+                        color = Color.White // Título en blanco
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color.White
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = PurpleC
+                )
             )
+
         },
         bottomBar = {
             BottomNavBar(
@@ -66,6 +82,11 @@ fun SearchResultsScreen(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
+                        )
+                    )
             ) {
                 // Barra de búsqueda local (filtra entre los resultados previos)
                 TextField(
@@ -82,10 +103,10 @@ fun SearchResultsScreen(
                         .padding(8.dp), singleLine = true
                 )
 
-                if(filteredBooks.isNotEmpty()) {
+                if(filteredBooks?.isNullOrEmpty() == false) {
                     if(currentQuery.isNotEmpty()) {
                         Text(
-                            text = "${filteredBooks.size} results for \"$currentQuery\"",
+                            text = "${filteredBooks?.size} results for \"$currentQuery\"",
                             style = MaterialTheme.typography.titleSmall,
                             modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                         )
@@ -107,10 +128,10 @@ fun SearchResultsScreen(
                 Divider(modifier = Modifier.padding(horizontal = 8.dp))
 
                 // Resultados filtrados
-                if (filteredBooks.isNotEmpty()) {
+                if (filteredBooks?.isNotEmpty() == true) {
                     LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(paginatedBooks) { book ->
-                            BookCard(book, navController)
+                        items(paginatedBooks?.size ?: 0) { index ->
+                            BookCard(paginatedBooks?.get(index), navController)
                         }
                     }
                     // Paginación
@@ -119,31 +140,24 @@ fun SearchResultsScreen(
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        //repeat(totalPages) { pageIndex ->
-                        /*   Button(
-                               onClick = { currentPage = pageIndex + 1 },
-                               colors = ButtonDefaults.buttonColors(
-                                   containerColor = if (pageIndex + 1 == currentPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
-                               )
-                           ) {
-                               Text(text = "${pageIndex + 1}")
-                           } */
-                        (1..totalPages).forEach { page ->
-                            Button(onClick = { currentPage = page },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (page == currentPage)
-                                        MaterialTheme.colorScheme.primary
-                                    else
-                                        MaterialTheme.colorScheme.secondaryContainer,
-                                    contentColor = if (page == currentPage)
-                                        MaterialTheme.colorScheme.onPrimary
-                                    else
-                                        MaterialTheme.colorScheme.onSecondaryContainer
-                                ),
-                                modifier = Modifier
-                                    .padding(horizontal = 4.dp)
-                            ) {
-                                Text(text = "$page")
+                        if(totalPages != null) {
+                            (1..totalPages).forEach { page ->
+                                Button(onClick = { currentPage = page },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = if (page == currentPage)
+                                            MaterialTheme.colorScheme.primary
+                                        else
+                                            MaterialTheme.colorScheme.secondaryContainer,
+                                        contentColor = if (page == currentPage)
+                                            MaterialTheme.colorScheme.onPrimary
+                                        else
+                                            MaterialTheme.colorScheme.onSecondaryContainer
+                                    ),
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                ) {
+                                    Text(text = "$page")
+                                }
                             }
                         }
                     }

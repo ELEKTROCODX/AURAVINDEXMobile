@@ -1,15 +1,18 @@
 package com.elektro24team.auravindex.view
 
-import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.SnapPosition.Center
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,39 +25,68 @@ import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.PlanCard
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
-import com.elektro24team.auravindex.utils.hamburguerMenuNavigator
-import com.elektro24team.auravindex.utils.rememberPlanViewModel
+import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
+import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
+import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlanScreen(
     navController: NavController,
-    planViewModel: PlanViewModel
+    planViewModel: PlanViewModel,
+    activePlanViewModel: ActivePlanViewModel,
+    localSettingViewModel: LocalSettingViewModel,
+    userViewModel: UserViewModel,
+
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+    rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val plans by planViewModel.plans.observeAsState(emptyList())
-
+    val localSettings = localSettingViewModel.settings.collectAsState()
+    ObserveSuccess(activePlanViewModel)
+    ObserveError(activePlanViewModel)
+    ObserveInsufficientPermissions(activePlanViewModel, navController)
+    ObserveTokenExpiration(activePlanViewModel, navController, localSettingViewModel)
     LaunchedEffect(Unit) {
         planViewModel.loadPlans()
+        activePlanViewModel.clearNotifications()
+        if(isLoggedIn(localSettings.value)) {
+            activePlanViewModel.loadActivePlanByUserId(
+                localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                localSettings.value.getOrDefault(SettingKey.ID.keySetting, "")
+            )
+        }
     }
     ModalNavigationDrawer(
         drawerContent = {
-            DrawerMenu(onItemSelected = { route ->
-                hamburguerMenuNavigator(
-                    route,
-                    navController,
-                    showTermsDialog,
-                    showPrivacyDialog,
-                    showTeamDialog
-                )
-            })
+            DrawerMenu(
+                navController = navController,
+                currentRoute = navController.currentBackStackEntry?.destination?.route,
+                userViewModel = userViewModel, // <- este es el parámetro faltante
+                onItemSelected = { route ->
+                    hamburguerMenuNavigator(
+                        route,
+                        navController,
+                        showTermsDialog,
+                        showPrivacyDialog,
+                        showTeamDialog
+                    )
+                }
+            )
+
         },
         drawerState = drawerState
     ) {
@@ -76,6 +108,11 @@ fun PlanScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
+                            )
+                        )
                 ) {
                     Column(
                         modifier = Modifier
@@ -87,7 +124,7 @@ fun PlanScreen(
                         ConnectionAlert(isConnected)
 
                         Text(
-                            text = "Choose your subscription plan",
+                            text = "Subscription Plans",
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -99,8 +136,13 @@ fun PlanScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             contentPadding = PaddingValues(bottom = 80.dp)
                         ) {
-                            items(plans.size) { index ->
-                                PlanCard(plan = plans[index])
+                            items(plans?.size ?: 0) { index ->
+                                PlanCard(
+                                    plan = plans?.get(index),
+                                    navController,
+                                    localSettingViewModel,
+                                    activePlanViewModel
+                                )
                             }
                         }
                     }

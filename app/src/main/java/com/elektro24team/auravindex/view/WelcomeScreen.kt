@@ -3,6 +3,7 @@ package com.elektro24team.auravindex.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -17,11 +18,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.enums.SettingKey
-import com.elektro24team.auravindex.utils.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
@@ -34,59 +38,58 @@ fun WelcomeScreen(
     bookViewModel: BookViewModel,
     planViewModel: PlanViewModel,
     bookCollectionViewModel: BookCollectionViewModel,
-    localSettingsViewModel: LocalSettingViewModel
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
+    val settings by localSettingViewModel.settings.collectAsState()
     var isReadyToNavigate by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        localSettingsViewModel.loadSetting(SettingKey.DARK_MODE.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.LANGUAGE.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.LAST_LOGIN.keySetting)
-
-        bookViewModel.loadBooks(showDuplicates = true, showLents = true)
-        bookViewModel.fetchLatestReleases()
-        planViewModel.loadPlans()
-        bookCollectionViewModel.loadBookCollections()
-    }
+    val app = LocalContext.current.applicationContext as AuraVindexApp
+    val isConnected by app.networkLiveData.observeAsState(true)
     LaunchedEffect(Unit) {
         val keys = arrayOf(
             SettingKey.DARK_MODE.keySetting,
             SettingKey.LANGUAGE.keySetting,
             SettingKey.LAST_LOGIN.keySetting
         )
-        val loaded = localSettingsViewModel.loadSettings(*keys)
+        val loaded = localSettingViewModel.loadSettings(*keys)
+        localSettingViewModel.loadUserSettings()
+        if(isConnected) {
+            bookViewModel.loadBooks(showDuplicates = true, showLents = true)
+            bookViewModel.fetchLatestReleases()
+            planViewModel.loadPlans()
+            bookCollectionViewModel.loadBookCollections()
+        }
 
         if (loaded[SettingKey.DARK_MODE.keySetting].isNullOrBlank()) {
-            localSettingsViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, "false")
+            localSettingViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, "false")
         }
-
         if (loaded[SettingKey.LANGUAGE.keySetting].isNullOrBlank()) {
-            localSettingsViewModel.saveSetting(SettingKey.LANGUAGE.keySetting, "English")
+            localSettingViewModel.saveSetting(SettingKey.LANGUAGE.keySetting, "English")
         }
-
-        localSettingsViewModel.saveSetting(
-            SettingKey.LAST_LOGIN.keySetting,
-            System.currentTimeMillis().toString()
-        )
-
         isReadyToNavigate = true
     }
-
     Box(
         modifier = Modifier
             .clickable {
                 if(isReadyToNavigate) {
-                    navController.navigate(Routes.MAIN) {
-                        popUpTo(Routes.WELCOME) {
-                            inclusive = true
-                        }
-                    }
+                   if(isLoggedIn(settings)) {
+                       navController.navigate(Routes.MAIN) {
+                           popUpTo(Routes.WELCOME) {
+                               inclusive = true
+                           }
+                       }
+                   } else {
+                       navController.navigate(Routes.LOGIN) {
+                           popUpTo(Routes.WELCOME) {
+                               inclusive = true
+                           }
+                       }
+                   }
                 }
             }
     ) {
         Image(
-            painter = painterResource(id = R.drawable.bg_welcome),
+            painter = painterResource(id = R.drawable.bg),
             contentDescription = "image",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -96,28 +99,23 @@ fun WelcomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(MediumPadding),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "WELCOME TO AURA VINDEX",
-                style = MaterialTheme.typography.titleLarge,
-                color = colors.onPrimary
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.logo_app),
-                contentDescription = "Aura Vindex's logo",
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .aspectRatio(1f)
-            )
             if(isReadyToNavigate) {
-                Text(
-                    text = "Tap to continue...",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = colors.onPrimary
-                )
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_app),
+                        contentDescription = "Aura Vindex's logo",
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .aspectRatio(1f)
+                    )
+
+                    Text(
+                        text = "Tap to continue...",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = colors.onPrimary
+                    )
             } else {
                 CircularProgressIndicator(
                     color = colors.onPrimary
