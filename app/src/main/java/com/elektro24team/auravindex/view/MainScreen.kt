@@ -67,20 +67,6 @@ fun MainScreen(
         if(isLoggedIn(localSettings)) {
             recentBookViewModel.loadRecentBooks(localSettings[SettingKey.TOKEN.keySetting] ?: "", localSettings[SettingKey.ID.keySetting] ?: "")
         }
-        NotificationHandler.showNotification(
-            context = context,
-            notification = NotificationEntity(
-                _id = "1",
-                __v = 1,
-                receiver_id = "1",
-                title = "Your loan has been successfully sent!",
-                message = "Welcome.",
-                notificationType = "TEST",
-                isRead = false,
-                createdAt = "",
-                updatedAt = "",
-            )
-        )
     }
     ObserveError(bookViewModel)
     ObserveError(userViewModel)

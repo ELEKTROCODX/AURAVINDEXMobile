@@ -31,6 +31,8 @@ import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
+import com.elektro24team.auravindex.utils.objects.FcmTokenUploader
+import com.elektro24team.auravindex.utils.objects.FcmTokenUploader.checkAndSyncFcmToken
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
@@ -61,13 +63,11 @@ fun LoginScreen(
             AuthPrefsHelper.saveAuthToken(context, loginResult!!)
             userViewModel.getUserByEmail(loginResult!!, userEmail.value)
         }
-
-
     }
     LaunchedEffect(user) {
         Log.d("LoginDebug", "User changed: $user")
         if (user != null) {
-
+            AuthPrefsHelper.saveUserId(context, user?._id.toString())
             localSettingViewModel.saveSetting(SettingKey.TOKEN.keySetting, loginResult!!)
             localSettingViewModel.saveSetting(SettingKey.EMAIL.keySetting, userEmail.value)
             localSettingViewModel.saveSetting(SettingKey.ID.keySetting, user?._id.toString())
@@ -78,6 +78,7 @@ fun LoginScreen(
             userPassword.value = ""
             authViewModel.loginResult.value = ""
             userViewModel.user.value = null
+            checkAndSyncFcmToken(context)
             Toast.makeText(context, "Successfully logged in.", Toast.LENGTH_SHORT).show()
             localSettingViewModel.saveSetting(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis().toString())
             navController.navigate(Routes.MAIN)

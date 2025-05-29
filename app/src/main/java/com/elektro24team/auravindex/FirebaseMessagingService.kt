@@ -1,9 +1,11 @@
 package com.elektro24team.auravindex
 
 import android.Manifest
+import android.content.Context
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.elektro24team.auravindex.model.local.NotificationEntity
+import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
 import com.elektro24team.auravindex.utils.objects.FcmTokenUploader
 import com.elektro24team.auravindex.utils.objects.NotificationHandler
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -14,8 +16,6 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 class MyFirebaseMessagingService() : FirebaseMessagingService() {
-
-
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
@@ -38,6 +38,7 @@ class MyFirebaseMessagingService() : FirebaseMessagingService() {
         super.onNewToken(token)
         Log.d("FCM", "New Token: $token")
         CoroutineScope(Dispatchers.IO).launch {
+            AuthPrefsHelper.saveFcmToken(context = applicationContext, token)
             FcmTokenUploader.updateFcmTokenIfNeeded(applicationContext, token)
         }
     }

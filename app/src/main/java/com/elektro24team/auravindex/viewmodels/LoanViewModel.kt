@@ -142,20 +142,6 @@ class LoanViewModel() : BaseViewModel() {
             }
             if (result.isSuccess) {
                 notifySuccess("The loan request has been sent successfully")
-                NotificationHandler.showNotification(
-                    context = context,
-                    notification = NotificationEntity(
-                        _id = "1",
-                        __v = 1,
-                        receiver_id = loan.user,
-                        title = "Your loan has been successfully sent!",
-                        message = "You've requested the book ${loan.book} and is waiting for approval. We'll notify you once it gets approved.",
-                        notificationType = "LOAN",
-                        isRead = false,
-                        createdAt = "",
-                        updatedAt = "",
-                    )
-                )
             } else {
                 val error = result.exceptionOrNull()
                 if (error is HttpException) {

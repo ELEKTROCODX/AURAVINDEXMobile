@@ -42,7 +42,7 @@ object NotificationHandler {
 
     fun getDefaultAppIntent(context: Context): PendingIntent {
         val intent = Intent(context, MainActivity::class.java).apply {
-            Intent.setFlags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         return PendingIntent.getActivity(
             context,

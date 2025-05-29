@@ -216,6 +216,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             userViewModel.clearViewModelData()
             authViewModel.clearViewModelData()
             AuthPrefsHelper.clearAuthToken(context)
+            AuthPrefsHelper.clearFcmToken(context)
+            AuthPrefsHelper.clearUserId(context)
             Toast.makeText(LocalContext.current, "Successfully logged out.", Toast.LENGTH_LONG).show()
             navController.navigate(Routes.WELCOME)
         }

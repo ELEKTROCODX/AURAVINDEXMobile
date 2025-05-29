@@ -34,9 +34,10 @@ interface UserService{
         @Path("id") id: String
     ): User
 
-    @POST("user/:id/fcm_token")
+    @POST("user/{id}/fcm_token")
     suspend fun updateFcmToken(
         @Header("Authorization") token: String,
+        @Path("id") id: String,
         @Body fcmToken: Map<String, String>
     ): Response<Void>
 }
