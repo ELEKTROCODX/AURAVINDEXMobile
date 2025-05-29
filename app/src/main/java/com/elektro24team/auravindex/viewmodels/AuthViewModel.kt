@@ -12,9 +12,9 @@ import retrofit2.HttpException
 class AuthViewModel: BaseViewModel() {
     private val repository = AuthRepository()
     private val _loginResult = MutableLiveData<String?>()
+    private val _registerResult = MutableLiveData<Boolean>()
     val loginResult: MutableLiveData<String?> = _loginResult
-    private val _registerResult = MutableLiveData<String>()
-    val registerResult: MutableLiveData<String> = _registerResult
+    val registerResult: MutableLiveData<Boolean> = _registerResult
 
     fun login(email: String, password: String){
         viewModelScope.launch {
@@ -39,12 +39,24 @@ class AuthViewModel: BaseViewModel() {
         viewModelScope.launch {
             val  result = repository.register(userData)
             if(result.isSuccess){
-                _registerResult.value = result.toString()
-
+                _registerResult.value = true
+                notifySuccess("Registration successful.")
+            } else {
+                _registerResult.value = false
+                val error = result.exceptionOrNull()
+                if(error is HttpException) {
+                    when(error.code()) {
+                        409 -> notifyError("This email has already been used.")
+                        else -> notifyError("HTTP error: ${error.code()}")
+                    }
+                } else {
+                    notifyError("Network error: ${error?.message}")
+                }
             }
         }
     }
     override fun clearViewModelData() {
         _loginResult.value = null
+        _registerResult.value = false
     }
 }

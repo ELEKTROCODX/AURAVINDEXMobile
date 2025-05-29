@@ -28,7 +28,6 @@ interface UserService{
         @Header("Authorization") token: String,
         @Path("id") id: String
     ): User
-
 }
 object UserClient{
     val apiService: UserService by lazy {

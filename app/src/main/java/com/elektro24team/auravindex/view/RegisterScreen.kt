@@ -36,6 +36,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.retrofit.RegisterInfo
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
 import com.elektro24team.auravindex.utils.functions.isValidEmail
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.GenderViewModel
@@ -51,6 +53,7 @@ fun RegisterScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
+    val registerResult by authViewModel.registerResult.observeAsState()
 
     // Estados de entrada del usuario
     val userName = remember { mutableStateOf("") }
@@ -62,7 +65,8 @@ fun RegisterScreen(
     val userBiography = remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var userGender by remember { mutableStateOf<String?>(null) }
-
+    ObserveError(authViewModel)
+    ObserveSuccess(authViewModel)
     // Estado para el DatePicker
     val showDatePicker = remember { mutableStateOf(false) }
 
@@ -105,12 +109,10 @@ fun RegisterScreen(
         }
 
     // Registro observado
-    val registerResult by authViewModel.registerResult.observeAsState()
 
     // Mostrar Toast después de registrar
     LaunchedEffect(registerResult) {
-        if (registerResult == "User registered successfully") {
-            Toast.makeText(context, "Successfully registered.", Toast.LENGTH_SHORT).show()
+        if(registerResult == true) {
             navController.navigate(Routes.LOGIN)
         }
     }
@@ -146,9 +148,9 @@ fun RegisterScreen(
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
-                            .aspectRatio(1f) // Esto hace que el área de la imagen sea cuadrada
-                            .clip(CircleShape) // Esto recorta el área de la imagen a un círculo
-                            .background(Color(0xFF572365)) // Esto es el fondo del círculo
+                            .aspectRatio(1f)
+                            .clip(CircleShape)
+                            .background(Color(0xFF572365))
                     )
                     Text(
                         text = "Create your account!",
