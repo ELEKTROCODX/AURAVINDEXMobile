@@ -1,14 +1,22 @@
 package com.elektro24team.auravindex
 
+import android.Manifest
+import android.util.Log
+import androidx.annotation.RequiresPermission
+import com.elektro24team.auravindex.model.local.NotificationEntity
+import com.elektro24team.auravindex.utils.objects.FcmTokenUploader
+import com.elektro24team.auravindex.utils.objects.NotificationHandler
 import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.UUID
 
-class MyFirebaseMessagingService : FirebaseMessagingService() {
+class MyFirebaseMessagingService() : FirebaseMessagingService() {
 
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
-        Log.d("FCM", "New token: $token")
-    }
 
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
@@ -18,15 +26,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         NotificationHandler.showNotification(
             context = applicationContext,
             notification = NotificationEntity(
-                id = UUID.randomUUID().toString(),
+                _id = UUID.randomUUID().toString(),
                 title = title,
                 message = message,
-                type = "API",
-                timestamp = System.currentTimeMillis(),
+                notificationType = "API",
                 isRead = false
             )
         )
     }
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+        Log.d("FCM", "New Token: $token")
+        CoroutineScope(Dispatchers.IO).launch {
+            FcmTokenUploader.updateFcmTokenIfNeeded(applicationContext, token)
+        }
+    }
 }
-
-private fun FirebaseMessagingService.onNewToken(string: String) {}

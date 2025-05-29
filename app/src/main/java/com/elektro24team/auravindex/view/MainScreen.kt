@@ -27,7 +27,7 @@ import com.elektro24team.auravindex.model.local.NotificationEntity
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
 import com.elektro24team.auravindex.ui.components.TopBar
-import com.elektro24team.auravindex.utils.NotificationHandler
+import com.elektro24team.auravindex.utils.objects.NotificationHandler
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError

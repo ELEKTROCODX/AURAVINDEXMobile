@@ -13,7 +13,7 @@ import com.elektro24team.auravindex.model.Notification
 import com.elektro24team.auravindex.model.api.LoanRequest
 import com.elektro24team.auravindex.model.local.NotificationEntity
 import com.elektro24team.auravindex.retrofit.LoanClient
-import com.elektro24team.auravindex.utils.NotificationHandler
+import com.elektro24team.auravindex.utils.objects.NotificationHandler
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException

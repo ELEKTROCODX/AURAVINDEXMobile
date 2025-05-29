@@ -3,10 +3,13 @@ package com.elektro24team.auravindex.retrofit
 import com.elektro24team.auravindex.model.ApiResponse
 import com.elektro24team.auravindex.model.User
 import com.elektro24team.auravindex.utils.constants.URLs.BASE_URL
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -31,6 +34,11 @@ interface UserService{
         @Path("id") id: String
     ): User
 
+    @POST("user/:id/fcm_token")
+    suspend fun updateFcmToken(
+        @Header("Authorization") token: String,
+        @Body fcmToken: Map<String, String>
+    ): Response<Void>
 }
 
 object UserClient{

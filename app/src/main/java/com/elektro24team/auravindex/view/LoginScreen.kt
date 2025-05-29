@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.view
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
@@ -56,6 +58,7 @@ fun LoginScreen(
         if (loginResult != null && loginResult != "") {
             Log.d("LoginDebug", "Calling getUserByEmail: $loginResult")
             localSettingViewModel.clearUserSettings()
+            AuthPrefsHelper.saveAuthToken(context, loginResult!!)
             userViewModel.getUserByEmail(loginResult!!, userEmail.value)
         }
 

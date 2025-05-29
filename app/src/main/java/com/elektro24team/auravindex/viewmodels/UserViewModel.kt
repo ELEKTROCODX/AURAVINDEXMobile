@@ -2,11 +2,13 @@ package com.elektro24team.auravindex.viewmodels
 
 import retrofit2.HttpException
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresExtension
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.UserRepository
 import com.elektro24team.auravindex.model.User
+import com.elektro24team.auravindex.retrofit.UserClient
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 
