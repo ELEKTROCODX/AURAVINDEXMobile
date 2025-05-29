@@ -1,9 +1,8 @@
 package com.elektro24team.auravindex.view
 
-import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -11,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
@@ -21,7 +22,7 @@ import com.elektro24team.auravindex.ui.components.HomePageSection
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.AuraVindexApp
-import com.elektro24team.auravindex.model.RecentBook
+import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
 import com.elektro24team.auravindex.ui.components.TopBar
@@ -50,7 +51,7 @@ fun MainScreen(
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val books by bookViewModel.books.observeAsState(emptyList())
-    val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
+    val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList()) // Cambiado de 'val latestReleases = ...' a 'val latestReleases by ...'
     val localSettings by localSettingViewModel.settings.collectAsState()
     val recentBooks by recentBookViewModel.recentBook.observeAsState()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
@@ -72,16 +73,17 @@ fun MainScreen(
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
+                userViewModel = userViewModel,
                 onItemSelected = { route ->
-                hamburguerMenuNavigator(
-                    route,
-                    navController,
-                    showTermsDialog,
-                    showPrivacyDialog,
-                    showTeamDialog
-                )
-            })
-
+                    hamburguerMenuNavigator(
+                        route,
+                        navController,
+                        showTermsDialog,
+                        showPrivacyDialog,
+                        showTeamDialog
+                    )
+                }
+            )
         },
         drawerState = drawerState
     ) {
@@ -90,7 +92,7 @@ fun MainScreen(
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
-                    TopBar(navController = navController, drawerState = drawerState)
+                TopBar(navController = navController, drawerState = drawerState)
             },
             bottomBar = {
                 BottomNavBar(
@@ -111,6 +113,11 @@ fun MainScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
+                            )
+                        )
                 ) {
                     Column(
                         modifier = Modifier
@@ -151,7 +158,7 @@ fun MainScreen(
                             )
                             HomePageSection(
                                 "New releases",
-                                latestReleases,
+                                latestReleases, // Eliminado el 'as List<Book>?' ya que 'latestReleases' ya es una List<Book>
                                 seeMoreAction = { navController.navigate(Routes.SEARCH) },
                                 navController
                             )

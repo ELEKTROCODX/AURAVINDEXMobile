@@ -90,528 +90,299 @@ fun AdminBookCard(
 
     Card(
         modifier = Modifier
+            .padding(16.dp)
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        shape = MaterialTheme.shapes.medium
+            .verticalScroll(rememberScrollState())
+            .shadow(12.dp, shape = RoundedCornerShape(24.dp)),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         val imageUrl = IMG_url.trimEnd('/') + "/" + book?.value?.book_img?.trimStart('/')
-        Text(
-            text = book?.value?.title ?: "Title",
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 25.sp,
-                color = androidx.compose.material3.MaterialTheme.colorScheme.primary
-            ),
-            modifier = Modifier.padding(top = 16.dp)
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            GlideImage(
-                imageModel = { imageUrl },
-                modifier = Modifier
-                    .widthIn(max = 200.dp)
-                    .heightIn(max = 300.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .shadow(8.dp, RoundedCornerShape(16.dp))
-                    .align(Alignment.Center),
-                imageOptions = ImageOptions(
-                    contentScale = ContentScale.Crop
-                ),
-                loading = {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                },
-                failure = {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_app),
-                        contentDescription = "Default img",
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .shadow(8.dp, RoundedCornerShape(16.dp))
-                            .align(Alignment.Center)
-                    )
-                }
+
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = book?.value?.title ?: "Title",
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    color = Color(0xFF572365)
+                )
             )
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Column(modifier = Modifier.fillMaxWidth()) {
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                GlideImage(
+                    imageModel = { imageUrl },
+                    modifier = Modifier
+                        .heightIn(max = 280.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .shadow(8.dp, RoundedCornerShape(16.dp)),
+                    imageOptions = ImageOptions(contentScale = ContentScale.Crop),
+                    loading = { CircularProgressIndicator() },
+                    failure = {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo_app),
+                            contentDescription = "Default img",
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(16.dp))
+                                .shadow(8.dp)
+                        )
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Text(
                 text = "Book Details",
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     color = Color(0xFF572365)
-                ),
-                modifier = Modifier.padding(bottom = 12.dp)
+                )
             )
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = buildAnnotatedString {
-                        append("Summary: ")
-                        withStyle(
-                            SpanStyle(
-                                fontSize = 16.sp,
-                                color = Color.Black,
-                                fontWeight = FontWeight.Normal
-                            )
-                        ) {
-                            append(book.value?.summary ?: "Not available")
-                        }
-                    },
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365),
-                        textAlign = TextAlign.Justify
-                    )
-                )
-            }
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Authors: ",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365)
-                    ),
-                )
-                Text(
-                    text = book.value?.authors?.joinToString(", ") { it.name + " " + it.last_name }
-                        ?: "Not available",
-                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                )
-            }
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Editorial: ",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365)
-                    ),
-                )
-                Text(
-                    text = book.value?.editorial?.name ?: "Not available",
-                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                )
-            }
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Collection: ",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365)
-                    ),
-                )
-                Text(
-                    text = book.value?.book_collection?.name ?: "Not available",
-                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                )
-            }
 
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Genres: ",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365)
-                    ),
-                )
-                Text(
-                    text = book.value?.genres?.joinToString(", ") ?: "Not available",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        color = Color.Black,
-                        textAlign = TextAlign.Justify
-                    )
-                )
-            }
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Edition: ",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365)
-                    ),
-                )
-                Text(
-                    text = book.value?.edition ?: "Not available",
-                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                )
-            }
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Language: ",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365)
-                    ),
-                )
-                Text(
-                    text = book.value?.language ?: "Not available",
-                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                )
-            }
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Location: ",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365)
-                    ),
-                )
-                Text(
-                    text = book.value?.location ?: "Not available",
-                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                )
-            }
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Status: ",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365)
-                    ),
-                )
-                Text(
-                    text = book.value?.book_status?.book_status ?: "Not available",
-                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                )
-            }
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            if (book.value?.book_status?.book_status?.lowercase() == "lent") {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Lent to: ",
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = Color(0xFF572365)
-                        ),
-                    )
-                    Text(
-                        text = "Some User",
-                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                    )
-                }
-                Divider(color = Color.LightGray, thickness = 1.dp)
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Classification: ",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365)
-                    ),
-                )
-                Text(
-                    text = book.value?.classification ?: "Not available",
-                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                )
-            }
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "ISBN: ",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF572365)
-                    ),
-                )
-                Text(
-                    text = book.value?.isbn ?: "Not available",
-                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                )
-            }
+            Spacer(modifier = Modifier.height(12.dp))
 
-            Divider(color = Color.LightGray, thickness = 1.dp)
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = {  /* Acción para "Editar" */ },
-                modifier = Modifier
-                    .height(48.dp)
-                    .weight(1f),
-                colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Edit,
-                    contentDescription = "Edit",
-                    tint = Color.White,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "Edit",
-                    color = Color.White,
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                )
-            }
-            Button(
-                onClick = { /* Acción para "Cancel"*/ },
-                modifier = Modifier
-                    .height(48.dp)
-                    .weight(1f),
-                colors = ButtonDefaults.buttonColors(backgroundColor = colors.error),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Delete,
-                    contentDescription = "Delete",
-                    tint = Color.White,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "Delete",
-                    color = Color.White,
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        if(book.value?.book_status?.book_status?.lowercase() == "lent") {
-            bookLoans.value?.forEach { bookLoan ->
-                if( (bookLoan.book._id == bookId) && (bookLoan.loan_status.loan_status.lowercase() != "finished") ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
+            @Composable
+            fun detailRow(label: String, value: String?) {
+                Column(modifier = Modifier.padding(vertical = 4.dp)) {
+                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = "Loan Details",
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
-                                color = Color(0xFF572365)
-                            ),
-                            modifier = Modifier.padding(bottom = 12.dp)
+                            text = "$label:",
+                            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365))
                         )
-                        Divider(color = Color.LightGray, thickness = 1.dp)
-                        Row(
-                            modifier = Modifier
+                        Text(
+                            text = value ?: "Not available",
+                            style = TextStyle(fontSize = 16.sp, color = Color.Black),
+                            textAlign = TextAlign.End
+                        )
+                    }
+                    Divider(color = Color.LightGray, thickness = 1.dp)
+                }
+            }
+
+            detailRow("Summary", book.value?.summary)
+            detailRow("Authors", book.value?.authors?.joinToString(", ") { "${it.name} ${it.last_name}" })
+            detailRow("Editorial", book.value?.editorial?.name)
+            detailRow("Collection", book.value?.book_collection?.name)
+            detailRow("Genres", book.value?.genres?.joinToString(", "))
+            detailRow("Edition", book.value?.edition)
+            detailRow("Language", book.value?.language)
+            detailRow("Location", book.value?.location)
+            detailRow("Status", book.value?.book_status?.book_status)
+            if (book.value?.book_status?.book_status?.lowercase() == "lent") {
+                detailRow("Lent to", "Some User")
+            }
+            detailRow("Classification", book.value?.classification)
+            detailRow("ISBN", book.value?.isbn)
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Button(
+                    onClick = { /* Acción Editar */ },
+                    modifier = Modifier.weight(1f).height(48.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF572365)),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(Icons.Filled.Edit, contentDescription = "Edit", tint = Color.White)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Edit", color = Color.White, fontWeight = FontWeight.Bold)
+                }
+
+                Button(
+                    onClick = { /* Acción Eliminar */ },
+                    modifier = Modifier.weight(1f).height(48.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFDD7F12)),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(Icons.Filled.Delete, contentDescription = "Delete", tint = Color.White)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Delete", color = Color.White, fontWeight = FontWeight.Bold)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            if (book.value?.book_status?.book_status?.lowercase() == "lent") {
+                bookLoans.value?.forEach { bookLoan ->
+                    if (bookLoan.book._id == bookId && bookLoan.loan_status.loan_status.lowercase() != "finished") {
+                        Column {
+
+                            Column(modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                                .clickable { navController.navigate("admin_dashboard/user/${bookLoan.user._id}") },
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "User: ",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
-                                    color = Color(0xFF572365)
-                                ),
-                            )
-                            Text(
-                                text = "${bookLoan.user.name} ${bookLoan.user.last_name}",
-                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                            )
-                        }
-                        Divider(color = Color.LightGray, thickness = 1.dp)
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Status: ",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
-                                    color = Color(0xFF572365)
-                                ),
-                            )
-                            Text(
-                                text = bookLoan.loan_status.loan_status,
-                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                            )
-                        }
-                        Divider(color = Color.LightGray, thickness = 1.dp)
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Current renewals: ",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
-                                    color = Color(0xFF572365)
-                                ),
-                            )
-                            Text(
-                                text = "${bookLoan.renewals} renewals",
-                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                            )
-                        }
-                        Divider(color = Color.LightGray, thickness = 1.dp)
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Return date: ",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
-                                    color = Color(0xFF572365)
-                                ),
-                            )
-                            Text(
-                                text = "${formatUtcToLocalWithDate(bookLoan.return_date)}",
-                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                            )
-                        }
-                        Divider(color = Color.LightGray, thickness = 1.dp)
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Button(
-                                onClick = {
-                                    loanViewModel.approveLoan(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookLoan._id)
-                                },
-                                modifier = Modifier
-                                    .height(48.dp)
-                                    .weight(1f),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
-                                shape = RoundedCornerShape(12.dp),
+                                .padding(horizontal = 16.dp)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Check,
-                                    contentDescription = "Approve",
-                                    tint = Color.White,
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
                                 Text(
-                                    text = "Approve",
-                                    color = Color.White,
-                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                    text = "Loan Details",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 18.sp,
+                                        color = Color(0xFF572365)
+                                    ),
+                                    modifier = Modifier.padding(vertical = 12.dp)
                                 )
+                                Divider(color = Color.LightGray, thickness = 1.dp)
+
+                                bookLoans.value?.forEach { loan ->
+                                    if (loan.book._id == bookId && loan.loan_status.loan_status.lowercase() != "finished") {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 4.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                text = "Loaned to:",
+                                                style = TextStyle(
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = 16.sp,
+                                                    color = Color(0xFF572365)
+                                                )
+                                            )
+                                            Text(
+                                                text = "${loan.user.name} ${loan.user.last_name}",
+                                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                            )
+                                        }
+                                        Divider(color = Color.LightGray, thickness = 1.dp)
+
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 4.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                text = "Start Date:",
+                                                style = TextStyle(
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = 16.sp,
+                                                    color = Color(0xFF572365)
+                                                )
+                                            )
+                                            Text(
+                                                text = formatUtcToLocalWithDate(bookLoan.createdAt),
+                                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                            )
+                                        }
+                                        Divider(color = Color.LightGray, thickness = 1.dp)
+
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 4.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                text = "End Date:",
+                                                style = TextStyle(
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = 16.sp,
+                                                    color = Color(0xFF572365)
+                                                )
+                                            )
+                                            Text(
+                                                text = formatUtcToLocalWithDate(bookLoan.return_date),
+                                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                            )
+                                        }
+                                        Divider(color = Color.LightGray, thickness = 1.dp)
+
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 4.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                text = "Status:",
+                                                style = TextStyle(
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = 16.sp,
+                                                    color = Color(0xFF572365)
+                                                )
+                                            )
+                                            Text(
+                                                text = loan.loan_status.loan_status,
+                                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                            )
+                                        }
+                                        Divider(color = Color.LightGray, thickness = 1.dp)
+                                    }
+                                }
                             }
-                            Button(
-                                onClick = {
-                                    loanViewModel.finishLoan(
-                                        localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-                                        bookLoan._id
+                            Divider(color = Color.LightGray, thickness = 1.dp)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Button(
+                                    onClick = {
+                                        loanViewModel.approveLoan(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookLoan._id)
+                                    },
+                                    modifier = Modifier
+                                        .height(48.dp)
+                                        .weight(1f),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
+                                    shape = RoundedCornerShape(12.dp),
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Check,
+                                        contentDescription = "Approve",
+                                        tint = Color.White,
+                                        modifier = Modifier.padding(end = 8.dp)
                                     )
-                                },
-                                modifier = Modifier
-                                    .height(48.dp)
-                                    .weight(1f),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = colors.error),
-                                shape = RoundedCornerShape(12.dp),
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.SettingsBackupRestore,
-                                    contentDescription = "Finish",
-                                    tint = Color.White,
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
-                                Text(
-                                    text = "Finish",
-                                    color = Color.White,
-                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                )
+                                    Text(
+                                        text = "Approve",
+                                        color = Color.White,
+                                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                    )
+                                }
+                                Button(
+                                    onClick = {
+                                        loanViewModel.finishLoan(
+                                            localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                                            bookLoan._id
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .height(48.dp)
+                                        .weight(1f),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = colors.error),
+                                    shape = RoundedCornerShape(12.dp),
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.SettingsBackupRestore,
+                                        contentDescription = "Finish",
+                                        tint = Color.White,
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    )
+                                    Text(
+                                        text = "Finish",
+                                        color = Color.White,
+                                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                    )
+                                }
                             }
+
+
                         }
                     }
                 }
             }
         }
     }
-}
 
+}

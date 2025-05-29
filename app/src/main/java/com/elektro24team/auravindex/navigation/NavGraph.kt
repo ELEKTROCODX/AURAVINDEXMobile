@@ -159,7 +159,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 activePlanViewModel = activePlanViewModel,
                 loanViewModel = loanViewModel,
                 loanStatusViewModel = loanStatusViewModel,
-                localSettingViewModel = localSettingViewModel
+                localSettingViewModel = localSettingViewModel,
+                userViewModel = userViewModel
             )
         }
         composable(
@@ -180,14 +181,16 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         }
         composable(Routes.LISTS) {
            ListsScreen(
-               navController = navController
+               navController = navController,
+               userViewModel = userViewModel
            )
         }
         composable(Routes.LOANS) {
             LoansScreen(
                 navController = navController,
                 loanViewModel = loanViewModel,
-                localSettingViewModel = localSettingViewModel
+                localSettingViewModel = localSettingViewModel,
+                userViewModel = userViewModel
             )
         }
         composable(Routes.LOGIN) {
@@ -231,7 +234,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navController = navController,
                 planViewModel = planViewModel,
                 activePlanViewModel = activePlanViewModel,
-                localSettingViewModel = localSettingViewModel
+                localSettingViewModel = localSettingViewModel,
+                userViewModel=userViewModel
             )
         }
         composable(Routes.PROFILE) {
@@ -246,6 +250,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navController = navController,
                 bookViewModel = bookViewModel,
                 bookCollectionViewModel = bookCollectionViewModel,
+                userViewModel = userViewModel
             )
         }
         composable(
@@ -259,7 +264,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.SETTINGS) {
             SettingsScreen(
                 navController = navController,
-                localSettingViewModel = localSettingViewModel
+                localSettingViewModel = localSettingViewModel,
+                userViewModel=userViewModel
             )
         }
         composable(Routes.WELCOME) {
