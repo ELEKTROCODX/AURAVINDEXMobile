@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.utils.objects
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,28 +23,24 @@ object FcmTokenUploader {
                 val fcmRequest = mapOf("fcm_token" to fcmToken)
                 val response = UserClient.apiService.updateFcmToken("Bearer $authToken", userId.toString(), fcmRequest)
                 if (response.isSuccessful) {
-                    Log.d("FCM", "FCM token updated successfully.")
                 } else {
-                    Log.e("FCM", "Error updating FCM token: ${response.code()}")
+                    Toast.makeText(context, "Failed to update FCM token.", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Log.w("FCM", "Auth token not available.")
+                Toast.makeText(context, "Auth token not available.", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-            Log.e("FCM", "Error sending FCM token: ${e.message}")
+            Toast.makeText(context, "Something failed: {${e.message}}", Toast.LENGTH_SHORT).show()
         }
     }
      fun checkAndSyncFcmToken(context: Context) {
          FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
              if (!task.isSuccessful) {
-                 Log.w("FCM", "Fetching FCM registration token failed", task.exception)
                  return@addOnCompleteListener
              }
              val token = task.result
              val savedToken = AuthPrefsHelper.getFcmToken(context)
-             Log.d("FCM", "Saved token: $savedToken, New token: $token")
              if (token != savedToken) {
-                 Log.d("FCM", "FCM token changed. Updating...")
                  AuthPrefsHelper.saveFcmToken(context, token)
                  val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
                  applicationScope.launch {

@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
@@ -21,7 +22,8 @@ object NotificationHandler {
         val channelId = "aura_channel"
 
         val builder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.logo_app)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.logo_app))
             .setContentTitle(notification.title)
             .setContentText(notification.message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

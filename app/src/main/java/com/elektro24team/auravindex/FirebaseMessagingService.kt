@@ -36,7 +36,6 @@ class MyFirebaseMessagingService() : FirebaseMessagingService() {
     }
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d("FCM", "New Token: $token")
         CoroutineScope(Dispatchers.IO).launch {
             AuthPrefsHelper.saveFcmToken(context = applicationContext, token)
             FcmTokenUploader.updateFcmTokenIfNeeded(applicationContext, token)
