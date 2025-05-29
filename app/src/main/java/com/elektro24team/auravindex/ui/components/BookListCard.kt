@@ -52,34 +52,13 @@ fun BookListCard(bookList: BookList?, navController: NavController) {
                 .padding(12.dp)
                 .fillMaxWidth()
         ) {
-            GlideImage(
-                imageModel = { IMG_url.trimEnd('/') + "/" + bookList?.bookList_img?.trimStart('/') },
+            Image(
+                painter = painterResource(id = R.mipmap.ic_launcher),
+                contentDescription = "Default image",
                 modifier = Modifier
                     .width(90.dp)
                     .height(130.dp)
-                    .padding(end = 12.dp),
-                imageOptions = ImageOptions(contentScale = ContentScale.Crop),
-                loading = {
-                    Box(
-                        modifier = Modifier
-                            .width(90.dp)
-                            .height(130.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = PurpleC, strokeWidth = 2.dp)
-                    }
-                },
-                failure = {
-                    Image(
-                        painter = painterResource(id = R.mipmap.ic_launcher),
-                        contentDescription = "Default image",
-                        modifier = Modifier
-                            .width(90.dp)
-                            .height(130.dp)
-                    )
-                }
             )
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = bookList?.title.toString(),
@@ -87,28 +66,12 @@ fun BookListCard(bookList: BookList?, navController: NavController) {
                     color = BlackC,
                     maxLines = 2
                 )
-
                 Spacer(modifier = Modifier.height(4.dp))
-
                 Text(
-                    text = bookList?.summary.toString(),
+                    text = bookList?.description.toString(),
                     style = MaterialTheme.typography.bodySmall,
                     color = BrownC,
                     maxLines = 3
-                )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                Text(
-                    text = "Authors: ${bookList?.authors?.joinToString { "${it.name} ${it.last_name}" }}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PurpleC
-                )
-
-                Text(
-                    text = "Genres: ${bookList?.genres?.joinToString()}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = OrangeC
                 )
             }
         }
