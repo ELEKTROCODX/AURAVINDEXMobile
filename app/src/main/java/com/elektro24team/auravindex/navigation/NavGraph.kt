@@ -1,9 +1,11 @@
 package com.elektro24team.auravindex.navigation
 
+import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
+import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
@@ -24,6 +26,7 @@ import com.elektro24team.auravindex.utils.functions.rememberPlanStatusViewModel
 import com.elektro24team.auravindex.utils.functions.rememberPlanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberRecentBookViewModel
 import com.elektro24team.auravindex.utils.functions.rememberUserViewModel
+import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
 import com.elektro24team.auravindex.view.*
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
@@ -64,6 +67,7 @@ object Routes {
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @RequiresApi(Build.VERSION_CODES.O)
+@RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
 @Composable
 fun NavGraph(startDestination: String = Routes.WELCOME) {
     val navController = rememberNavController()
@@ -80,6 +84,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val loanStatusViewModel: LoanStatusViewModel = rememberLoanStatusViewModel()
     rememberPlanStatusViewModel()
     val genderViewModel : GenderViewModel = rememberGenderViewModel()
+    val localSettings by localSettingViewModel.settings.collectAsState()
+    val context = LocalContext.current
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.ADMIN_DASHBOARD) {
@@ -205,11 +211,13 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             recentBookViewModel.clearViewModelData()
             userViewModel.clearViewModelData()
             authViewModel.clearViewModelData()
-
+            AuthPrefsHelper.clearAuthToken(context)
+            AuthPrefsHelper.clearFcmToken(context)
+            AuthPrefsHelper.clearUserId(context)
             Toast.makeText(LocalContext.current, "Successfully logged out.", Toast.LENGTH_LONG).show()
             navController.navigate(Routes.WELCOME)
         }
-        composable(Routes.MAIN) {
+        composable(Routes.MAIN){
             MainScreen(
                 navController = navController,
                 bookViewModel = bookViewModel,

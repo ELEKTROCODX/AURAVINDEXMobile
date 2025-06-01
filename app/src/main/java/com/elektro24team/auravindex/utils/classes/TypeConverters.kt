@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.utils
+package com.elektro24team.auravindex.utils.classes
 
 import androidx.room.TypeConverter
 

@@ -1,12 +1,19 @@
 package com.elektro24team.auravindex.viewmodels
 
+import android.Manifest
+import android.content.Context
 import android.util.Log
+import androidx.annotation.RequiresPermission
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.model.Loan
+import com.elektro24team.auravindex.model.Notification
 import com.elektro24team.auravindex.model.api.LoanRequest
+import com.elektro24team.auravindex.model.local.NotificationEntity
 import com.elektro24team.auravindex.retrofit.LoanClient
+import com.elektro24team.auravindex.utils.objects.NotificationHandler
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -124,7 +131,8 @@ class LoanViewModel() : BaseViewModel() {
             }
         }
     }
-    fun createLoan(token: String, loan: LoanRequest) {
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    fun createLoan(token: String, loan: LoanRequest, context: Context) {
         viewModelScope.launch {
             val result = try {
                 val remote = LoanClient.apiService.createLoan(token = "Bearer $token", loan)

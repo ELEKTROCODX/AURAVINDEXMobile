@@ -1,6 +1,8 @@
 package com.elektro24team.auravindex.view
 
+
 import androidx.compose.foundation.background
+import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
@@ -23,9 +25,12 @@ import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.model.Book
+import com.elektro24team.auravindex.model.RecentBook
+import com.elektro24team.auravindex.model.local.NotificationEntity
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.MustBeLoggedInDialog
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.utils.objects.NotificationHandler
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
@@ -36,6 +41,7 @@ import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
+@RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
 @Composable
 fun MainScreen(
     navController: NavController,

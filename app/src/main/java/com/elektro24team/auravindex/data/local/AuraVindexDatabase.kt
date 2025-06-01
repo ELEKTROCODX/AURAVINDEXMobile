@@ -53,7 +53,7 @@ import com.elektro24team.auravindex.model.local.UserEntity
     /* Note: be careful when updating schema, due local settings might be lost */
 )
 
-@TypeConverters(com.elektro24team.auravindex.utils.TypeConverters::class)
+@TypeConverters(com.elektro24team.auravindex.utils.classes.TypeConverters::class)
 internal abstract class AuraVindexDatabase : RoomDatabase() {
     abstract fun planDao(): PlanDao
     abstract fun bookCollectionDao(): BookCollectionDao
