@@ -7,11 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
 import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,13 +37,10 @@ import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.GenderViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
-import com.elektro24team.auravindex.viewmodels.PlanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
-
-// RUTAS
 object Routes {
     const val ADMIN_DASHBOARD = "admin_dashboard"
     const val ADMIN_DASHBOARD_OBJECTS = "admin_dashboard/{objectName}"
@@ -89,7 +82,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val loanViewModel: LoanViewModel = rememberLoanViewModel()
     val recentBookViewModel: RecentBookViewModel = rememberRecentBookViewModel()
     val loanStatusViewModel: LoanStatusViewModel = rememberLoanStatusViewModel()
-    val planStatusViewModel: PlanStatusViewModel = rememberPlanStatusViewModel()
+    rememberPlanStatusViewModel()
     val genderViewModel : GenderViewModel = rememberGenderViewModel()
     val localSettings by localSettingViewModel.settings.collectAsState()
     val context = LocalContext.current
@@ -164,7 +157,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 activePlanViewModel = activePlanViewModel,
                 loanViewModel = loanViewModel,
                 loanStatusViewModel = loanStatusViewModel,
-                localSettingViewModel = localSettingViewModel
+                localSettingViewModel = localSettingViewModel,
+                userViewModel = userViewModel
             )
         }
         composable(
@@ -185,14 +179,16 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         }
         composable(Routes.LISTS) {
            ListsScreen(
-               navController = navController
+               navController = navController,
+               userViewModel = userViewModel
            )
         }
         composable(Routes.LOANS) {
             LoansScreen(
                 navController = navController,
                 loanViewModel = loanViewModel,
-                localSettingViewModel = localSettingViewModel
+                localSettingViewModel = localSettingViewModel,
+                userViewModel = userViewModel
             )
         }
         composable(Routes.LOGIN) {
@@ -238,7 +234,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navController = navController,
                 planViewModel = planViewModel,
                 activePlanViewModel = activePlanViewModel,
-                localSettingViewModel = localSettingViewModel
+                localSettingViewModel = localSettingViewModel,
+                userViewModel=userViewModel
             )
         }
         composable(Routes.PROFILE) {
@@ -253,6 +250,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navController = navController,
                 bookViewModel = bookViewModel,
                 bookCollectionViewModel = bookCollectionViewModel,
+                userViewModel = userViewModel
             )
         }
         composable(
@@ -266,7 +264,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.SETTINGS) {
             SettingsScreen(
                 navController = navController,
-                localSettingViewModel = localSettingViewModel
+                localSettingViewModel = localSettingViewModel,
+                userViewModel=userViewModel
             )
         }
         composable(Routes.WELCOME) {
@@ -281,6 +280,5 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.SIGNUP){
             RegisterScreen(genderViewModel,authViewModel,navController)
         }
-
     }
 }

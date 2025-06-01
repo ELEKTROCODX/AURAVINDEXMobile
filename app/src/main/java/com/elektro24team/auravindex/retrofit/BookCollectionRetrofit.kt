@@ -14,9 +14,7 @@ interface BookCollectionService{
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 15
     ): ApiResponse<List<BookCollection>>
-
 }
-
 object BookCollectionClient{
     val apiService: BookCollectionService by lazy{
         Retrofit.Builder()

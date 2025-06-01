@@ -14,7 +14,6 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-
 interface LoanService{
     @GET("loan")
     suspend fun getLoans(
@@ -22,7 +21,6 @@ interface LoanService{
         @Query("page") page: String = "1",
         @Query("limit") limit: String = "none"
     ): ApiResponse<List<Loan>>
-
     @GET("loan")
     suspend fun getObjectLoans(
         @Header("Authorization") token: String,
@@ -31,38 +29,32 @@ interface LoanService{
         @Query("filter_field") filterField: String,
         @Query("filter_value") filterValue: String
     ): ApiResponse<List<Loan>>
-
     @GET("loan/{id}")
     suspend fun getLoanById(
         @Header("Authorization") token: String,
         @Path("id") id: String
     ): Loan
-
     @POST("loan")
     suspend fun createLoan(
         @Header("Authorization") token: String,
         @Body loan: LoanRequest
     )
-
     @PUT("loan/{id}/approve")
     suspend fun approveLoan(
         @Header("Authorization") token: String,
         @Path("id") id: String
     )
-
     @PUT("loan/{id}/renewal")
     suspend fun renewLoan(
         @Header("Authorization") token: String,
         @Path("id") id: String
     )
-
     @PUT("loan/{id}/finish")
     suspend fun finishLoan(
         @Header("Authorization") token: String,
         @Path("id") id: String
     )
 }
-
 object LoanClient{
     val apiService: LoanService by lazy{
         Retrofit.Builder()

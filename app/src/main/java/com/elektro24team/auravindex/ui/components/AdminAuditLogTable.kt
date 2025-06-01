@@ -52,8 +52,7 @@ fun AdminAuditLogTable(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
         ) {
-            Column(
-            ) {
+            Column {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
                     TableHeaderCell("User", 180.dp)
                     TableHeaderCell("Action", 180.dp)

@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -69,6 +70,11 @@ fun BooksCollectionScreen(
                     .padding(paddingValues)
                     .fillMaxSize()
                     .background(WhiteC)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
+                        )
+                    )
             ) {
                 Text(
                     text = "${books?.size} results for \"$bookCollectionName\"",

@@ -1,22 +1,21 @@
 package com.elektro24team.auravindex.view
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -29,7 +28,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,25 +35,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
-import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.BottomNavBar
-import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
@@ -76,45 +69,49 @@ import com.skydoves.landscapist.glide.GlideImage
 fun ProfileScreen(
     navController: NavController,
     userViewModel: UserViewModel,
-    localSettingViewModel: LocalSettingViewModel
+    localSettingViewModel: LocalSettingViewModel,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+    rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val user = userViewModel.user.observeAsState()
-    val colors = MaterialTheme.colorScheme
     val localSettings = localSettingViewModel.settings.collectAsState()
+
     LaunchedEffect(Unit) {
         localSettingViewModel.loadSettings(SettingKey.TOKEN.keySetting, SettingKey.ID.keySetting)
-        userViewModel.getUserById(localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), localSettings.value.getOrDefault(SettingKey.ID.keySetting, ""))
+        userViewModel.getUserById(
+            localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+            localSettings.value.getOrDefault(SettingKey.ID.keySetting, "")
+        )
     }
-    if(!isLoggedIn(localSettings.value)) {
+
+    val isLoggedIn = isLoggedIn(localSettings.value)
+    val userData = user.value
+
+    if (!isLoggedIn) {
         mustBeLoggedInToast(context, AppAction.ACCESS_PROFILE_PAGE, navController)
     }
+
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
+                userViewModel = userViewModel,
                 onItemSelected = { route ->
-                hamburguerMenuNavigator(
-                    route,
-                    navController,
-                    showTermsDialog,
-                    showPrivacyDialog,
-                    showTeamDialog
-                )
-            })
-
+                    hamburguerMenuNavigator(route, navController, showTermsDialog, showPrivacyDialog, showTeamDialog)
+                }
+            )
         },
         drawerState = drawerState
     ) {
         ShowExternalLinkDialog(showTermsDialog, context, "https://auravindex.me/tos/")
         ShowExternalLinkDialog(showPrivacyDialog, context, "https://auravindex.me/privacy/")
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
+
         Scaffold(
             topBar = {
                 TopBar(navController = navController, drawerState = drawerState)
@@ -130,231 +127,147 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color(0xFFEDE7F6), Color(0xFFFFFFFF))
+                            )
+                        )
+                        .verticalScroll(rememberScrollState())
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        val app = LocalContext.current.applicationContext as AuraVindexApp
-                        val isConnected by app.networkLiveData.observeAsState(true)
-                        ConnectionAlert(isConnected)
+                        // Card 1: Avatar + Nombre
                         Card(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.White
-                            ),
-                            shape = androidx.compose.material.MaterialTheme.shapes.medium
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            shape = RoundedCornerShape(24.dp),
+                            elevation = CardDefaults.cardElevation(8.dp)
                         ) {
-                            if(isLoggedIn(localSettings.value)) {
-                                val imageUrl = IMG_url.trimEnd('/') + "/" + user?.value?.user_img?.trimStart('/')
+                            Column(
+                                modifier = Modifier
+                                    .padding(24.dp)
+                                    .fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
                                 Box(
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp)
+                                        .size(120.dp)
+                                        .clip(CircleShape)
+                                        .background(Color(0xFF572365))
                                 ) {
                                     GlideImage(
-                                        imageModel = { imageUrl },
-                                        modifier = Modifier
-                                            .widthIn(max=200.dp)
-                                            .heightIn(max=300.dp)
-                                            .clip(RoundedCornerShape(16.dp))
-                                            .shadow(8.dp, RoundedCornerShape(16.dp))
-                                            .align(Alignment.Center),
-                                        imageOptions = ImageOptions(
-                                            contentScale = ContentScale.Crop
-                                        ),
-                                        loading = {
-                                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                                        },
+                                        imageModel = { IMG_url + (userData?.user_img ?: "") },
+                                        imageOptions = ImageOptions(contentScale = ContentScale.Crop),
+                                        modifier = Modifier.fillMaxSize(),
                                         failure = {
                                             Image(
-                                                painter = painterResource(id = R.drawable.logo_app),
-                                                contentDescription = "Default img",
-                                                modifier = Modifier
-                                                    .clip(RoundedCornerShape(16.dp))
-                                                    .shadow(8.dp, RoundedCornerShape(16.dp))
-                                                    .align(Alignment.Center)
+                                                painter = painterResource(id = R.drawable.logo),
+                                                contentDescription = "Avatar",
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier.fillMaxSize()
                                             )
                                         }
                                     )
                                 }
-                                Spacer(modifier = Modifier.height(20.dp))
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    Text(
-                                        text = "User Details",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 18.sp,
-                                            color = Color(0xFF572365)
-                                        ),
-                                        modifier = Modifier.padding(bottom = 12.dp)
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                Text(
+                                    text = if (isLoggedIn) "${userData?.name} ${userData?.last_name}" else "Usuario invitado",
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF222222),
+                                    fontFamily = FontFamily(Font(R.font.rubik_regular))
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        // Card 2: Info Detallada
+                        Card(
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            shape = RoundedCornerShape(24.dp),
+                            elevation = CardDefaults.cardElevation(6.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(24.dp)) {
+                                ProfileInfoText("Email", userData?.email ?: "No disponible")
+                                ProfileInfoText("Genre", userData?.gender?.name ?: "No disponible")
+                                ProfileInfoText("Birthday", formatUtcToLocalWithDate(userData?.birthdate))
+                                ProfileInfoText("Address", userData?.address ?: "No disponible")
+                                ProfileInfoText("Role", userData?.role?.name ?: "No disponible")
+                                ProfileInfoText("Bio", userData?.biography ?: "No disponible", longText = true)
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        // Card 3: Botón Editar
+                        Card(
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            shape = RoundedCornerShape(24.dp),
+                            elevation = CardDefaults.cardElevation(4.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(24.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Button(
+                                    onClick = { /* ir a edición */ },
+                                    shape = RoundedCornerShape(20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF572365),
+                                        contentColor = Color.White
                                     )
-                                    Divider(color = Color.LightGray, thickness = 1.dp)
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            text = "Name: ",
-                                            style = TextStyle(
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 16.sp,
-                                                color = Color(0xFF572365)
-                                            ),
-                                        )
-                                        Text(
-                                            text = "${user.value?.name} ${user.value?.last_name}",
-                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                        )
-                                    }
-                                    Divider(color = Color.LightGray, thickness = 1.dp)
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            text = "Email: ",
-                                            style = TextStyle(
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 16.sp,
-                                                color = Color(0xFF572365)
-                                            ),
-                                        )
-                                        Text(
-                                            text = user.value?.email ?: "Not available",
-                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                        )
-                                    }
-                                    Divider(color = Color.LightGray, thickness = 1.dp)
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            text = buildAnnotatedString {
-                                                append("Biography: ")
-                                                withStyle(
-                                                    SpanStyle(
-                                                        fontSize = 16.sp,
-                                                        color = Color.Black,
-                                                        fontWeight = FontWeight.Normal
-                                                    )
-                                                ) {
-                                                    append(user.value?.biography ?: "Not available")
-                                                }
-                                            },
-                                            style = TextStyle(
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 16.sp,
-                                                color = Color(0xFF572365),
-                                                textAlign = TextAlign.Justify
-                                            )
-                                        )
-                                    }
-                                    Divider(color = Color.LightGray, thickness = 1.dp)
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            text = "Gender: ",
-                                            style = TextStyle(
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 16.sp,
-                                                color = Color(0xFF572365)
-                                            ),
-                                        )
-                                        Text(
-                                            text = user.value?.gender?.name ?: "Not available",
-                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                        )
-                                    }
-                                    Divider(color = Color.LightGray, thickness = 1.dp)
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            text = "Birthdate: ",
-                                            style = TextStyle(
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 16.sp,
-                                                color = Color(0xFF572365)
-                                            ),
-                                        )
-                                        Text(
-                                            text = formatUtcToLocalWithDate(user.value?.birthdate),
-                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                        )
-                                    }
-                                    Divider(color = Color.LightGray, thickness = 1.dp)
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            text = "Address: ",
-                                            style = TextStyle(
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 16.sp,
-                                                color = Color(0xFF572365)
-                                            ),
-                                        )
-                                        Text(
-                                            text = user.value?.address ?: "Not available",
-                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                        )
-                                    }
-                                    Divider(color = Color.LightGray, thickness = 1.dp)
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            text = "Role: ",
-                                            style = TextStyle(
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 16.sp,
-                                                color = Color(0xFF572365)
-                                            ),
-                                        )
-                                        Text(
-                                            text = user.value?.role?.name ?: "Not available",
-                                            style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                        )
-                                    }
-                                    Divider(color = Color.LightGray, thickness = 1.dp)
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
+                                    Text(
+                                        text = "Edit profile",
+                                        style = MaterialTheme.typography.labelLarge.copy(
+                                            fontFamily = FontFamily(Font(R.font.rubik_regular))
+                                        )
+                                    )
                                 }
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
             }
+        )
+    }
+}
+
+
+@Composable
+fun ProfileInfoText(label: String, value: String, longText: Boolean = false) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF8C5E4D)
+            )
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = Color(0xFF222222),
+                lineHeight = if (longText) 20.sp else 18.sp,
+                textAlign = if (longText) TextAlign.Justify else TextAlign.Start
+            )
         )
     }
 }

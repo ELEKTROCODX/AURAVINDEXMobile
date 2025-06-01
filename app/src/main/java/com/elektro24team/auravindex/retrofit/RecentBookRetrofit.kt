@@ -1,7 +1,6 @@
 package com.elektro24team.auravindex.retrofit
 
 import com.elektro24team.auravindex.model.ApiResponse
-import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.model.RecentBook
 import com.elektro24team.auravindex.utils.constants.URLs.BASE_URL
 import retrofit2.Retrofit
@@ -17,7 +16,6 @@ interface RecentBookService{
         @Header("Authorization") token: String,
         @Path("id") id: String
     ): RecentBook
-
     @GET("recent_book/")
     suspend fun getRecentBooksByUserId(
         @Header("Authorization") token: String,
@@ -25,7 +23,6 @@ interface RecentBookService{
         @Query("filter_value") filterValue: String,
     ): ApiResponse<List<RecentBook>>
 }
-
 object RecentBookClient{
     val apiService: RecentBookService by lazy{
         Retrofit.Builder()

@@ -20,20 +20,17 @@ interface UserService{
         @Query("filter_field") filterField: String,
         @Query("filter_value") filterValue: String,
     ): ApiResponse<List<User>>
-
     @GET("user")
     suspend fun getUsers(
         @Header("Authorization") token: String,
         @Query("page") page: String = "1",
         @Query("limit") limit: String = "none"
     ): ApiResponse<List<User>>
-
     @GET("user/{id}")
     suspend fun getUserById(
         @Header("Authorization") token: String,
         @Path("id") id: String
     ): User
-
     @POST("user/{id}/fcm_token")
     suspend fun updateFcmToken(
         @Header("Authorization") token: String,
@@ -41,7 +38,6 @@ interface UserService{
         @Body fcmToken: Map<String, String>
     ): Response<Void>
 }
-
 object UserClient{
     val apiService: UserService by lazy {
         Retrofit.Builder()

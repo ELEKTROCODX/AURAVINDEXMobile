@@ -52,8 +52,7 @@ fun AdminLoanTable(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
         ) {
-            Column(
-            ) {
+            Column {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
                     TableHeaderCell("User", 180.dp)
                     TableHeaderCell("Book", 180.dp)

@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.utils
+package com.elektro24team.auravindex.utils.classes
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
@@ -13,7 +13,6 @@ data class BookStatusIcon(
     val book_status: String,
     val icon: ImageVector
 )
-
 val bookStatusIcons = listOf(
     BookStatusIcon("AVAILABLE", Icons.Default.CheckCircle),
     BookStatusIcon("NOT AVAILABLE", Icons.Default.Block),
@@ -21,5 +20,4 @@ val bookStatusIcons = listOf(
     BookStatusIcon("RESERVED", Icons.Default.LockClock),
     BookStatusIcon("REPAIRING", Icons.Default.AutoFixOff),
     BookStatusIcon("DISCARDED", Icons.Default.RestoreFromTrash),
-
 )

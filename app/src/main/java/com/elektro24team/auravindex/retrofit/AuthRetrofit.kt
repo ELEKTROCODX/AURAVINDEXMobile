@@ -3,12 +3,10 @@ package com.elektro24team.auravindex.retrofit
 import com.elektro24team.auravindex.model.ApiResponse
 import com.elektro24team.auravindex.model.TokenData
 import com.elektro24team.auravindex.utils.constants.URLs.BASE_URL
-import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
-//Model of the login request
 data class LoginRequest(val email: String, val password: String)
 
 data class RegisterInfo(
@@ -20,17 +18,14 @@ data class RegisterInfo(
     val birthdate: String,
     val user_img: String,
     val address: String,
-    val password: String,
-    )
-
+    val password: String
+)
 interface AuthService{
     @POST("auth/login/")
     suspend fun loginUser(@Body credentials: LoginRequest): TokenData
     @POST("auth/register/")
     suspend fun registerUser(@Body userData: RegisterInfo): ApiResponse<String>
 }
-
-
 object AuthClient{
     val apiService: AuthService by lazy {
         Retrofit.Builder()

@@ -3,6 +3,7 @@ package com.elektro24team.auravindex.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -88,7 +89,7 @@ fun WelcomeScreen(
             }
     ) {
         Image(
-            painter = painterResource(id = R.drawable.bg_welcome),
+            painter = painterResource(id = R.drawable.bg),
             contentDescription = "image",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -98,28 +99,23 @@ fun WelcomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(MediumPadding),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "WELCOME TO AURA VINDEX",
-                style = MaterialTheme.typography.titleLarge,
-                color = colors.onPrimary
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.logo_app),
-                contentDescription = "Aura Vindex's logo",
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .aspectRatio(1f)
-            )
             if(isReadyToNavigate) {
-                Text(
-                    text = "Tap to continue...",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = colors.onPrimary
-                )
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_app),
+                        contentDescription = "Aura Vindex's logo",
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .aspectRatio(1f)
+                    )
+
+                    Text(
+                        text = "Tap to continue...",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = colors.onPrimary
+                    )
             } else {
                 CircularProgressIndicator(
                     color = colors.onPrimary
