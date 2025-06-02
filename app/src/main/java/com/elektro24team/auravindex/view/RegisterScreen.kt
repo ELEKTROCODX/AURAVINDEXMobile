@@ -33,9 +33,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.room.parser.Section
 import coil.compose.rememberAsyncImagePainter
+import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.retrofit.RegisterInfo
+import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
 import com.elektro24team.auravindex.utils.functions.isValidEmail
@@ -54,8 +56,6 @@ fun RegisterScreen(
 ) {
     val context = LocalContext.current
     val registerResult by authViewModel.registerResult.observeAsState()
-
-    // Estados de entrada del usuario
     val userName = remember { mutableStateOf("") }
     val userLastname = remember { mutableStateOf("") }
     val userEmail = remember { mutableStateOf("") }
@@ -67,10 +67,7 @@ fun RegisterScreen(
     var userGender by remember { mutableStateOf<String?>(null) }
     ObserveError(authViewModel)
     ObserveSuccess(authViewModel)
-    // Estado para el DatePicker
     val showDatePicker = remember { mutableStateOf(false) }
-
-    // Formatear fecha
     val formattedUserBirthdate = remember(userBirthdate.value) {
         userBirthdate.value?.let {
             val calendar = Calendar.getInstance().apply { timeInMillis = it }
@@ -79,8 +76,6 @@ fun RegisterScreen(
             sdf.format(calendar.time)
         } ?: ""
     }
-
-    // Calcular edad
     val userAge = remember(formattedUserBirthdate) {
         try {
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -97,20 +92,13 @@ fun RegisterScreen(
             0
         }
     }
-
-    // Obtener géneros
     val genders by genderViewModel.genders.observeAsState(emptyList())
     LaunchedEffect(Unit) { genderViewModel.getGendersList() }
 
-    // Image picker
     val photoPickerLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
             imageUri = it
         }
-
-    // Registro observado
-
-    // Mostrar Toast después de registrar
     LaunchedEffect(registerResult) {
         if(registerResult == true) {
             navController.navigate(Routes.LOGIN)
@@ -121,12 +109,12 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
-                    )
-                )
+                    brush = Brush.verticalGradient(colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))))
                 .padding(paddingValues)
         )
+        val app = LocalContext.current.applicationContext as AuraVindexApp
+        val isConnected by app.networkLiveData.observeAsState(true)
+        ConnectionAlert(isConnected)
         Card(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
@@ -161,7 +149,6 @@ fun RegisterScreen(
                         modifier = Modifier.padding(bottom = 12.dp)
                     )
                 }
-
                 item {
                     val textFieldModifier = Modifier
                         .fillMaxWidth()
@@ -174,7 +161,6 @@ fun RegisterScreen(
                         unfocusedLabelColor = Color(0xFF8C5E4D),
                         cursorColor = Color(0xFF572365)
                     )
-
                     OutlinedTextField(
                         value = userName.value,
                         onValueChange = { userName.value = it },
@@ -183,7 +169,6 @@ fun RegisterScreen(
                         shape = RoundedCornerShape(16.dp),
                         colors = fieldColors
                     )
-
                     OutlinedTextField(
                         value = userLastname.value,
                         onValueChange = { userLastname.value = it },
@@ -205,7 +190,6 @@ fun RegisterScreen(
                             disabledTextColor = Color(0xFF222222)
                         )
                     )
-
                     Button(
                         onClick = { showDatePicker.value = true },
                         modifier = Modifier
@@ -216,7 +200,6 @@ fun RegisterScreen(
                     ) {
                         Text("Select Birth Date", color = Color.White)
                     }
-
                     if (showDatePicker.value) {
                         val datePickerState = rememberDatePickerState(
                             userBirthdate.value ?: System.currentTimeMillis()
@@ -241,7 +224,6 @@ fun RegisterScreen(
                         }
                     }
                 }
-
                 item {
                     Text(
                         "Gender:",
@@ -274,7 +256,6 @@ fun RegisterScreen(
                         }
                     }
                 }
-
                 item {
                     val fieldColors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFF572365),
@@ -303,7 +284,6 @@ fun RegisterScreen(
                         )
                     }
                 }
-
                 item {
                     Button(
                         onClick = { photoPickerLauncher.launch("image/*") },
@@ -314,7 +294,6 @@ fun RegisterScreen(
                     ) {
                         Text("Select Profile Image", color = Color.White)
                     }
-
                     imageUri?.let {
                         Image(
                             painter = rememberAsyncImagePainter(it),
@@ -326,11 +305,9 @@ fun RegisterScreen(
                         )
                     }
                 }
-
                 item {
                     Button(
                         onClick = {
-                            // VALIDACIÓN ORIGINAL MANTENIDA...
                             val emptyFields = listOfNotNull(
                                 if (userName.value.isBlank()) "Name" else null,
                                 if (userLastname.value.isBlank()) "Last Name" else null,

@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
 import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -22,6 +23,7 @@ import com.elektro24team.auravindex.utils.functions.rememberLoanStatusViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLoanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberGenderViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLocalSettingViewModel
+import com.elektro24team.auravindex.utils.functions.rememberNotificationViewModel
 import com.elektro24team.auravindex.utils.functions.rememberPlanStatusViewModel
 import com.elektro24team.auravindex.utils.functions.rememberPlanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberRecentBookViewModel
@@ -37,6 +39,7 @@ import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.GenderViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
@@ -82,7 +85,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val loanViewModel: LoanViewModel = rememberLoanViewModel()
     val recentBookViewModel: RecentBookViewModel = rememberRecentBookViewModel()
     val loanStatusViewModel: LoanStatusViewModel = rememberLoanStatusViewModel()
-    rememberPlanStatusViewModel()
+    val notificationViewModel: NotificationViewModel = rememberNotificationViewModel()
     val genderViewModel : GenderViewModel = rememberGenderViewModel()
     val localSettings by localSettingViewModel.settings.collectAsState()
     val context = LocalContext.current
@@ -97,6 +100,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 planViewModel = planViewModel,
                 activePlanViewModel = activePlanViewModel,
                 auditLogViewModel = auditLogViewModel,
+                notificationViewModel = notificationViewModel,
                 localSettingViewModel = localSettingViewModel,
                 objectName = "",
                 objectId = ""
@@ -117,6 +121,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 planViewModel = planViewModel,
                 activePlanViewModel = activePlanViewModel,
                 auditLogViewModel = auditLogViewModel,
+                notificationViewModel = notificationViewModel,
                 localSettingViewModel = localSettingViewModel,
                 objectName = objectName,
                 objectId = ""
@@ -139,6 +144,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                     planViewModel = planViewModel,
                     activePlanViewModel = activePlanViewModel,
                     auditLogViewModel = auditLogViewModel,
+                    notificationViewModel = notificationViewModel,
                     localSettingViewModel = localSettingViewModel,
                     objectName = objectName,
                     objectId = objectId
@@ -226,9 +232,14 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 localSettingViewModel = localSettingViewModel,
             )
         }
-        /*composable(Routes.NOTIFICATIONS) {
-            NotificationsScreen(navController = navController)
-        }*/
+        composable(Routes.NOTIFICATIONS) {
+            NotificationsScreen(
+                navController = navController,
+                localSettingViewModel = localSettingViewModel,
+                userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel
+            )
+        }
         composable(Routes.PLANS) {
             PlanScreen(
                 navController = navController,

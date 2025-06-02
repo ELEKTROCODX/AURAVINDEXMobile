@@ -44,7 +44,6 @@ fun BookCard(book: Book?, navController: NavController) {
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            // Imagen del libro
             GlideImage(
                 imageModel = { IMG_url.trimEnd('/') + "/" + book?.book_img?.trimStart('/') },
                 modifier = Modifier

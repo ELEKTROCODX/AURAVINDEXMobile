@@ -1,7 +1,6 @@
 package com.elektro24team.auravindex.view
 
-import android.content.Context
-import android.util.Log
+
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,20 +17,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Divider
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -57,7 +50,6 @@ import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
-import com.elektro24team.auravindex.utils.objects.FcmTokenUploader
 import com.elektro24team.auravindex.utils.objects.FcmTokenUploader.checkAndSyncFcmToken
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
@@ -82,16 +74,13 @@ fun LoginScreen(
     val userPassword = remember { mutableStateOf("") }
     ObserveError(authViewModel)
     LaunchedEffect(loginResult) {
-        Log.d("LOGIN DEBUG", "loginResult changed: $loginResult")
         if (loginResult != null && loginResult != "") {
-            Log.d("LoginDebug", "Calling getUserByEmail: $loginResult")
             localSettingViewModel.clearUserSettings()
             AuthPrefsHelper.saveAuthToken(context, loginResult!!)
             userViewModel.getUserByEmail(loginResult!!, userEmail.value)
         }
     }
     LaunchedEffect(user) {
-        Log.d("LoginDebug", "User changed: $user")
         if (user != null) {
             AuthPrefsHelper.saveUserId(context, user?._id.toString())
             localSettingViewModel.saveSetting(SettingKey.TOKEN.keySetting, loginResult!!)
@@ -118,6 +107,9 @@ fun LoginScreen(
                     .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
+                val app = LocalContext.current.applicationContext as AuraVindexApp
+                val isConnected by app.networkLiveData.observeAsState(true)
+                ConnectionAlert(isConnected)
                 Card(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
@@ -182,7 +174,6 @@ fun LoginScreen(
 
                         Button(
                             onClick = {
-                                Log.d("LOGIN", "Email: ${userEmail.value}, Password: ${userPassword.value}")
                                 authViewModel.login(userEmail.value.trim(), userPassword.value)
                             },
                             modifier = Modifier

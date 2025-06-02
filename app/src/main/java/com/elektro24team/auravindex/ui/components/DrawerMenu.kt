@@ -168,6 +168,7 @@ fun DrawerMenu(
         } else {
             val menuItems = listOf(
                 DefaultMenuItem("Home", Icons.Default.Home, Routes.MAIN),
+                DefaultMenuItem("Notifications", Icons.Default.Notifications, Routes.NOTIFICATIONS),
                 DefaultMenuItem("My Loans", Icons.AutoMirrored.Filled.LibraryBooks, Routes.LOANS),
                 DefaultMenuItem("Terms of Services", Icons.Default.Newspaper, Routes.TERMS),
                 DefaultMenuItem("Privacy Policy", Icons.Default.PrivacyTip, Routes.PRIVACY),

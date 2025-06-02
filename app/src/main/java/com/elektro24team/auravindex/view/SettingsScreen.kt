@@ -64,7 +64,7 @@ import androidx.compose.ui.unit.Dp
 fun SettingsScreen(
     navController: NavController,
     localSettingViewModel: LocalSettingViewModel,
-    userViewModel: UserViewModel, // <-- AGREGA ESTO
+    userViewModel: UserViewModel
 ) {
     MaterialTheme.colorScheme
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -210,7 +210,6 @@ fun SettingsScreen(
 
                             Spacer(modifier = Modifier.height(24.dp))
 
-                            // -------- CARD User local data --------
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
@@ -254,7 +253,6 @@ fun SettingRow(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Un
     }
 }
 
-// Composable auxiliar para filas solo texto valor fijo
 @Composable
 fun SettingRow(label: String, value: String) {
     Row(
@@ -271,8 +269,6 @@ fun SettingRow(label: String, value: String) {
         Text(text = value)
     }
 }
-
-// Para campos que podrían ser null o vacíos
 @Composable
 fun SimpleTextRow(label: String, value: String?) {
     Row(
