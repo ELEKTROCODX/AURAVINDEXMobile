@@ -48,7 +48,6 @@ import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 @Composable
 fun NotificationCard(notification: Notification, navController: NavController,  notificationViewModel: NotificationViewModel, localSettingViewModel: LocalSettingViewModel) {
     val localSettings by localSettingViewModel.settings.collectAsState()
-    val isRead by remember { mutableStateOf(notification.is_read) }
     ObserveTokenExpiration(
         viewModel = notificationViewModel,
         navController = navController,
@@ -94,7 +93,7 @@ fun NotificationCard(notification: Notification, navController: NavController,  
                     }
                 }
             )
-            if(!isRead){
+            if(!notification.is_read){
                 Button(
                     onClick = {
                         notificationViewModel.markNotificationAsRead(

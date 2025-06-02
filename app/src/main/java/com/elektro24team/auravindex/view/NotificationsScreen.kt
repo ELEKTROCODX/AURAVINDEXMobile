@@ -59,6 +59,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.unit.Dp
 import com.elektro24team.auravindex.ui.components.NotificationCard
+import com.elektro24team.auravindex.utils.functions.isNotificationRecent
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -78,6 +79,7 @@ fun NotificationsScreen(
     val showTeamDialog = remember { mutableStateOf(false) }
     val userNotifications by notificationViewModel.userNotifications.observeAsState()
     val localSettings by localSettingViewModel.settings.collectAsState()
+    val recentNotifications = userNotifications?.filter { isNotificationRecent(it.createdAt) }
     LaunchedEffect(Unit) {
         localSettingViewModel.loadUserSettings()
         notificationViewModel.loadUserNotifications(
@@ -149,9 +151,9 @@ fun NotificationsScreen(
                                         modifier = Modifier.padding(bottom = 12.dp)
                                     )
                                 }
-                                if(userNotifications?.isNullOrEmpty() == false) {
+                                if(recentNotifications?.isNullOrEmpty() == false) {
                                     LazyColumn {
-                                        items(userNotifications?.size ?: 0) {
+                                        items(recentNotifications?.size ?: 0) {
                                             NotificationCard(
                                                 notification = userNotifications!![it],
                                                 notificationViewModel = notificationViewModel,
@@ -162,7 +164,7 @@ fun NotificationsScreen(
                                     }
                                 } else {
                                     Text(
-                                        text = "No notifications found",
+                                        text = "You don't have recent notifications.",
                                         style = MaterialTheme.typography.titleMedium,
                                         modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
                                     )

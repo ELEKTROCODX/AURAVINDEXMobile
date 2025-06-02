@@ -93,6 +93,10 @@ fun LoginScreen(
             userPassword.value = ""
             authViewModel.loginResult.value = ""
             checkAndSyncFcmToken(context)
+            userViewModel.getUserById(
+                token = loginResult!!,
+                userId = user?._id.toString()
+            )
             Toast.makeText(context, "Successfully logged in.", Toast.LENGTH_SHORT).show()
             localSettingViewModel.saveSetting(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis().toString())
             navController.navigate(Routes.MAIN)

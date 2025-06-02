@@ -285,6 +285,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 bookViewModel = bookViewModel,
                 planViewModel = planViewModel,
                 bookCollectionViewModel = bookCollectionViewModel,
+                userViewModel = userViewModel,
                 localSettingViewModel = localSettingViewModel
             )
         }

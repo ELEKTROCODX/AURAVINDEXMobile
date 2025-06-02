@@ -52,13 +52,12 @@ fun DrawerMenu(
     val localSettingsViewModel = rememberLocalSettingViewModel()
     val localSettings by localSettingsViewModel.settings.collectAsState()
     val user by userViewModel.user.observeAsState()
-
-
     LaunchedEffect(Unit) {
-        localSettingsViewModel.loadSetting(SettingKey.ID.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.TOKEN.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.ROLE_NAME.keySetting)
+        localSettingsViewModel.loadUserSettings()
+        userViewModel.getUserById(
+            localSettings[SettingKey.TOKEN.keySetting] ?: "",
+            localSettings[SettingKey.ID.keySetting] ?: ""
+        )
     }
 
     Column(
@@ -173,9 +172,7 @@ fun DrawerMenu(
                 DefaultMenuItem("Terms of Services", Icons.Default.Newspaper, Routes.TERMS),
                 DefaultMenuItem("Privacy Policy", Icons.Default.PrivacyTip, Routes.PRIVACY),
                 DefaultMenuItem("Team", Icons.Default.Groups, Routes.TEAM),
-/*
                 DefaultMenuItem("Settings", Icons.Default.Settings, Routes.SETTINGS)
-*/
             )
 
             menuItems.forEach { item ->

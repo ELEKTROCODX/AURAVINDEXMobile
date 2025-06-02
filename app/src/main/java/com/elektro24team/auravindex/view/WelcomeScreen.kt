@@ -30,6 +30,7 @@ import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
+import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +39,7 @@ fun WelcomeScreen(
     bookViewModel: BookViewModel,
     planViewModel: PlanViewModel,
     bookCollectionViewModel: BookCollectionViewModel,
+    userViewModel: UserViewModel,
     localSettingViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
@@ -73,6 +75,10 @@ fun WelcomeScreen(
             .clickable {
                 if(isReadyToNavigate) {
                    if(isLoggedIn(settings)) {
+                       userViewModel.getUserById(
+                           token = settings[SettingKey.TOKEN.keySetting].toString(),
+                           userId = settings[SettingKey.ID.keySetting].toString()
+                       )
                        navController.navigate(Routes.MAIN) {
                            popUpTo(Routes.WELCOME) {
                                inclusive = true
