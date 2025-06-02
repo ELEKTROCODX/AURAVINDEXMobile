@@ -155,7 +155,8 @@ fun NotificationsScreen(
                                             NotificationCard(
                                                 notification = userNotifications!![it],
                                                 notificationViewModel = notificationViewModel,
-                                                localSettingViewModel = localSettingViewModel
+                                                localSettingViewModel = localSettingViewModel,
+                                                navController = navController
                                             )
                                         }
                                     }

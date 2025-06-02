@@ -99,7 +99,7 @@ fun LoginScreen(
         }
     }
     Scaffold(
-        containerColor = Color(0xFFEDE7F6), // fondo general suave
+        containerColor = Color(0xFFEDE7F6),
         content = { paddingValues ->
             Box(
                 modifier = Modifier
@@ -125,16 +125,15 @@ fun LoginScreen(
                             .padding(24.dp)
                     ) {
                         Spacer(modifier = Modifier.height(16.dp))
-
                         Image(
                             painter = painterResource(id = R.drawable.logo),
                             contentDescription = "Aura Vindex's logo",
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
-                                .aspectRatio(1f) // Esto hace que el área de la imagen sea cuadrada
-                                .clip(CircleShape) // Esto recorta el área de la imagen a un círculo
-                                .background(Color(0xFF572365)) // Esto es el fondo del círculo
+                                .aspectRatio(1f)
+                                .clip(CircleShape)
+                                .background(Color(0xFF572365))
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -144,9 +143,7 @@ fun LoginScreen(
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                             color = Color(0xFF572365)
                         )
-
                         Spacer(modifier = Modifier.height(24.dp))
-
                         OutlinedTextField(
                             value = userEmail.value,
                             onValueChange = { userEmail.value = it },
@@ -157,7 +154,6 @@ fun LoginScreen(
                             shape = RoundedCornerShape(16.dp),
                             singleLine = true
                         )
-
                         OutlinedTextField(
                             value = userPassword.value,
                             onValueChange = { userPassword.value = it },

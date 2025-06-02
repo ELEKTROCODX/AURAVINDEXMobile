@@ -235,8 +235,6 @@ fun BookScreen(
                             colors = CardDefaults.cardColors(containerColor = Color.White)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-
-                                // Título centrado con fondo y estilo destacado
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -253,8 +251,6 @@ fun BookScreen(
                                         )
                                     )
                                 }
-
-                                // Imagen del libro centrada
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -284,9 +280,7 @@ fun BookScreen(
                                         }
                                     )
                                 }
-
                                 Spacer(modifier = Modifier.height(8.dp))
-
                                 Text(
                                     text = "Book Details",
                                     style = TextStyle(
@@ -297,10 +291,7 @@ fun BookScreen(
                                     ),
                                     modifier = Modifier.padding(bottom = 12.dp)
                                 )
-
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-                                // Summary
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -322,8 +313,6 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-                                // Authors
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -348,8 +337,6 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-                                // Editorial
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -374,8 +361,6 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-                                // Collection
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -400,7 +385,6 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
                                 Text(
                                     text = "Genres: ",
                                     style = TextStyle(
@@ -410,7 +394,6 @@ fun BookScreen(
                                     ),
                                     modifier = Modifier.padding(top = 12.dp, bottom = 1.dp)
                                 )
-
                                 FlowRow(
                                     modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp),
                                     horizontalArrangement = Arrangement.Center,
@@ -435,8 +418,6 @@ fun BookScreen(
                                     }
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-                                // Edition
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -461,8 +442,6 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-                                // Language
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -487,8 +466,6 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-                                // Location
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -513,8 +490,6 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-                                // Status
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -539,8 +514,6 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-                                // Classification
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -565,8 +538,6 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
-                                // ISBN
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -591,7 +562,6 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
                                 if (isLoggedIn(settings.value) && book.value?.book_status?.book_status == "AVAILABLE") {
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Button(
@@ -629,7 +599,6 @@ fun BookScreen(
                                 }
                             }
                         }
-
                         if (isLoggedIn(settings.value) && (book.value?.book_status?.book_status?.lowercase() == "lent")) {
                             userLoans.value?.forEach { loan ->
                                 if ((loan?.book?._id == bookId) && (loan?.loan_status?.loan_status?.lowercase() != "finished") && (loan?.user?._id != settings.value.getOrDefault(SettingKey.ID.keySetting, ""))) {
@@ -679,7 +648,6 @@ fun BookScreen(
                                                     modifier = Modifier.padding(bottom = 12.dp))
                                             }
                                             Divider(color = Color.LightGray, thickness = 1.dp)
-
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
@@ -704,7 +672,6 @@ fun BookScreen(
                                                     modifier = Modifier.padding(bottom = 12.dp))
                                             }
                                             Divider(color = Color.LightGray, thickness = 1.dp)
-
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
@@ -729,7 +696,6 @@ fun BookScreen(
                                                     modifier = Modifier.padding(bottom = 12.dp))
                                             }
                                             Divider(color = Color.LightGray, thickness = 1.dp)
-
                                             if (loan.renewals.toInt() < activePlanViewModel.activePlan.value?.plan?.max_renewals_per_loan?.toInt()!!) {
                                                 Spacer(modifier = Modifier.height(16.dp))
                                                 Button(
@@ -791,7 +757,6 @@ fun BookScreen(
                                                             modifier = Modifier.padding(vertical = 12.dp)
                                                         )
                                                         Divider(color = Color.LightGray, thickness = 1.dp)
-
                                                         bookLoans.value?.forEach { loan ->
                                                             if (loan.book._id == bookId && loan.loan_status.loan_status.lowercase() != "finished") {
                                                                 Row(
@@ -814,7 +779,6 @@ fun BookScreen(
                                                                     )
                                                                 }
                                                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
                                                                 Row(
                                                                     modifier = Modifier
                                                                         .fillMaxWidth()
@@ -835,7 +799,6 @@ fun BookScreen(
                                                                     )
                                                                 }
                                                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
                                                                 Row(
                                                                     modifier = Modifier
                                                                         .fillMaxWidth()
@@ -856,7 +819,6 @@ fun BookScreen(
                                                                     )
                                                                 }
                                                                 Divider(color = Color.LightGray, thickness = 1.dp)
-
                                                                 Row(
                                                                     modifier = Modifier
                                                                         .fillMaxWidth()
@@ -940,7 +902,6 @@ fun BookScreen(
                                             }
                                         }
                                     }
-
                                 }
                             }
                         }
