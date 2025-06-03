@@ -140,9 +140,10 @@ fun NotificationsScreen(
                                 .padding(16.dp)
                         ) {
                             Card(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.fillMaxSize(),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                                shape = MaterialTheme.shapes.medium
+                                shape = MaterialTheme.shapes.medium,
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
                                     Text(

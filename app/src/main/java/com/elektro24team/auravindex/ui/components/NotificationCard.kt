@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,6 +49,11 @@ import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 @Composable
 fun NotificationCard(notification: Notification, navController: NavController,  notificationViewModel: NotificationViewModel, localSettingViewModel: LocalSettingViewModel) {
     val localSettings by localSettingViewModel.settings.collectAsState()
+    val cardColor: Color = if(notification.is_read) {
+         Color(0xFFEFEFEF)
+    } else {
+        Color(0xFFFFFFFF)
+    }
     ObserveTokenExpiration(
         viewModel = notificationViewModel,
         navController = navController,
@@ -64,11 +70,13 @@ fun NotificationCard(notification: Notification, navController: NavController,  
             .fillMaxWidth()
             .padding(16.dp),
         shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor),
         elevation = CardDefaults.cardElevation(10.dp),
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
+                .background(cardColor),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -101,9 +109,9 @@ fun NotificationCard(notification: Notification, navController: NavController,  
                             notificationId = notification._id
                         )
                     },
-                    modifier = Modifier.height(40.dp).padding(8.dp),
+                    modifier = Modifier.height(40.dp).padding(4.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(4.dp),
                 ) {
                     Icon(
                         imageVector = Icons.Filled.RemoveRedEye,
