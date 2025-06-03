@@ -1,6 +1,11 @@
 package com.elektro24team.auravindex.view
 
 
+import android.app.Activity
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.layout.*
@@ -16,6 +21,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
@@ -34,7 +43,9 @@ import com.elektro24team.auravindex.utils.objects.NotificationHandler
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.utils.functions.shouldRequestNotificationPermission
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
@@ -53,21 +64,53 @@ fun MainScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     rememberCoroutineScope()
     val context = LocalContext.current
+    val activity = context as Activity
+    val lifecycleOwner = LocalLifecycleOwner.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val books by bookViewModel.books.observeAsState(emptyList())
-    val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList()) // Cambiado de 'val latestReleases = ...' a 'val latestReleases by ...'
+    val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
     val localSettings by localSettingViewModel.settings.collectAsState()
     val recentBooks by recentBookViewModel.recentBook.observeAsState()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
     var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.SUBSCRIBE_TO_PLAN) }
-
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Log.d("PERMISSIONTEST", "Notification permission granted")
+        } else {
+            val permanentlyDenied = !ActivityCompat.shouldShowRequestPermissionRationale(
+                activity,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            )
+            if (permanentlyDenied) {
+                Log.w("PERMISSIONTEST", "Permission permanently denied. Guide user to settings.")
+                Toast.makeText(context, "Please enable notifications in app settings.", Toast.LENGTH_SHORT).show()
+            } else {
+                Log.d("PERMISSIONTEST", "Notification permission denied (can ask again)")
+            }
+        }
+    }
+    DisposableEffect(Unit) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME && shouldRequestNotificationPermission(context) && !AuthPrefsHelper.hasRequestedPermission(context)) {
+                notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                AuthPrefsHelper.setPermissionRequested(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
         localSettingViewModel.loadUserSettings()
         bookViewModel.fetchLatestReleases()
         if(isLoggedIn(localSettings)) {
+            userViewModel.getUserById(localSettings[SettingKey.TOKEN.keySetting] ?: "", localSettings[SettingKey.ID.keySetting] ?: "")
             recentBookViewModel.loadRecentBooks(localSettings[SettingKey.TOKEN.keySetting] ?: "", localSettings[SettingKey.ID.keySetting] ?: "")
         }
     }
@@ -164,7 +207,7 @@ fun MainScreen(
                             )
                             HomePageSection(
                                 "New releases",
-                                latestReleases, // Eliminado el 'as List<Book>?' ya que 'latestReleases' ya es una List<Book>
+                                latestReleases,
                                 seeMoreAction = { navController.navigate(Routes.SEARCH) },
                                 navController
                             )

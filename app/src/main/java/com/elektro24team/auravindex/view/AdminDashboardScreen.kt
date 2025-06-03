@@ -17,15 +17,18 @@ import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.ui.components.AdminActivePlanTable
 import com.elektro24team.auravindex.ui.components.AdminAuditLogTable
 import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
 import com.elektro24team.auravindex.ui.components.AdminLoanTable
+import com.elektro24team.auravindex.ui.components.AdminNotificationTable
 import com.elektro24team.auravindex.ui.components.AdminPlanCard
 import com.elektro24team.auravindex.ui.components.AdminPlanTable
 import com.elektro24team.auravindex.ui.components.AdminUserCard
 import com.elektro24team.auravindex.ui.components.AdminUserTable
+import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.ui.components.TopBar
@@ -41,6 +44,7 @@ import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -55,6 +59,7 @@ fun AdminDashboardScreen(
     planViewModel: PlanViewModel,
     activePlanViewModel: ActivePlanViewModel,
     auditLogViewModel: AuditLogViewModel,
+    notificationViewModel: NotificationViewModel,
     localSettingViewModel: LocalSettingViewModel,
     objectName: String?,
     objectId: String?
@@ -82,7 +87,7 @@ fun AdminDashboardScreen(
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
-                userViewModel = userViewModel, // <- este es el parámetro faltante
+                userViewModel = userViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,
@@ -125,6 +130,9 @@ fun AdminDashboardScreen(
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                     ) {
+                        val app = LocalContext.current.applicationContext as AuraVindexApp
+                        val isConnected by app.networkLiveData.observeAsState(true)
+                        ConnectionAlert(isConnected)
                         if(isLoggedIn) {
                             actionMustBeLoggedInDialog = AppAction.ACCESS_ADMIN_DASHBOARD
                             showMustBeLoggedInDialog = true
@@ -205,6 +213,16 @@ fun AdminDashboardScreen(
                                         auditLogViewModel.getAuditLogs(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
                                     }
                                     AdminAuditLogTable(navController, auditLogs ?: emptyList())
+                                }
+                                AdminDashboardObject.NOTIFICATION.name.lowercase() -> {
+                                    ObserveTokenExpiration(notificationViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficientPermissions(notificationViewModel, navController)
+                                    ObserveError(notificationViewModel)
+                                    val notifications by notificationViewModel.notifications.observeAsState()
+                                    LaunchedEffect(Unit) {
+                                        notificationViewModel.loadNotifications(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
+                                    }
+                                    AdminNotificationTable(navController, notifications ?: emptyList())
                                 }
                                 else -> {
                                     Text("Unknown object")

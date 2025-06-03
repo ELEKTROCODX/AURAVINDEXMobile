@@ -1,23 +1,19 @@
 package com.elektro24team.auravindex.ui.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,25 +21,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.model.Book
-import com.elektro24team.auravindex.utils.classes.bookStatusIcons
+import com.elektro24team.auravindex.model.AuditLog
+import com.elektro24team.auravindex.model.Notification
+import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AdminBookTable(
+fun AdminNotificationTable(
     navController: NavController,
-    books: List<Book>
+    notifications: List<Notification>
 ) {
     var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
-    var totalPages = (books.size + rowsPerPage - 1) / rowsPerPage
-    val currentPageBooks = books.drop(currentPage * rowsPerPage).take(rowsPerPage)
+    var totalPages = (notifications.size + rowsPerPage - 1) / rowsPerPage
+    val currentPageAuditLogs = notifications.drop(currentPage * rowsPerPage).take(rowsPerPage)
     Text(
-        text = "Books",
+        text = "Notifications",
         style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
         modifier = Modifier.padding(start = 4.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
     )
@@ -57,29 +55,21 @@ fun AdminBookTable(
         ) {
             Column {
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                    TableHeaderCell("Title", 220.dp)
-                    TableHeaderCell("Classification", 120.dp)
-                    TableHeaderCell("Status", 60.dp)
-                    TableHeaderCell("ISBN", 140.dp)
+                    TableHeaderCell("Receiver", 180.dp)
+                    TableHeaderCell("Type", 180.dp)
+                    TableHeaderCell("Is Read", 180.dp)
+                    TableHeaderCell("Date", 160.dp)
                 }
                 Divider()
-                currentPageBooks.forEach { book ->
+                currentPageAuditLogs.forEach { notification ->
                     Row(
                         modifier = Modifier
-                            .clickable { navController.navigate("book/${book._id}") }
                             .padding(vertical = 6.dp)
                     ) {
-                        TableCell(book.title, 220.dp)
-                        TableCell(book.classification, 120.dp)
-                        Spacer(modifier = Modifier.width(15.dp))
-                        Icon(
-                            imageVector = bookStatusIcons.find { it.book_status == book.book_status.book_status }?.icon ?: Icons.Default.CheckCircle,
-                            contentDescription = book.book_status.book_status,
-                            tint = Color(0xFF9C27B0),
-                            modifier = Modifier.size(30.dp),
-                        )
-                        Spacer(modifier = Modifier.width(15.dp))
-                        TableCell(book.isbn, 140.dp)
+                        TableCell(notification.receiver?.email ?: "Unknown", 180.dp)
+                        TableCell(notification.notification_type, 180.dp)
+                        TableCell(notification.is_read.toString(), 180.dp)
+                        TableCell(formatUtcToLocalWithHour(notification.createdAt), 160.dp)
                     }
                     Divider()
                 }
