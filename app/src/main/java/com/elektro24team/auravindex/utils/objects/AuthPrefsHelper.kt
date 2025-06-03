@@ -7,7 +7,7 @@ object AuthPrefsHelper {
     private const val TOKEN_KEY = "auth_token"
     private const val FCM_TOKEN_KEY = "fcm_token"
     private const val USER_ID = "user_id"
-
+    private const val NOTIFICATION_PERMISION_REQUESTED = "notification_permission_requested"
     fun saveAuthToken(context: Context, token: String) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putString(TOKEN_KEY, token).apply()
@@ -43,5 +43,17 @@ object AuthPrefsHelper {
     fun clearUserId(context: Context) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().remove(USER_ID).apply()
+    }
+    fun hasRequestedPermission(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(NOTIFICATION_PERMISION_REQUESTED, false)
+    }
+    fun setPermissionRequested(context: Context) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean(NOTIFICATION_PERMISION_REQUESTED, true).apply()
+    }
+    fun clearPermissionRequested(context: Context) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().remove(NOTIFICATION_PERMISION_REQUESTED).apply()
     }
 }

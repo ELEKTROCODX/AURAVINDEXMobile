@@ -3,6 +3,7 @@ package com.elektro24team.auravindex.view
 
 import android.app.Activity
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -43,6 +45,7 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.shouldRequestNotificationPermission
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
@@ -72,32 +75,36 @@ fun MainScreen(
     val recentBooks by recentBookViewModel.recentBook.observeAsState()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
     var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.SUBSCRIBE_TO_PLAN) }
-    var permissionRequested by remember { mutableStateOf(false) }
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
             Log.d("PERMISSIONTEST", "Notification permission granted")
         } else {
-            Log.d("PERMISSIONTEST", "Notification permission denied")
+            val permanentlyDenied = !ActivityCompat.shouldShowRequestPermissionRationale(
+                activity,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            )
+            if (permanentlyDenied) {
+                Log.w("PERMISSIONTEST", "Permission permanently denied. Guide user to settings.")
+                Toast.makeText(context, "Please enable notifications in app settings.", Toast.LENGTH_SHORT).show()
+            } else {
+                Log.d("PERMISSIONTEST", "Notification permission denied (can ask again)")
+            }
         }
     }
     DisposableEffect(Unit) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME && !permissionRequested) {
-                if (shouldRequestNotificationPermission(context)) {
-                    notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-                    permissionRequested = true
-                }
+            if (event == Lifecycle.Event.ON_RESUME && shouldRequestNotificationPermission(context) && !AuthPrefsHelper.hasRequestedPermission(context)) {
+                notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                AuthPrefsHelper.setPermissionRequested(context)
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
-
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
         localSettingViewModel.loadUserSettings()
