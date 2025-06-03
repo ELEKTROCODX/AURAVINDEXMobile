@@ -101,7 +101,7 @@ fun NotificationCard(notification: Notification, navController: NavController,  
                             notificationId = notification._id
                         )
                     },
-                    modifier = Modifier.height(40.dp),
+                    modifier = Modifier.height(40.dp).padding(8.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
                     shape = RoundedCornerShape(12.dp),
                 ) {
