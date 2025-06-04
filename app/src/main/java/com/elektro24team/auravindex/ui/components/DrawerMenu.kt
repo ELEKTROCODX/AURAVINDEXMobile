@@ -26,18 +26,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.classes.AdminMenuItem
 import com.elektro24team.auravindex.utils.classes.DefaultMenuItem
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
-import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.*
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
-import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
@@ -53,7 +50,7 @@ fun DrawerMenu(
 ) {
     val colors = MaterialTheme.colorScheme
     val localSettings by localSettingViewModel.settings.collectAsState()
-    val user by userViewModel.user.observeAsState()
+    val user by userViewModel.myUser.observeAsState()
     Log.d("AVDEBUG", "DrawerMenu: $user")
     Column(
         modifier = Modifier

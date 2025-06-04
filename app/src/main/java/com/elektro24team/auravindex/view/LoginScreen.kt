@@ -55,7 +55,6 @@ import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
-import kotlin.math.log
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,7 +68,7 @@ fun LoginScreen(
 ) {
     val context = LocalContext.current
     val loginResult by authViewModel.loginResult.observeAsState()
-    val user by userViewModel.user.observeAsState()
+    val user by userViewModel.myUser.observeAsState()
     val userEmail = remember { mutableStateOf("") }
     val userPassword = remember { mutableStateOf("") }
     ObserveError(authViewModel)
@@ -94,7 +93,7 @@ fun LoginScreen(
                 loginResult!!,
                 user?._id.toString()
             )
-            userViewModel.getUserById(
+            userViewModel.getMyUserById(
                 token = loginResult!!,
                 userId = user?._id.toString()
             )

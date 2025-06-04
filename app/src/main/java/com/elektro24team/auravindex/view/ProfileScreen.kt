@@ -77,12 +77,12 @@ fun ProfileScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val user = userViewModel.user.observeAsState()
+    val user = userViewModel.myUser.observeAsState()
     val localSettings = localSettingViewModel.settings.collectAsState()
 
     LaunchedEffect(Unit) {
         localSettingViewModel.loadSettings(SettingKey.TOKEN.keySetting, SettingKey.ID.keySetting)
-        userViewModel.getUserById(
+        userViewModel.getMyUserById(
             localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
             localSettings.value.getOrDefault(SettingKey.ID.keySetting, "")
         )

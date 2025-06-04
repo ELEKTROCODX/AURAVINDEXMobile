@@ -82,7 +82,7 @@ fun WelcomeScreen(
                 settings[SettingKey.TOKEN.keySetting].toString(),
                 settings[SettingKey.ID.keySetting].toString()
             )
-            userViewModel.getUserById(
+            userViewModel.getMyUserById(
                 settings[SettingKey.TOKEN.keySetting].toString(),
                 settings[SettingKey.ID.keySetting].toString()
             )
