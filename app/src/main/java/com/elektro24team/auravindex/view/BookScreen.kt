@@ -96,6 +96,7 @@ import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -112,7 +113,8 @@ fun BookScreen(
     loanViewModel: LoanViewModel,
     loanStatusViewModel: LoanStatusViewModel,
     localSettingViewModel: LocalSettingViewModel,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    notificationViewModel: NotificationViewModel
 
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -220,6 +222,7 @@ fun BookScreen(
                                 showRequestLoanDialog = showRequestLoanDialog,
                                 loanViewModel = loanViewModel,
                                 bookViewModel = bookViewModel,
+                                notificationViewModel = notificationViewModel,
                                 loanStatus = loanStatus.value!!,
                                 token = settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
                                 book = book.value!!,
@@ -731,7 +734,8 @@ fun BookScreen(
                                                             } else {
                                                                 loanViewModel.renewLoan(
                                                                     settings.value[SettingKey.TOKEN.keySetting].toString(),
-                                                                    loan._id
+                                                                    loan,
+                                                                    notificationViewModel
                                                                 )
                                                             }
                                                         },
@@ -882,7 +886,7 @@ fun BookScreen(
                                                             if(bookLoan.loan_status.loan_status == "PENDING") {
                                                                 Button(
                                                                     onClick = {
-                                                                        loanViewModel.approveLoan(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookLoan._id)
+                                                                        loanViewModel.approveLoan(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookLoan, notificationViewModel)
                                                                     },
                                                                     modifier = Modifier
                                                                         .height(48.dp)
@@ -907,7 +911,8 @@ fun BookScreen(
                                                                 onClick = {
                                                                     loanViewModel.finishLoan(
                                                                         settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-                                                                        bookLoan._id
+                                                                        bookLoan,
+                                                                        notificationViewModel
                                                                     )
                                                                 },
                                                                 modifier = Modifier

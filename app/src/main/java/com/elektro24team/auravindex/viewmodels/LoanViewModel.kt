@@ -11,8 +11,10 @@ import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.model.Loan
 import com.elektro24team.auravindex.model.Notification
 import com.elektro24team.auravindex.model.api.LoanRequest
+import com.elektro24team.auravindex.model.api.NotificationRequest
 import com.elektro24team.auravindex.model.local.NotificationEntity
 import com.elektro24team.auravindex.retrofit.LoanClient
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
 import com.elektro24team.auravindex.utils.objects.NotificationHandler
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
@@ -131,7 +133,7 @@ class LoanViewModel() : BaseViewModel() {
             }
         }
     }
-    fun createLoan(token: String, loan: LoanRequest) {
+    fun createLoan(token: String, loan: LoanRequest, notificationViewModel: NotificationViewModel) {
         viewModelScope.launch {
             val result = try {
                 val remote = LoanClient.apiService.createLoan(token = "Bearer $token", loan)
@@ -140,6 +142,15 @@ class LoanViewModel() : BaseViewModel() {
                 Result.failure(e)
             }
             if (result.isSuccess) {
+                notificationViewModel.createNotification(token,
+                    NotificationRequest(
+                        receiver = loan.user,
+                        title = "Your loan has been sent",
+                        message = "You can come to our library and pick up the book.",
+                        notification_type = "LOAN_REQUEST",
+                        is_read = false
+                    )
+                )
                 notifySuccess("The loan request has been sent successfully")
             } else {
                 val error = result.exceptionOrNull()
@@ -158,15 +169,24 @@ class LoanViewModel() : BaseViewModel() {
             }
         }
     }
-    fun approveLoan(token: String, loanId: String) {
+    fun approveLoan(token: String, loan: Loan, notificationViewModel: NotificationViewModel) {
         viewModelScope.launch {
             val result = try {
-                val remote = LoanClient.apiService.approveLoan(token = "Bearer $token", loanId)
+                val remote = LoanClient.apiService.approveLoan(token = "Bearer $token", loan._id)
                 Result.success(remote)
             } catch (e: Exception) {
                 Result.failure(e)
             }
             if (result.isSuccess) {
+                notificationViewModel.createNotification(token,
+                    NotificationRequest(
+                        receiver = loan.user._id.toString(),
+                        title = "Your loan has been confirmed",
+                        message = "Your loan for the book \"${loan.book.title}\" has been approved. Remember to return it by ${formatUtcToLocalWithDate(loan.return_date)}.",
+                        notification_type = "LOAN_APPROVED",
+                        is_read = false
+                    )
+                )
                 notifySuccess("The loan has been approved successfully")
             } else {
                 val error = result.exceptionOrNull()
@@ -185,15 +205,24 @@ class LoanViewModel() : BaseViewModel() {
             }
         }
     }
-    fun renewLoan(token: String, loanId: String) {
+    fun renewLoan(token: String, loan: Loan, notificationViewModel: NotificationViewModel) {
         viewModelScope.launch {
             val result = try {
-                val remote = LoanClient.apiService.renewLoan(token = "Bearer $token", loanId)
+                val remote = LoanClient.apiService.renewLoan(token = "Bearer $token", loan._id)
                 Result.success(remote)
             } catch (e: Exception) {
                 Result.failure(e)
             }
             if (result.isSuccess) {
+                notificationViewModel.createNotification(token,
+                    NotificationRequest(
+                        receiver = loan.user._id.toString(),
+                        title = "Your loan has been renewed",
+                        message = "Your loan for the book \"${loan.book.title}\" has been renewed. Remember to return it by ${formatUtcToLocalWithDate(loan.return_date)}.",
+                        notification_type = "LOAN_APPROVED",
+                        is_read = false
+                    )
+                )
                 notifySuccess("The loan has been renewed successfully")
             } else {
                 val error = result.exceptionOrNull()
@@ -210,15 +239,24 @@ class LoanViewModel() : BaseViewModel() {
             }
         }
     }
-    fun finishLoan(token: String, loanId: String) {
+    fun finishLoan(token: String, loan: Loan, notificationViewModel: NotificationViewModel) {
         viewModelScope.launch {
             val result = try {
-                val remote = LoanClient.apiService.finishLoan(token = "Bearer $token", loanId)
+                val remote = LoanClient.apiService.finishLoan(token = "Bearer $token", loan._id)
                 Result.success(remote)
             } catch (e: Exception) {
                 Result.failure(e)
             }
             if (result.isSuccess) {
+                notificationViewModel.createNotification(token,
+                    NotificationRequest(
+                        receiver = loan.user._id.toString(),
+                        title = "Your loan has been finished",
+                        message = "Your loan for the book \"${loan.book.title}\" has been finished.",
+                        notification_type = "LOAN_APPROVED",
+                        is_read = false
+                    )
+                )
                 notifySuccess("The loan has been finished successfully")
             } else {
                 val error = result.exceptionOrNull()

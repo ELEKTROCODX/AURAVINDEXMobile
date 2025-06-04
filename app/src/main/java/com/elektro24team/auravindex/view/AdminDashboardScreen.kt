@@ -20,7 +20,6 @@ import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.ui.components.AdminActivePlanTable
 import com.elektro24team.auravindex.ui.components.AdminAuditLogTable
-import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
 import com.elektro24team.auravindex.ui.components.AdminLoanTable
 import com.elektro24team.auravindex.ui.components.AdminNotificationTable
@@ -232,15 +231,7 @@ fun AdminDashboardScreen(
                         } else if((objectName != null || objectName != "") && (objectId != null || objectId != "")) {
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
-                                    ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficientPermissions(bookViewModel, navController)
-                                    AdminBookCard(
-                                        navController = navController,
-                                        bookViewModel = bookViewModel,
-                                        loanViewModel = loanViewModel,
-                                        localSettingViewModel = localSettingViewModel,
-                                        bookId = objectId,
-                                    )
+                                    navController.navigate("book/${objectId}")
                                 }
                                 AdminDashboardObject.PLAN.name.lowercase() -> {
                                     ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)
