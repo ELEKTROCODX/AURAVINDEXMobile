@@ -138,7 +138,7 @@ class LoanViewModel() : BaseViewModel() {
                 notificationViewModel.createNotification(token,
                     NotificationRequest(
                         receiver = loan.user,
-                        title = "Your loan has been sent",
+                        title = "Your loan request has been sent",
                         message = "You can come to our library and pick up the book.",
                         notification_type = "LOAN",
                         is_read = false

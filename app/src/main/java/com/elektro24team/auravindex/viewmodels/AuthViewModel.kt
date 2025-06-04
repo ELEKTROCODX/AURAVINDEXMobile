@@ -37,7 +37,7 @@ class AuthViewModel: BaseViewModel() {
     }
     fun register(userData: RegisterInfo){
         viewModelScope.launch {
-            val  result = repository.register(userData)
+            val result = repository.register(userData)
             if(result.isSuccess){
                 _registerResult.value = true
                 notifySuccess("Registration successful.")

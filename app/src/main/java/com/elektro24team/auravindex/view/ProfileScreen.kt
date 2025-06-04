@@ -81,7 +81,6 @@ fun ProfileScreen(
     val showTeamDialog = remember { mutableStateOf(false) }
     val user = userViewModel.myUser.observeAsState()
     val localSettings = localSettingViewModel.settings.collectAsState()
-
     LaunchedEffect(Unit) {
         localSettingViewModel.loadSettings(SettingKey.TOKEN.keySetting, SettingKey.ID.keySetting)
         userViewModel.getMyUserById(
@@ -89,14 +88,11 @@ fun ProfileScreen(
             localSettings.value.getOrDefault(SettingKey.ID.keySetting, "")
         )
     }
-
     val isLoggedIn = isLoggedIn(localSettings.value)
     val userData = user.value
-
     if (!isLoggedIn) {
         mustBeLoggedInToast(context, AppAction.ACCESS_PROFILE_PAGE, navController)
     }
-
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -115,7 +111,6 @@ fun ProfileScreen(
         ShowExternalLinkDialog(showTermsDialog, context, "https://auravindex.me/tos/")
         ShowExternalLinkDialog(showPrivacyDialog, context, "https://auravindex.me/privacy/")
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
-
         Scaffold(
             topBar = {
                 TopBar(navController = navController, drawerState = drawerState)
@@ -144,7 +139,6 @@ fun ProfileScreen(
                             .padding(vertical = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Card 1: Avatar + Nombre
                         Card(
                             modifier = Modifier.fillMaxWidth(0.9f),
                             colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -177,9 +171,7 @@ fun ProfileScreen(
                                         }
                                     )
                                 }
-
                                 Spacer(modifier = Modifier.height(16.dp))
-
                                 Text(
                                     text = if (isLoggedIn) "${userData?.name} ${userData?.last_name}" else "Usuario invitado",
                                     fontSize = 22.sp,
@@ -189,10 +181,7 @@ fun ProfileScreen(
                                 )
                             }
                         }
-
                         Spacer(modifier = Modifier.height(20.dp))
-
-                        // Card 2: Info Detallada
                         Card(
                             modifier = Modifier.fillMaxWidth(0.9f),
                             shape = RoundedCornerShape(24.dp),
@@ -207,10 +196,7 @@ fun ProfileScreen(
                                 ProfileInfoText("Bio", userData?.biography ?: "No disponible", longText = true)
                             }
                         }
-
                         Spacer(modifier = Modifier.height(20.dp))
-
-                        // Card 3: Botón Editar
                         Card(
                             modifier = Modifier.fillMaxWidth(0.9f),
                             shape = RoundedCornerShape(24.dp),
@@ -240,7 +226,6 @@ fun ProfileScreen(
                                 }
                             }
                         }
-
                         Spacer(modifier = Modifier.height(32.dp))
                     }
                 }

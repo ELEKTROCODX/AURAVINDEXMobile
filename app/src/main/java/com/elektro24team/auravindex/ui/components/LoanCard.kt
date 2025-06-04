@@ -107,11 +107,19 @@ fun LoanCard(loan: Loan?, navController: NavController) {
                     color = OrangeC
                 )
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = "Due date: ${formatUtcToLocalWithDate(loan?.return_date)}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = OrangeC
-                )
+                if(loan?.loan_status?.loan_status == "FINISHED") {
+                    Text(
+                        text = "Finished date: ${formatUtcToLocalWithDate(loan?.returned_date)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = OrangeC
+                    )
+                } else {
+                    Text(
+                        text = "Due date: ${formatUtcToLocalWithDate(loan?.return_date)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = OrangeC
+                    )
+                }
             }
         }
     }

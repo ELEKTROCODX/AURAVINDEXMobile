@@ -41,6 +41,7 @@ import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsu
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHourAndSeconds
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
@@ -98,7 +99,7 @@ fun NotificationCard(notification: Notification, navController: NavController,  
                 text = buildAnnotatedString {
                     append("${notification.message} - ")
                     withStyle(SpanStyle(fontStyle = FontStyle.Italic)) {
-                        append(formatUtcToLocalWithDate(notification.createdAt))
+                        append(formatUtcToLocalWithHour(notification.createdAt))
                     }
                 }
             )
