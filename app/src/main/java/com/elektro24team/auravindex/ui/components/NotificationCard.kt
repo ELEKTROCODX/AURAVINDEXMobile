@@ -13,7 +13,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.Text
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.Card
@@ -21,8 +20,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.Notification
 import com.elektro24team.auravindex.ui.theme.PurpleC
@@ -44,7 +40,8 @@ import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveToke
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
-import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHourAndSeconds
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 
@@ -101,7 +98,7 @@ fun NotificationCard(notification: Notification, navController: NavController,  
                 text = buildAnnotatedString {
                     append("${notification.message} - ")
                     withStyle(SpanStyle(fontStyle = FontStyle.Italic)) {
-                        append(formatUtcToLocalWithHour(notification.createdAt))
+                        append(formatUtcToLocalWithDate(notification.createdAt))
                     }
                 }
             )

@@ -2,7 +2,6 @@ package com.elektro24team.auravindex.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,12 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.model.AuditLog
 import com.elektro24team.auravindex.model.Notification
-import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
-import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHourAndSeconds
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -69,7 +66,7 @@ fun AdminNotificationTable(
                         TableCell(notification.receiver?.email ?: "Unknown", 180.dp)
                         TableCell(notification.notification_type, 180.dp)
                         TableCell(notification.is_read.toString(), 180.dp)
-                        TableCell(formatUtcToLocalWithHour(notification.createdAt), 160.dp)
+                        TableCell(formatUtcToLocalWithHourAndSeconds(notification.createdAt), 160.dp)
                     }
                     Divider()
                 }

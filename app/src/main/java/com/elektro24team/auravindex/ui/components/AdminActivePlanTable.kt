@@ -25,7 +25,7 @@ import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.ActivePlan
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
-import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHourAndSeconds
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -66,7 +66,7 @@ fun AdminActivePlanTable(
                         TableCell(activePlan.user?.email ?: "Unknown", 180.dp)
                         TableCell(activePlan.plan?.name ?: "Unknown", 180.dp)
                         TableCell(activePlan.plan_status?.plan_status ?: "Unknown", 180.dp)
-                        TableCell(formatUtcToLocalWithHour(activePlan.ending_date), 180.dp)
+                        TableCell(formatUtcToLocalWithHourAndSeconds(activePlan.ending_date), 180.dp)
                     }
                     Divider()
                 }

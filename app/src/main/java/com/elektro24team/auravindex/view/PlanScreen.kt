@@ -144,7 +144,8 @@ fun PlanScreen(
                                     plan = plans?.get(index),
                                     navController,
                                     localSettingViewModel,
-                                    activePlanViewModel
+                                    activePlanViewModel,
+                                    notificationViewModel
                                 )
                             }
                         }

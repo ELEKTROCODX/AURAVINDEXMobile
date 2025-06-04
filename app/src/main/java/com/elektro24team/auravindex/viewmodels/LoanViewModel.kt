@@ -1,10 +1,5 @@
 package com.elektro24team.auravindex.viewmodels
 
-import android.Manifest
-import android.content.Context
-import android.util.Log
-import androidx.annotation.RequiresPermission
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -12,10 +7,8 @@ import com.elektro24team.auravindex.model.Loan
 import com.elektro24team.auravindex.model.Notification
 import com.elektro24team.auravindex.model.api.LoanRequest
 import com.elektro24team.auravindex.model.api.NotificationRequest
-import com.elektro24team.auravindex.model.local.NotificationEntity
 import com.elektro24team.auravindex.retrofit.LoanClient
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
-import com.elektro24team.auravindex.utils.objects.NotificationHandler
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -147,7 +140,7 @@ class LoanViewModel() : BaseViewModel() {
                         receiver = loan.user,
                         title = "Your loan has been sent",
                         message = "You can come to our library and pick up the book.",
-                        notification_type = "LOAN_REQUEST",
+                        notification_type = "LOAN",
                         is_read = false
                     )
                 )
@@ -183,7 +176,7 @@ class LoanViewModel() : BaseViewModel() {
                         receiver = loan.user._id.toString(),
                         title = "Your loan has been confirmed",
                         message = "Your loan for the book \"${loan.book.title}\" has been approved. Remember to return it by ${formatUtcToLocalWithDate(loan.return_date)}.",
-                        notification_type = "LOAN_APPROVED",
+                        notification_type = "LOAN",
                         is_read = false
                     )
                 )
@@ -219,7 +212,7 @@ class LoanViewModel() : BaseViewModel() {
                         receiver = loan.user._id.toString(),
                         title = "Your loan has been renewed",
                         message = "Your loan for the book \"${loan.book.title}\" has been renewed. Remember to return it by ${formatUtcToLocalWithDate(loan.return_date)}.",
-                        notification_type = "LOAN_RENEWED",
+                        notification_type = "LOAN",
                         is_read = false
                     )
                 )
@@ -253,7 +246,7 @@ class LoanViewModel() : BaseViewModel() {
                         receiver = loan.user._id.toString(),
                         title = "Your loan has been finished",
                         message = "Your loan for the book \"${loan.book.title}\" has been finished.",
-                        notification_type = "LOAN_FINISHED",
+                        notification_type = "LOAN",
                         is_read = false
                     )
                 )

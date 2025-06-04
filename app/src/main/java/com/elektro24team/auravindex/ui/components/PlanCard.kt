@@ -46,13 +46,15 @@ import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 
 @Composable
 fun PlanCard(
     plan: Plan?,
     navController: NavController,
     localSettingViewModel: LocalSettingViewModel,
-    activePlanViewModel: ActivePlanViewModel
+    activePlanViewModel: ActivePlanViewModel,
+    notificationViewModel: NotificationViewModel
 ) {
     MaterialTheme.colorScheme
     val context = LocalContext.current
@@ -150,7 +152,8 @@ fun PlanCard(
                                 if (isLoggedIn(localSettings.value)) {
                                     activePlanViewModel.renewActivePlan(
                                         localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-                                        activePlan.value?._id ?: ""
+                                        activePlan.value!!,
+                                        notificationViewModel
                                     )
                                 } else {
                                     mustBeLoggedInToast(context, AppAction.RENEW_ACTIVE_PLAN, navController)
@@ -179,7 +182,8 @@ fun PlanCard(
                                 if (isLoggedIn(localSettings.value)) {
                                     activePlanViewModel.cancelActivePlan(
                                         localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-                                        activePlan.value?._id ?: ""
+                                        activePlan.value!!,
+                                        notificationViewModel
                                     )
                                     activePlanViewModel.clearViewModelData()
                                     localSettingViewModel.clearUserActivePlanSettings()
@@ -213,7 +217,8 @@ fun PlanCard(
                                 activePlanViewModel.createActivePlan(
                                     token = localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
                                     userId = localSettings.value.getOrDefault(SettingKey.ID.keySetting, ""),
-                                    planId = plan?._id ?: ""
+                                    plan = plan!!,
+                                    notificationViewModel
                                 )
                             } else {
                                 mustBeLoggedInToast(context, AppAction.SUBSCRIBE_TO_PLAN, navController)
