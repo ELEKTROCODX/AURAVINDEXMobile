@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.model.Notification
+import com.elektro24team.auravindex.model.api.NotificationRequest
 import com.elektro24team.auravindex.retrofit.NotificationClient
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
@@ -19,6 +20,11 @@ class NotificationViewModel() : BaseViewModel() {
     val userNotifications: LiveData<List<Notification>?> = _userNotifications
     val notification: LiveData<Notification?> = _notification
 
+    fun createNotification(token: String, notification: NotificationRequest) {
+        viewModelScope.launch {
+
+        }
+    }
     fun loadNotifications(token: String) {
         viewModelScope.launch {
             val result = try {

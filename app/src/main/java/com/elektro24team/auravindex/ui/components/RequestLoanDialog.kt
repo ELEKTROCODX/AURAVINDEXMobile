@@ -123,8 +123,7 @@ fun RequestLoanDialog(
                 )
                 loanViewModel.createLoan(
                     token = token,
-                    loan = loanRequest,
-                    context = context
+                    loan = loanRequest
                 )
                 bookViewModel.loadBook(book._id)
             }) {

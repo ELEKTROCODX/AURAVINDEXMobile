@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -600,8 +601,8 @@ fun BookScreen(
                             }
                         }
                         if (isLoggedIn(settings.value) && (book.value?.book_status?.book_status?.lowercase() == "lent")) {
-                            userLoans.value?.forEach { loan ->
-                                if ((loan?.book?._id == bookId) && (loan?.loan_status?.loan_status?.lowercase() != "finished") && (loan?.user?._id != settings.value.getOrDefault(SettingKey.ID.keySetting, ""))) {
+                            bookLoans.value?.forEach { loan ->
+                                if ((loan?.book?._id == bookId) && (loan?.loan_status?.loan_status?.lowercase() != "finished") && (loan?.user?._id == settings.value.getOrDefault(SettingKey.ID.keySetting, ""))) {
                                     Card(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -698,204 +699,230 @@ fun BookScreen(
                                             Divider(color = Color.LightGray, thickness = 1.dp)
                                             if (loan.renewals.toInt() < activePlanViewModel.activePlan.value?.plan?.max_renewals_per_loan?.toInt()!!) {
                                                 Spacer(modifier = Modifier.height(16.dp))
-                                                Button(
-                                                    onClick = {
-                                                        if (!isLoggedIn(settings.value)) {
-                                                            mustBeLoggedInToast(context, AppAction.LOAN_BOOK, navController)
-                                                        } else if (activePlan.value == null) {
-                                                            mustBeSubscribedToast(context, AppAction.LOAN_BOOK, navController)
-                                                        } else if (loan.loan_status.loan_status != "ACTIVE" && loan.loan_status.loan_status != "RENEWED") {
-                                                            Toast.makeText(context, "This loan is currently not active.", Toast.LENGTH_SHORT).show()
-                                                        } else {
-                                                            loanViewModel.renewLoan(
-                                                                settings.value[SettingKey.TOKEN.keySetting].toString(),
-                                                                loan._id
-                                                            )
-                                                        }
-                                                    },
+                                                Row(
                                                     modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .height(48.dp),
-                                                    colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
-                                                    shape = RoundedCornerShape(12.dp),
+                                                        .fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                                    verticalAlignment = Alignment.CenterVertically
                                                 ) {
-                                                    Icon(
-                                                        imageVector = Icons.Filled.Autorenew,
-                                                        contentDescription = "Renew",
-                                                        tint = Color.White,
-                                                        modifier = Modifier.padding(end = 8.dp)
-                                                    )
-                                                    Text(
-                                                        text = "Renew",
-                                                        color = Color.White,
-                                                        style = TextStyle(
-                                                            fontWeight = FontWeight.Bold,
-                                                            fontSize = 18.sp,
-                                                            color = Color(0xFF572365)
+                                                    Button(
+                                                        onClick = {
+                                                            if (!isLoggedIn(settings.value)) {
+                                                                mustBeLoggedInToast(
+                                                                    context,
+                                                                    AppAction.LOAN_BOOK,
+                                                                    navController
+                                                                )
+                                                            } else if (activePlan.value == null) {
+                                                                mustBeSubscribedToast(
+                                                                    context,
+                                                                    AppAction.LOAN_BOOK,
+                                                                    navController
+                                                                )
+                                                            } else if (loan.loan_status.loan_status != "ACTIVE" && loan.loan_status.loan_status != "RENEWED") {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "This loan is currently not active.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            } else {
+                                                                loanViewModel.renewLoan(
+                                                                    settings.value[SettingKey.TOKEN.keySetting].toString(),
+                                                                    loan._id
+                                                                )
+                                                            }
+                                                        },
+                                                        modifier = Modifier
+                                                            .height(48.dp)
+                                                            .weight(1f),
+                                                        colors = ButtonDefaults.buttonColors(
+                                                            backgroundColor = PurpleC
                                                         ),
-                                                        modifier = Modifier.padding(bottom = 12.dp))
+                                                        shape = RoundedCornerShape(12.dp),
+                                                    ) {
+                                                        androidx.compose.material.Icon(
+                                                            imageVector = Icons.Filled.Autorenew,
+                                                            contentDescription = "Renew",
+                                                            tint = Color.White,
+                                                            modifier = Modifier.padding(end = 8.dp)
+                                                        )
+                                                        Text(
+                                                            text = "Renew",
+                                                            color = Color.White,
+                                                            style = TextStyle(
+                                                                fontWeight = FontWeight.Bold,
+                                                                fontSize = 16.sp
+                                                            )
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                } else if((isLoggedIn(settings.value)) && (loan.loan_status.loan_status.lowercase() != "finished") && (isAdmin(settings.value))) {
+                                }
+                                if((isLoggedIn(settings.value)) && (loan.loan_status.loan_status.lowercase() != "finished") && (isAdmin(settings.value))) {
                                     if (book.value?.book_status?.book_status?.lowercase() == "lent") {
                                         bookLoans.value?.forEach { bookLoan ->
                                             if (bookLoan.book._id == bookId && bookLoan.loan_status.loan_status.lowercase() != "finished") {
-                                                Column {
-                                                    Column(modifier = Modifier
+                                                Card(
+                                                    modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .padding(horizontal = 16.dp)
-                                                    ) {
-                                                        Text(
-                                                            text = "Loan Details",
-                                                            style = TextStyle(
-                                                                fontWeight = FontWeight.Bold,
-                                                                fontSize = 18.sp,
-                                                                color = Color(0xFF572365)
-                                                            ),
-                                                            modifier = Modifier.padding(vertical = 12.dp)
-                                                        )
-                                                        Divider(color = Color.LightGray, thickness = 1.dp)
-                                                        bookLoans.value?.forEach { loan ->
-                                                            if (loan.book._id == bookId && loan.loan_status.loan_status.lowercase() != "finished") {
-                                                                Row(
-                                                                    modifier = Modifier
-                                                                        .fillMaxWidth()
-                                                                        .padding(vertical = 4.dp),
-                                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                                ) {
-                                                                    Text(
-                                                                        text = "Loaned to:",
-                                                                        style = TextStyle(
-                                                                            fontWeight = FontWeight.Bold,
-                                                                            fontSize = 16.sp,
-                                                                            color = Color(0xFF572365)
-                                                                        )
-                                                                    )
-                                                                    Text(
-                                                                        text = "${loan.user.name} ${loan.user.last_name}",
-                                                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                                                    )
-                                                                }
-                                                                Divider(color = Color.LightGray, thickness = 1.dp)
-                                                                Row(
-                                                                    modifier = Modifier
-                                                                        .fillMaxWidth()
-                                                                        .padding(vertical = 4.dp),
-                                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                                ) {
-                                                                    Text(
-                                                                        text = "Start Date:",
-                                                                        style = TextStyle(
-                                                                            fontWeight = FontWeight.Bold,
-                                                                            fontSize = 16.sp,
-                                                                            color = Color(0xFF572365)
-                                                                        )
-                                                                    )
-                                                                    Text(
-                                                                        text = formatUtcToLocalWithDate(bookLoan.createdAt),
-                                                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                                                    )
-                                                                }
-                                                                Divider(color = Color.LightGray, thickness = 1.dp)
-                                                                Row(
-                                                                    modifier = Modifier
-                                                                        .fillMaxWidth()
-                                                                        .padding(vertical = 4.dp),
-                                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                                ) {
-                                                                    Text(
-                                                                        text = "End Date:",
-                                                                        style = TextStyle(
-                                                                            fontWeight = FontWeight.Bold,
-                                                                            fontSize = 16.sp,
-                                                                            color = Color(0xFF572365)
-                                                                        )
-                                                                    )
-                                                                    Text(
-                                                                        text = formatUtcToLocalWithDate(bookLoan.return_date),
-                                                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                                                    )
-                                                                }
-                                                                Divider(color = Color.LightGray, thickness = 1.dp)
-                                                                Row(
-                                                                    modifier = Modifier
-                                                                        .fillMaxWidth()
-                                                                        .padding(vertical = 4.dp),
-                                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                                ) {
-                                                                    Text(
-                                                                        text = "Status:",
-                                                                        style = TextStyle(
-                                                                            fontWeight = FontWeight.Bold,
-                                                                            fontSize = 16.sp,
-                                                                            color = Color(0xFF572365)
-                                                                        )
-                                                                    )
-                                                                    Text(
-                                                                        text = loan.loan_status.loan_status,
-                                                                        style = TextStyle(fontSize = 16.sp, color = Color.Black)
-                                                                    )
-                                                                }
-                                                                Divider(color = Color.LightGray, thickness = 1.dp)
-                                                            }
-                                                        }
-                                                    }
-                                                    Divider(color = Color.LightGray, thickness = 1.dp)
-                                                    Row(
-                                                        modifier = Modifier
+                                                        .padding(top = 16.dp),
+                                                    shape = RoundedCornerShape(12.dp),
+                                                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                                                ) {
+                                                    Column {
+                                                        Column(modifier = Modifier
                                                             .fillMaxWidth()
-                                                            .padding(16.dp),
-                                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-                                                        Button(
-                                                            onClick = {
-                                                                loanViewModel.approveLoan(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookLoan._id)
-                                                            },
-                                                            modifier = Modifier
-                                                                .height(48.dp)
-                                                                .weight(1f),
-                                                            colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
-                                                            shape = RoundedCornerShape(12.dp),
+                                                            .padding(horizontal = 16.dp)
                                                         ) {
-                                                            androidx.compose.material.Icon(
-                                                                imageVector = Icons.Filled.Check,
-                                                                contentDescription = "Approve",
-                                                                tint = Color.White,
-                                                                modifier = Modifier.padding(end = 8.dp)
-                                                            )
                                                             Text(
-                                                                text = "Approve",
-                                                                color = Color.White,
-                                                                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                                                text = "Loan Details (Admin view)",
+                                                                style = TextStyle(
+                                                                    fontWeight = FontWeight.Bold,
+                                                                    fontSize = 18.sp,
+                                                                    color = Color(0xFF572365)
+                                                                ),
+                                                                modifier = Modifier.padding(vertical = 12.dp)
                                                             )
-                                                        }
-                                                        Button(
-                                                            onClick = {
-                                                                loanViewModel.finishLoan(
-                                                                    settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-                                                                    bookLoan._id
+                                                            Divider(color = Color.LightGray, thickness = 1.dp)
+                                                            Row(
+                                                                modifier = Modifier
+                                                                    .fillMaxWidth()
+                                                                    .padding(vertical = 4.dp)
+                                                                    .clickable { navController.navigate("admin_dashboard/user/${loan.user._id}") },
+                                                                horizontalArrangement = Arrangement.SpaceBetween
+                                                            ) {
+                                                                Text(
+                                                                    text = "Loaned to:",
+                                                                    style = TextStyle(
+                                                                        fontWeight = FontWeight.Bold,
+                                                                        fontSize = 16.sp,
+                                                                        color = Color(0xFF572365)
+                                                                    )
                                                                 )
-                                                            },
+                                                                Text(
+                                                                    text = "${loan.user.name} ${loan.user.last_name}",
+                                                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                                                )
+                                                            }
+                                                            Divider(color = Color.LightGray, thickness = 1.dp)
+                                                            Row(
+                                                                modifier = Modifier
+                                                                    .fillMaxWidth()
+                                                                    .padding(vertical = 4.dp),
+                                                                horizontalArrangement = Arrangement.SpaceBetween
+                                                            ) {
+                                                                Text(
+                                                                    text = "Start Date:",
+                                                                    style = TextStyle(
+                                                                        fontWeight = FontWeight.Bold,
+                                                                        fontSize = 16.sp,
+                                                                        color = Color(0xFF572365)
+                                                                    )
+                                                                )
+                                                                Text(
+                                                                    text = formatUtcToLocalWithDate(bookLoan.createdAt),
+                                                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                                                )
+                                                            }
+                                                            Divider(color = Color.LightGray, thickness = 1.dp)
+                                                            Row(
+                                                                modifier = Modifier
+                                                                    .fillMaxWidth()
+                                                                    .padding(vertical = 4.dp),
+                                                                horizontalArrangement = Arrangement.SpaceBetween
+                                                            ) {
+                                                                Text(
+                                                                    text = "End Date:",
+                                                                    style = TextStyle(
+                                                                        fontWeight = FontWeight.Bold,
+                                                                        fontSize = 16.sp,
+                                                                        color = Color(0xFF572365)
+                                                                    )
+                                                                )
+                                                                Text(
+                                                                    text = formatUtcToLocalWithDate(bookLoan.return_date),
+                                                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                                                )
+                                                            }
+                                                            Divider(color = Color.LightGray, thickness = 1.dp)
+                                                            Row(
+                                                                modifier = Modifier
+                                                                    .fillMaxWidth()
+                                                                    .padding(vertical = 4.dp),
+                                                                horizontalArrangement = Arrangement.SpaceBetween
+                                                            ) {
+                                                                Text(
+                                                                    text = "Status:",
+                                                                    style = TextStyle(
+                                                                        fontWeight = FontWeight.Bold,
+                                                                        fontSize = 16.sp,
+                                                                        color = Color(0xFF572365)
+                                                                    )
+                                                                )
+                                                                Text(
+                                                                    text = loan.loan_status.loan_status,
+                                                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                                                )
+                                                            }
+                                                            Divider(color = Color.LightGray, thickness = 1.dp)
+                                                        }
+                                                        Divider(color = Color.LightGray, thickness = 1.dp)
+                                                        Row(
                                                             modifier = Modifier
-                                                                .height(48.dp)
-                                                                .weight(1f),
-                                                            colors = ButtonDefaults.buttonColors(backgroundColor = colors.error),
-                                                            shape = RoundedCornerShape(12.dp),
+                                                                .fillMaxWidth()
+                                                                .padding(16.dp),
+                                                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                                            verticalAlignment = Alignment.CenterVertically
                                                         ) {
-                                                            androidx.compose.material.Icon(
-                                                                imageVector = Icons.Filled.SettingsBackupRestore,
-                                                                contentDescription = "Finish",
-                                                                tint = Color.White,
-                                                                modifier = Modifier.padding(end = 8.dp)
-                                                            )
-                                                            Text(
-                                                                text = "Finish",
-                                                                color = Color.White,
-                                                                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                                            )
+                                                            Button(
+                                                                onClick = {
+                                                                    loanViewModel.approveLoan(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookLoan._id)
+                                                                },
+                                                                modifier = Modifier
+                                                                    .height(48.dp)
+                                                                    .weight(1f),
+                                                                colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
+                                                                shape = RoundedCornerShape(12.dp),
+                                                            ) {
+                                                                androidx.compose.material.Icon(
+                                                                    imageVector = Icons.Filled.Check,
+                                                                    contentDescription = "Approve",
+                                                                    tint = Color.White,
+                                                                    modifier = Modifier.padding(end = 8.dp)
+                                                                )
+                                                                Text(
+                                                                    text = "Approve",
+                                                                    color = Color.White,
+                                                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                                                )
+                                                            }
+                                                            Button(
+                                                                onClick = {
+                                                                    loanViewModel.finishLoan(
+                                                                        settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                                                                        bookLoan._id
+                                                                    )
+                                                                },
+                                                                modifier = Modifier
+                                                                    .height(48.dp)
+                                                                    .weight(1f),
+                                                                colors = ButtonDefaults.buttonColors(backgroundColor = colors.error),
+                                                                shape = RoundedCornerShape(12.dp),
+                                                            ) {
+                                                                androidx.compose.material.Icon(
+                                                                    imageVector = Icons.Filled.SettingsBackupRestore,
+                                                                    contentDescription = "Finish",
+                                                                    tint = Color.White,
+                                                                    modifier = Modifier.padding(end = 8.dp)
+                                                                )
+                                                                Text(
+                                                                    text = "Finish",
+                                                                    color = Color.White,
+                                                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                                                )
+                                                            }
                                                         }
                                                     }
                                                 }

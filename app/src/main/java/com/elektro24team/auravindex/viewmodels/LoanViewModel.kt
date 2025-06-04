@@ -131,8 +131,7 @@ class LoanViewModel() : BaseViewModel() {
             }
         }
     }
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun createLoan(token: String, loan: LoanRequest, context: Context) {
+    fun createLoan(token: String, loan: LoanRequest) {
         viewModelScope.launch {
             val result = try {
                 val remote = LoanClient.apiService.createLoan(token = "Bearer $token", loan)
