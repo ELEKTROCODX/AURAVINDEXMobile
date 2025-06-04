@@ -79,17 +79,17 @@ fun MainScreen(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            Log.d("PERMISSIONTEST", "Notification permission granted")
+            //Log.d("PERMISSIONTEST", "Notification permission granted")
         } else {
             val permanentlyDenied = !ActivityCompat.shouldShowRequestPermissionRationale(
                 activity,
                 android.Manifest.permission.POST_NOTIFICATIONS
             )
             if (permanentlyDenied) {
-                Log.w("PERMISSIONTEST", "Permission permanently denied. Guide user to settings.")
-                Toast.makeText(context, "Please enable notifications in app settings.", Toast.LENGTH_SHORT).show()
+                //Log.d("PERMISSIONTEST", "Permission permanently denied. Guide user to settings.")
+               // Toast.makeText(context, "Please enable notifications in app settings.", Toast.LENGTH_SHORT).show()
             } else {
-                Log.d("PERMISSIONTEST", "Notification permission denied (can ask again)")
+                //Log.d("PERMISSIONTEST", "Notification permission denied (can ask again)")
             }
         }
     }

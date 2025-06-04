@@ -51,7 +51,6 @@ fun DrawerMenu(
     val colors = MaterialTheme.colorScheme
     val localSettings by localSettingViewModel.settings.collectAsState()
     val user by userViewModel.myUser.observeAsState()
-    Log.d("AVDEBUG", "DrawerMenu: $user")
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -190,8 +189,6 @@ fun DrawerMenu(
             Spacer(modifier = Modifier.height(16.dp))
 
             val isUserLoggedIn = isLoggedIn(localSettings)
-            Log.d("AVDEBUG", "Settings: $localSettings")
-            Log.d("AVDEBUG", "DrawerMenu is logged in: $isUserLoggedIn")
             val loginLabel = if (isUserLoggedIn) "Log out" else "Log in"
             val loginIcon = if (isUserLoggedIn) Icons.Default.ArrowBackIosNew else Icons.Default.ArrowBackIosNew
             val loginAction = if (isUserLoggedIn) "logout" else "login"

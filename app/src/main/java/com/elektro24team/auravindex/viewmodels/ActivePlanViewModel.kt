@@ -1,18 +1,12 @@
 package com.elektro24team.auravindex.viewmodels
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresExtension
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.elektro24team.auravindex.data.repository.AuditLogRepository
-import com.elektro24team.auravindex.model.AuditLog
 import com.elektro24team.auravindex.model.ActivePlan
 import com.elektro24team.auravindex.model.api.ActivePlanRequest
 import com.elektro24team.auravindex.retrofit.ActivePlanClient
-import com.elektro24team.auravindex.retrofit.RecentBookClient
-import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -59,12 +53,10 @@ class ActivePlanViewModel() : BaseViewModel() {
             } catch (e: Exception) {
                 Result.failure(e)
             }
-            //Log.d("AVDEBUG", "Token: $token, UserId: $userId - Result: $result")
             if (result.isSuccess) {
                 if(result.getOrNull()?.data?.isNotEmpty() == true) {
                     result.getOrNull()?.data?.forEach { ap ->
                         if(ap.plan_status?.plan_status == "ACTIVE") {
-                            //Log.d("AVDEBUG", "Active plan found: $ap")
                             _activePlan.value = ap
                         }
                     }
