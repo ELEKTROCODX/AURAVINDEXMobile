@@ -219,7 +219,7 @@ class LoanViewModel() : BaseViewModel() {
                         receiver = loan.user._id.toString(),
                         title = "Your loan has been renewed",
                         message = "Your loan for the book \"${loan.book.title}\" has been renewed. Remember to return it by ${formatUtcToLocalWithDate(loan.return_date)}.",
-                        notification_type = "LOAN_APPROVED",
+                        notification_type = "LOAN_RENEWED",
                         is_read = false
                     )
                 )
@@ -253,7 +253,7 @@ class LoanViewModel() : BaseViewModel() {
                         receiver = loan.user._id.toString(),
                         title = "Your loan has been finished",
                         message = "Your loan for the book \"${loan.book.title}\" has been finished.",
-                        notification_type = "LOAN_APPROVED",
+                        notification_type = "LOAN_FINISHED",
                         is_read = false
                     )
                 )

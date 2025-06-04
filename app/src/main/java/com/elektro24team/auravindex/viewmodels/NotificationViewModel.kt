@@ -29,7 +29,6 @@ class NotificationViewModel() : BaseViewModel() {
                 Result.failure(e)
             }
             if (result.isSuccess) {
-                Log.d("NotificationViewModel", "Notification created successfully")
                 //notifySuccess("You have successfully subscribed to the plan.")
             } else {
                 val error = result.exceptionOrNull()
@@ -138,7 +137,7 @@ class NotificationViewModel() : BaseViewModel() {
                     }
                 }
                 _userNotifications.value = updatedList
-                notifySuccess("Notification marked as read")
+                //notifySuccess("Notification marked as read")
             } else {
                 val error = result.exceptionOrNull()
                 if (error is HttpException) {
