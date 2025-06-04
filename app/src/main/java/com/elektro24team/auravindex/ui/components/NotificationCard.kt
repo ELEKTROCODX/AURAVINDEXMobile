@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -80,17 +82,19 @@ fun NotificationCard(notification: Notification, navController: NavController,  
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = notification.title,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(start = 0.dp, end = 8.dp).weight(2f)
                 )
                 Text(
                     text = notification.notification_type,
-                    modifier = Modifier.padding(end = 8.dp),
-                    style = TextStyle(fontStyle = FontStyle.Italic)
+                    modifier = Modifier.padding(start = 0.dp, end = 4.dp).weight(1f),
+                    style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 12.sp, textAlign = TextAlign.End)
                 )
             }
             Text(
