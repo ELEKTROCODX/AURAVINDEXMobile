@@ -49,6 +49,7 @@ import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,6 +59,7 @@ fun MainScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
     userViewModel: UserViewModel,
+    notificationViewModel: NotificationViewModel,
     recentBookViewModel: RecentBookViewModel,
     localSettingViewModel: LocalSettingViewModel
 ) {
@@ -122,6 +124,7 @@ fun MainScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
                 localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(

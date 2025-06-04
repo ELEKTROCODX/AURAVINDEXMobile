@@ -79,6 +79,7 @@ import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -90,6 +91,7 @@ import com.skydoves.landscapist.glide.GlideImage
 fun LoansScreen(
     navController: NavController,
     loanViewModel: LoanViewModel,
+    notificationViewModel: NotificationViewModel,
     localSettingViewModel: LocalSettingViewModel,
     userViewModel: UserViewModel,
 
@@ -122,6 +124,7 @@ fun LoansScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
                 localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(

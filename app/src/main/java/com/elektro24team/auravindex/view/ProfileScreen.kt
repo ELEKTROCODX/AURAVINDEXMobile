@@ -60,6 +60,7 @@ import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -69,6 +70,7 @@ import com.skydoves.landscapist.glide.GlideImage
 fun ProfileScreen(
     navController: NavController,
     userViewModel: UserViewModel,
+    notificationViewModel: NotificationViewModel,
     localSettingViewModel: LocalSettingViewModel,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -102,6 +104,7 @@ fun ProfileScreen(
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
                 localSettingViewModel = localSettingViewModel,
+                notificationViewModel = notificationViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(route, navController, showTermsDialog, showPrivacyDialog, showTeamDialog)
                 }

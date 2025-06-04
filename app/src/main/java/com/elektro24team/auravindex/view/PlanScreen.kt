@@ -34,6 +34,7 @@ import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
@@ -44,9 +45,9 @@ fun PlanScreen(
     navController: NavController,
     planViewModel: PlanViewModel,
     activePlanViewModel: ActivePlanViewModel,
-    localSettingViewModel: LocalSettingViewModel,
     userViewModel: UserViewModel,
-
+    notificationViewModel: NotificationViewModel,
+    localSettingViewModel: LocalSettingViewModel,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     rememberCoroutineScope()
@@ -77,6 +78,7 @@ fun PlanScreen(
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
                 localSettingViewModel = localSettingViewModel,
+                notificationViewModel = notificationViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,

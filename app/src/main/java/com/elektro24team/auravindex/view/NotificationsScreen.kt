@@ -93,6 +93,7 @@ fun NotificationsScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
                 localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(

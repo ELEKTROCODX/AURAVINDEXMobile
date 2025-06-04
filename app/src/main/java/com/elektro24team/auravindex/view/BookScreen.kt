@@ -168,6 +168,7 @@ fun BookScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
                 localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
@@ -784,7 +785,7 @@ fun BookScreen(
                                                             .padding(horizontal = 16.dp)
                                                         ) {
                                                             Text(
-                                                                text = "Loan Details (Admin view)",
+                                                                text = "Loan Details (ADMIN VIEW)",
                                                                 style = TextStyle(
                                                                     fontWeight = FontWeight.Bold,
                                                                     fontSize = 18.sp,
@@ -810,7 +811,12 @@ fun BookScreen(
                                                                 )
                                                                 Text(
                                                                     text = "${loan.user.name} ${loan.user.last_name}",
-                                                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                                                    style = TextStyle(
+                                                                        fontWeight = FontWeight.Bold,
+                                                                        fontSize = 18.sp,
+                                                                        color = Color(0xFF572365)
+                                                                    ),
+                                                                    modifier = Modifier.padding(bottom = 12.dp)
                                                                 )
                                                             }
                                                             Divider(color = Color.LightGray, thickness = 1.dp)
@@ -830,7 +836,12 @@ fun BookScreen(
                                                                 )
                                                                 Text(
                                                                     text = formatUtcToLocalWithDate(bookLoan.createdAt),
-                                                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                                                    style = TextStyle(
+                                                                        fontWeight = FontWeight.Bold,
+                                                                        fontSize = 18.sp,
+                                                                        color = Color(0xFF572365)
+                                                                    ),
+                                                                    modifier = Modifier.padding(bottom = 12.dp)
                                                                 )
                                                             }
                                                             Divider(color = Color.LightGray, thickness = 1.dp)
@@ -850,7 +861,12 @@ fun BookScreen(
                                                                 )
                                                                 Text(
                                                                     text = formatUtcToLocalWithDate(bookLoan.return_date),
-                                                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                                                    style = TextStyle(
+                                                                        fontWeight = FontWeight.Bold,
+                                                                        fontSize = 18.sp,
+                                                                        color = Color(0xFF572365)
+                                                                    ),
+                                                                    modifier = Modifier.padding(bottom = 12.dp)
                                                                 )
                                                             }
                                                             Divider(color = Color.LightGray, thickness = 1.dp)
@@ -869,8 +885,13 @@ fun BookScreen(
                                                                     )
                                                                 )
                                                                 Text(
-                                                                    text = loan.loan_status.loan_status,
-                                                                    style = TextStyle(fontSize = 16.sp, color = Color.Black)
+                                                                    text = bookLoan.loan_status.loan_status,
+                                                                    style = TextStyle(
+                                                                        fontWeight = FontWeight.Bold,
+                                                                        fontSize = 18.sp,
+                                                                        color = Color(0xFF572365)
+                                                                    ),
+                                                                    modifier = Modifier.padding(bottom = 12.dp)
                                                                 )
                                                             }
                                                             Divider(color = Color.LightGray, thickness = 1.dp)

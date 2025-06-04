@@ -57,6 +57,7 @@ import java.util.TimeZone
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.unit.Dp
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,7 +65,8 @@ import androidx.compose.ui.unit.Dp
 fun SettingsScreen(
     navController: NavController,
     localSettingViewModel: LocalSettingViewModel,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    notificationViewModel: NotificationViewModel
 ) {
     MaterialTheme.colorScheme
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -87,6 +89,7 @@ fun SettingsScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
                 localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(

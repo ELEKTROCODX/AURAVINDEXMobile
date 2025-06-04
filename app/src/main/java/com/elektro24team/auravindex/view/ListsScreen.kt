@@ -39,6 +39,7 @@ import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +47,7 @@ import com.elektro24team.auravindex.viewmodels.UserViewModel
 fun ListsScreen(
     navController: NavController,
     userViewModel: UserViewModel,
+    notificationViewModel: NotificationViewModel,
     localSettingViewModel: LocalSettingViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -60,6 +62,7 @@ fun ListsScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
                 localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
