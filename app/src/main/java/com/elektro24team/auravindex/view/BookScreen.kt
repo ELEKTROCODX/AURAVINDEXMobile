@@ -879,27 +879,29 @@ fun BookScreen(
                                                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                                                             verticalAlignment = Alignment.CenterVertically
                                                         ) {
-                                                            Button(
-                                                                onClick = {
-                                                                    loanViewModel.approveLoan(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookLoan._id)
-                                                                },
-                                                                modifier = Modifier
-                                                                    .height(48.dp)
-                                                                    .weight(1f),
-                                                                colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
-                                                                shape = RoundedCornerShape(12.dp),
-                                                            ) {
-                                                                androidx.compose.material.Icon(
-                                                                    imageVector = Icons.Filled.Check,
-                                                                    contentDescription = "Approve",
-                                                                    tint = Color.White,
-                                                                    modifier = Modifier.padding(end = 8.dp)
-                                                                )
-                                                                Text(
-                                                                    text = "Approve",
-                                                                    color = Color.White,
-                                                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                                                )
+                                                            if(bookLoan.loan_status.loan_status == "PENDING") {
+                                                                Button(
+                                                                    onClick = {
+                                                                        loanViewModel.approveLoan(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookLoan._id)
+                                                                    },
+                                                                    modifier = Modifier
+                                                                        .height(48.dp)
+                                                                        .weight(1f),
+                                                                    colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
+                                                                    shape = RoundedCornerShape(12.dp),
+                                                                ) {
+                                                                    androidx.compose.material.Icon(
+                                                                        imageVector = Icons.Filled.Check,
+                                                                        contentDescription = "Approve",
+                                                                        tint = Color.White,
+                                                                        modifier = Modifier.padding(end = 8.dp)
+                                                                    )
+                                                                    Text(
+                                                                        text = "Approve",
+                                                                        color = Color.White,
+                                                                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                                                    )
+                                                                }
                                                             }
                                                             Button(
                                                                 onClick = {
