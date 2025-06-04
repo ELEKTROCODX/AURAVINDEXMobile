@@ -47,6 +47,7 @@ import com.elektro24team.auravindex.ui.theme.WhiteC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -59,7 +60,8 @@ fun SearchScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
     bookCollectionViewModel: BookCollectionViewModel,
-    userViewModel: UserViewModel, // <-- AGREGA ESTO
+    userViewModel: UserViewModel,
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     rememberCoroutineScope()
@@ -78,6 +80,7 @@ fun SearchScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,
@@ -126,10 +129,7 @@ fun SearchScreen(
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
-
                         var bookQuery by remember { mutableStateOf("") }
-
-                        // Barra de búsqueda
                         OutlinedTextField(
                             value = bookQuery,
                             onValueChange = {
@@ -171,8 +171,6 @@ fun SearchScreen(
                                                 .fillMaxWidth()
                                                 .padding(8.dp)
                                         ) {
-
-                                            // Imagen a la izquierda
                                             GlideImage(
                                                 imageModel = { IMG_url.trimEnd('/') + "/" + book?.book_img?.trimStart('/') },
                                                 modifier = Modifier
@@ -199,8 +197,6 @@ fun SearchScreen(
                                                     )
                                                 }
                                             )
-
-                                            // Info textual a la derecha
                                             Column(
                                                 modifier = Modifier
                                                     .padding(start = 12.dp, end = 8.dp)

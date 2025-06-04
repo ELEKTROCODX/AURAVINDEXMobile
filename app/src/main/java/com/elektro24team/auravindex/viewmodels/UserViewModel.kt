@@ -23,10 +23,12 @@ class UserViewModel(
     fun getUserByEmail(token: String, email: String) {
         viewModelScope.launch {
             val result = repository.getUser(token, email)
+            Log.d("AVDEBUG", "USEREMAIL - Result: $result - Token: $token")
             if (result.isSuccess) {
                 _user.value = result.getOrNull()
             } else {
                 val error = result.exceptionOrNull()
+                Log.d("AVDEBUG", "USEREMAIL - Error: $error")
                 if (error is HttpException) {
                     when (error.code()) {
                         401 -> notifyTokenExpired()
@@ -43,10 +45,12 @@ class UserViewModel(
     fun getUserById(token: String, userId: String) {
         viewModelScope.launch {
             val result = repository.getUserById(token, userId)
+            Log.d("AVDEBUG", "USERID - Result: $result - Token: $token")
             if(result.isSuccess) {
                 _user.value = result.getOrNull()
             } else {
                 val error = result.exceptionOrNull()
+                Log.d("AVDEBUG", "USERID - Error: $error")
                 if(error is HttpException) {
                     when(error.code()){
                         401 -> notifyTokenExpired()
@@ -63,10 +67,12 @@ class UserViewModel(
     fun getUsers(token: String){
         viewModelScope.launch {
             val result = repository.getUsers(token)
+            Log.d("AVDEBUG", "USERS - Token: $token - Result: $result")
             when {
                 result.isSuccess -> _users.value = result.getOrNull()
                 result.isFailure -> {
                     val error = result.exceptionOrNull()
+                    Log.d("AVDEBUG", "USERS - Error: $error")
                     when (error) {
                         is HttpException -> {
                             when (error.code()) {

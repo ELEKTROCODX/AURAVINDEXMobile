@@ -136,9 +136,9 @@ fun PlanCard(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                if (activePlan.value != null) {
+                if (activePlan.value != null && activePlan.value?.plan?._id == plan?._id) {
                     Text(
-                        text = "ACTIVE PLAN (until ${formatUtcToLocalWithDate(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, "").toString())})",
+                        text = "ACTIVE PLAN (until ${formatUtcToLocalWithDate(activePlan.value?.ending_date.toString())})",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color=WhiteC
@@ -150,7 +150,7 @@ fun PlanCard(
                                 if (isLoggedIn(localSettings.value)) {
                                     activePlanViewModel.renewActivePlan(
                                         localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-                                        localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ID.keySetting, "")
+                                        activePlan.value?._id ?: ""
                                     )
                                 } else {
                                     mustBeLoggedInToast(context, AppAction.RENEW_ACTIVE_PLAN, navController)
@@ -179,7 +179,7 @@ fun PlanCard(
                                 if (isLoggedIn(localSettings.value)) {
                                     activePlanViewModel.cancelActivePlan(
                                         localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-                                        localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ID.keySetting, "")
+                                        activePlan.value?._id ?: ""
                                     )
                                     activePlanViewModel.clearViewModelData()
                                     localSettingViewModel.clearUserActivePlanSettings()

@@ -110,7 +110,6 @@ fun MainScreen(
         localSettingViewModel.loadUserSettings()
         bookViewModel.fetchLatestReleases()
         if(isLoggedIn(localSettings)) {
-            userViewModel.getUserById(localSettings[SettingKey.TOKEN.keySetting] ?: "", localSettings[SettingKey.ID.keySetting] ?: "")
             recentBookViewModel.loadRecentBooks(localSettings[SettingKey.TOKEN.keySetting] ?: "", localSettings[SettingKey.ID.keySetting] ?: "")
         }
     }
@@ -123,6 +122,7 @@ fun MainScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,

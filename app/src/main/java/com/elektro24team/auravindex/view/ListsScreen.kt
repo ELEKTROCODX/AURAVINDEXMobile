@@ -38,13 +38,15 @@ import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListsScreen(
     navController: NavController,
-    userViewModel: UserViewModel, // <-- AGREGA ESTO
+    userViewModel: UserViewModel,
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     rememberCoroutineScope()
@@ -57,7 +59,8 @@ fun ListsScreen(
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
-                userViewModel = userViewModel, // <- este es el parámetro faltante
+                userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,

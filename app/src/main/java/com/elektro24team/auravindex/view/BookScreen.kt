@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.view
 
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
@@ -165,6 +166,7 @@ fun BookScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,
@@ -697,6 +699,7 @@ fun BookScreen(
                                                     modifier = Modifier.padding(bottom = 12.dp))
                                             }
                                             Divider(color = Color.LightGray, thickness = 1.dp)
+                                            Log.d("AVDEBUG", "Active plan: ${activePlanViewModel.activePlan.value}")
                                             if (loan.renewals.toInt() < activePlanViewModel.activePlan.value?.plan?.max_renewals_per_loan?.toInt()!!) {
                                                 Spacer(modifier = Modifier.height(16.dp))
                                                 Row(

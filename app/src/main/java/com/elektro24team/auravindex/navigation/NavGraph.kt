@@ -186,7 +186,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.LISTS) {
            ListsScreen(
                navController = navController,
-               userViewModel = userViewModel
+               userViewModel = userViewModel,
+               localSettingViewModel = localSettingViewModel
            )
         }
         composable(Routes.LOANS) {
@@ -262,7 +263,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navController = navController,
                 bookViewModel = bookViewModel,
                 bookCollectionViewModel = bookCollectionViewModel,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel
             )
         }
         composable(
@@ -286,6 +288,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 bookViewModel = bookViewModel,
                 planViewModel = planViewModel,
                 bookCollectionViewModel = bookCollectionViewModel,
+                activePlanViewModel = activePlanViewModel,
                 userViewModel = userViewModel,
                 localSettingViewModel = localSettingViewModel
             )

@@ -44,15 +44,13 @@ fun SearchResultsScreen(
         ?.drop((currentPage - 1) * itemsPerPage)
         ?.take(itemsPerPage)
     val totalPages = (filteredBooks?.size?.plus(itemsPerPage)?.minus(1))?.div(itemsPerPage)
-
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = "Results",
-                        color = Color.White // Título en blanco
+                        color = Color.White
                     )
                 },
                 navigationIcon = {
@@ -88,7 +86,6 @@ fun SearchResultsScreen(
                         )
                     )
             ) {
-                // Barra de búsqueda local (filtra entre los resultados previos)
                 TextField(
                     value = currentQuery,
                     onValueChange = {
@@ -124,17 +121,13 @@ fun SearchResultsScreen(
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
                 }
-
                 Divider(modifier = Modifier.padding(horizontal = 8.dp))
-
-                // Resultados filtrados
                 if (filteredBooks?.isNotEmpty() == true) {
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         items(paginatedBooks?.size ?: 0) { index ->
                             BookCard(paginatedBooks?.get(index), navController)
                         }
                     }
-                    // Paginación
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),

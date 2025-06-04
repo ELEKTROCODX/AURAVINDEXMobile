@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import com.elektro24team.auravindex.utils.functions.*
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 
@@ -46,20 +48,13 @@ fun DrawerMenu(
     navController: NavController,
     currentRoute: String?,
     onItemSelected: (String) -> Unit,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
-    val localSettingsViewModel = rememberLocalSettingViewModel()
-    val localSettings by localSettingsViewModel.settings.collectAsState()
+    val localSettings by localSettingViewModel.settings.collectAsState()
     val user by userViewModel.user.observeAsState()
-    LaunchedEffect(Unit) {
-        localSettingsViewModel.loadUserSettings()
-        userViewModel.getUserById(
-            localSettings[SettingKey.TOKEN.keySetting] ?: "",
-            localSettings[SettingKey.ID.keySetting] ?: ""
-        )
-    }
-
+    Log.d("AVDEBUG", "DrawerMenu: $user")
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -198,6 +193,8 @@ fun DrawerMenu(
             Spacer(modifier = Modifier.height(16.dp))
 
             val isUserLoggedIn = isLoggedIn(localSettings)
+            Log.d("AVDEBUG", "Settings: $localSettings")
+            Log.d("AVDEBUG", "DrawerMenu is logged in: $isUserLoggedIn")
             val loginLabel = if (isUserLoggedIn) "Log out" else "Log in"
             val loginIcon = if (isUserLoggedIn) Icons.Default.ArrowBackIosNew else Icons.Default.ArrowBackIosNew
             val loginAction = if (isUserLoggedIn) "logout" else "login"

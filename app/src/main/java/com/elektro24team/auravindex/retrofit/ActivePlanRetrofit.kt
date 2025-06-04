@@ -28,6 +28,8 @@ interface ActivePlanService{
         @Header("Authorization") token: String,
         @Query("filter_field") filterField: String? = "user",
         @Query("filter_value") filterValue: String,
+        @Query("page") page: String = "1",
+        @Query("limit") limit: String = "none",
         @Query("sort") sort: String? = "desc",
         @Query("sort_by") sortBy: String? = "createdAt"
     ): ApiResponse<List<ActivePlan>>

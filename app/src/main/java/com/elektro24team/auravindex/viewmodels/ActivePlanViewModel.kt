@@ -54,15 +54,17 @@ class ActivePlanViewModel() : BaseViewModel() {
     fun loadActivePlanByUserId(token: String, userId: String) {
         viewModelScope.launch {
             val result = try {
-                val remote = ActivePlanClient.apiService.getActivePlanByUserId(token = "Bearer $token", filterValue = userId, sort = "desc", sortBy = "createdAt")
+                val remote = ActivePlanClient.apiService.getActivePlanByUserId(token = "Bearer $token", filterValue = userId, sort = "asc", sortBy = "createdAt")
                 Result.success(remote)
             } catch (e: Exception) {
                 Result.failure(e)
             }
+            //Log.d("AVDEBUG", "Token: $token, UserId: $userId - Result: $result")
             if (result.isSuccess) {
                 if(result.getOrNull()?.data?.isNotEmpty() == true) {
                     result.getOrNull()?.data?.forEach { ap ->
                         if(ap.plan_status?.plan_status == "ACTIVE") {
+                            //Log.d("AVDEBUG", "Active plan found: $ap")
                             _activePlan.value = ap
                         }
                     }
@@ -86,7 +88,7 @@ class ActivePlanViewModel() : BaseViewModel() {
     fun loadActivePlans(token: String) {
         viewModelScope.launch {
             val result = try {
-                val remote = ActivePlanClient.apiService.getActivePlans(token = "Bearer $token")
+                val remote = ActivePlanClient.apiService.getActivePlans(token = "Bearer $token", sort = "desc", sortBy = "createdAt")
                 Result.success(remote)
             } catch (e: Exception) {
                 Result.failure(e)

@@ -89,14 +89,18 @@ fun LoginScreen(
             localSettingViewModel.saveSetting(SettingKey.PROFILE_IMAGE.keySetting, user?.user_img.toString())
             localSettingViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user?.role?._id.toString())
             localSettingViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user?.role?.name.toString())
-            userEmail.value = ""
-            userPassword.value = ""
-            authViewModel.loginResult.value = ""
             checkAndSyncFcmToken(context)
+            activePlanViewModel.loadActivePlanByUserId(
+                loginResult!!,
+                user?._id.toString()
+            )
             userViewModel.getUserById(
                 token = loginResult!!,
                 userId = user?._id.toString()
             )
+            userEmail.value = ""
+            userPassword.value = ""
+            authViewModel.loginResult.value = ""
             Toast.makeText(context, "Successfully logged in.", Toast.LENGTH_SHORT).show()
             localSettingViewModel.saveSetting(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis().toString())
             navController.navigate(Routes.MAIN)
