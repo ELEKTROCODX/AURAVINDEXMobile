@@ -75,7 +75,7 @@ fun PlanScreen(
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
-                userViewModel = userViewModel, // <- este es el parámetro faltante
+                userViewModel = userViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,

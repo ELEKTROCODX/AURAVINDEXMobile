@@ -133,11 +133,10 @@ fun PlanCard(
                     }
                 }
 
-                val isActive = localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN.keySetting, "").toString() == plan?._id
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                if (isActive) {
+                if (activePlan.value != null) {
                     Text(
                         text = "ACTIVE PLAN (until ${formatUtcToLocalWithDate(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, "").toString())})",
                         fontSize = 12.sp,
@@ -146,7 +145,6 @@ fun PlanCard(
                     )
                     Spacer(modifier = Modifier)
                     Row {
-                        // Botón RENEW
                         Button(
                             onClick = {
                                 if (isLoggedIn(localSettings.value)) {
@@ -175,10 +173,7 @@ fun PlanCard(
                                 color = WhiteC
                             )
                         }
-
                         Spacer(modifier = Modifier.width(10.dp))
-
-// Botón CANCEL
                         Button(
                             onClick = {
                                 if (isLoggedIn(localSettings.value)) {
@@ -243,8 +238,6 @@ fun PlanCard(
                             color = WhiteC
                         )
                     }
-
-
                 }
             }
         }

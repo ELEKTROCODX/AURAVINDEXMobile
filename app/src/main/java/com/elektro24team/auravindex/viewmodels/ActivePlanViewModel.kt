@@ -198,6 +198,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                 Result.failure(e)
             }
             if (result.isSuccess) {
+                _activePlan.value = null
                 notifySuccess("Your plan has been successfully canceled.")
             } else {
                 val error = result.exceptionOrNull()
