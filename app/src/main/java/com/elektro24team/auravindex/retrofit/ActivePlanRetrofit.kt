@@ -19,13 +19,17 @@ interface ActivePlanService{
     suspend fun getActivePlans(
         @Header("Authorization") token: String,
         @Query("page") page: String = "1",
-        @Query("limit") limit: String = "none"
+        @Query("limit") limit: String = "none",
+        @Query("sort") sort: String? = "asc",
+        @Query("sort_by") sortBy: String? = "createdAt"
     ): ApiResponse<List<ActivePlan>>
     @GET("active_plan")
     suspend fun getActivePlanByUserId(
         @Header("Authorization") token: String,
         @Query("filter_field") filterField: String? = "user",
-        @Query("filter_value") filterValue: String
+        @Query("filter_value") filterValue: String,
+        @Query("sort") sort: String? = "asc",
+        @Query("sort_by") sortBy: String? = "createdAt"
     ): ApiResponse<List<ActivePlan>>
     @GET("active_plan/{id}")
     suspend fun getActivePlanById(

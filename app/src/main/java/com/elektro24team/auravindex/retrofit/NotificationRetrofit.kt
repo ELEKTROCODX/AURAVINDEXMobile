@@ -21,7 +21,9 @@ interface NotificationService {
     suspend fun getNotifications(
         @Header("Authorization") token: String,
         @Query("page") page: String = "1",
-        @Query("limit") limit: String = "none"
+        @Query("limit") limit: String = "none",
+        @Query("sort") sort: String = "asc",
+        @Query("sort_by") sortBy: String = "createdAt"
     ): ApiResponse<List<Notification>>
     @GET("notification")
     suspend fun getUserNotifications(
@@ -29,7 +31,9 @@ interface NotificationService {
         @Query("filter_field") filterField: String? = "receiver",
         @Query("filter_value") filterValue: String,
         @Query("page") page: String = "1",
-        @Query("limit") limit: String = "none"
+        @Query("limit") limit: String = "none",
+        @Query("sort") sort: String? = "asc",
+        @Query("sort_by") sortBy: String? = "createdAt"
     ): ApiResponse<List<Notification>>
     @GET("notification/{id}")
     suspend fun getNotificationById(

@@ -54,7 +54,7 @@ class ActivePlanViewModel() : BaseViewModel() {
     fun loadActivePlanByUserId(token: String, userId: String) {
         viewModelScope.launch {
             val result = try {
-                val remote = ActivePlanClient.apiService.getActivePlanByUserId(token = "Bearer $token", filterValue = userId)
+                val remote = ActivePlanClient.apiService.getActivePlanByUserId(token = "Bearer $token", filterValue = userId, sort = "desc", sortBy = "createdAt")
                 Result.success(remote)
             } catch (e: Exception) {
                 Result.failure(e)

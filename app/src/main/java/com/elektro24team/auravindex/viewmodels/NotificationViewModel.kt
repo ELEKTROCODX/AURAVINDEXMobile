@@ -22,7 +22,7 @@ class NotificationViewModel() : BaseViewModel() {
     fun loadNotifications(token: String) {
         viewModelScope.launch {
             val result = try {
-                val remote = NotificationClient.apiService.getNotifications(token = "Bearer $token")
+                val remote = NotificationClient.apiService.getNotifications(token = "Bearer $token", sort = "desc", sortBy = "createdAt")
                 Result.success(remote)
             } catch (e: Exception) {
                 Result.failure(e)
@@ -71,7 +71,7 @@ class NotificationViewModel() : BaseViewModel() {
     fun loadUserNotifications(token: String, userId: String) {
         viewModelScope.launch {
             val result = try {
-                val remote = NotificationClient.apiService.getUserNotifications(token = "Bearer $token", filterValue =  userId)
+                val remote = NotificationClient.apiService.getUserNotifications(token = "Bearer $token", filterValue =  userId, sort = "desc", sortBy = "createdAt")
                 Result.success(remote)
             } catch (e: Exception) {
                 Result.failure(e)
