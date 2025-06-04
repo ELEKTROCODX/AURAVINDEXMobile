@@ -24,13 +24,16 @@ object FcmTokenUploader {
                 val response = UserClient.apiService.updateFcmToken("Bearer $authToken", userId.toString(), fcmRequest)
                 if (response.isSuccessful) {
                 } else {
-                    Toast.makeText(context, "Failed to update FCM token.", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Failed to update FCM token.", Toast.LENGTH_SHORT).show()
+                    Log.d("FcmTokenUploader", "Failed to update FCM token: ${response.errorBody()?.string()}")
                 }
             } else {
-                Toast.makeText(context, "Auth token not available.", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Auth token not available.", Toast.LENGTH_SHORT).show()
+                Log.d("FcmTokenUploader", "Auth token not available.")
             }
         } catch (e: Exception) {
-            Toast.makeText(context, "Something failed: {${e.message}}", Toast.LENGTH_SHORT).show()
+            Log.d("FcmTokenUploader", "Error updating FCM token: ${e.message}")
+            //Toast.makeText(context, "Something failed: {${e.message}}", Toast.LENGTH_SHORT).show()
         }
     }
      fun checkAndSyncFcmToken(context: Context) {
