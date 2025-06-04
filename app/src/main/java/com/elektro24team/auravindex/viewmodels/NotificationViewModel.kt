@@ -22,7 +22,6 @@ class NotificationViewModel() : BaseViewModel() {
 
     fun createNotification(token: String, notification: NotificationRequest) {
         viewModelScope.launch {
-
         }
     }
     fun loadNotifications(token: String) {
@@ -107,6 +106,15 @@ class NotificationViewModel() : BaseViewModel() {
                 Result.failure(e)
             }
             if (result.isSuccess) {
+                val currentList = _userNotifications.value
+                val updatedList = currentList?.map { notification ->
+                    if (notification._id == notificationId) {
+                        notification.copy(is_read = true)
+                    } else {
+                        notification
+                    }
+                }
+                _userNotifications.value = updatedList
                 notifySuccess("Notification marked as read")
             } else {
                 val error = result.exceptionOrNull()
