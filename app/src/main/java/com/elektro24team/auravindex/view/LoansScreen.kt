@@ -20,6 +20,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,6 +39,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -104,6 +107,10 @@ fun LoansScreen(
     val showTeamDialog = remember { mutableStateOf(false) }
     val userLoans by loanViewModel.userLoans.observeAsState()
     val settings by localSettingViewModel.settings.collectAsState()
+    var currentPage by remember { mutableIntStateOf(1) }
+    val itemsPerPage by remember { mutableIntStateOf(10) }
+    val paginatedLoans = userLoans?.drop((currentPage - 1) * itemsPerPage)?.take(itemsPerPage)
+    val totalPages = (userLoans?.size?.plus(itemsPerPage)?.minus(1))?.div(itemsPerPage)
     LaunchedEffect(Unit) {
         if(isLoggedIn(settings)) {
             loanViewModel.loadUserLoans(
@@ -179,15 +186,41 @@ fun LoansScreen(
                         )
                         if (userLoans != null) {
                             LazyColumn {
-                                items(userLoans!!.size) { index ->
-                                    LoanCard(
-                                        loan = userLoans!![index],
-                                        navController = navController
-                                    )
+                                items(paginatedLoans?.size ?: 0) { index ->
+                                    LoanCard(loan = paginatedLoans?.get(index), navController = navController)
+                                }
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                if(totalPages != null) {
+                                    (1..totalPages).forEach { page ->
+                                        Button(
+                                            onClick = { currentPage = page },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = if (page == currentPage)
+                                                    MaterialTheme.colorScheme.primary
+                                                else
+                                                    MaterialTheme.colorScheme.secondaryContainer,
+                                                contentColor = if (page == currentPage)
+                                                    MaterialTheme.colorScheme.onPrimary
+                                                else
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                            ),
+                                            modifier = Modifier.padding(horizontal = 4.dp)
+                                        ) {
+                                            Text(text = "$page")
+                                        }
+                                    }
                                 }
                             }
                         } else {
-
+                            Text(
+                                text = "You don't have any loans.",
+                                style = MaterialTheme.typography.titleSmall,
+                                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                            )
                         }
                     }
                 }
