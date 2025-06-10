@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.view
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -17,6 +18,7 @@ import com.elektro24team.auravindex.ui.components.BottomNavBar
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.ui.components.BookCard
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -129,8 +131,9 @@ fun SearchResultsScreen(
                         }
                     }
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().horizontalScroll(
+                            rememberScrollState()
+                        ),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         if(totalPages != null) {

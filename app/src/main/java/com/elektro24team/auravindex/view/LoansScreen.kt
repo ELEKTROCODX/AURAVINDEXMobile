@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -108,7 +110,7 @@ fun LoansScreen(
     val userLoans by loanViewModel.userLoans.observeAsState()
     val settings by localSettingViewModel.settings.collectAsState()
     var currentPage by remember { mutableIntStateOf(1) }
-    val itemsPerPage by remember { mutableIntStateOf(10) }
+    val itemsPerPage by remember { mutableIntStateOf(6) }
     val paginatedLoans = userLoans?.drop((currentPage - 1) * itemsPerPage)?.take(itemsPerPage)
     val totalPages = (userLoans?.size?.plus(itemsPerPage)?.minus(1))?.div(itemsPerPage)
     LaunchedEffect(Unit) {
@@ -171,8 +173,7 @@ fun LoansScreen(
                         )
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                        modifier = Modifier,
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -184,14 +185,16 @@ fun LoansScreen(
                             style = MaterialTheme.typography.headlineMedium,
                             modifier = Modifier.padding(vertical = 16.dp).align(Alignment.CenterHorizontally)
                         )
-                        if (userLoans != null) {
-                            LazyColumn {
+                        if (paginatedLoans != null) {
+                            LazyColumn(modifier = Modifier.weight(1f)) {
                                 items(paginatedLoans?.size ?: 0) { index ->
                                     LoanCard(loan = paginatedLoans?.get(index), navController = navController)
                                 }
                             }
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth().horizontalScroll(
+                                    rememberScrollState()
+                                ),
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 if(totalPages != null) {
