@@ -140,7 +140,6 @@ fun DrawerMenu(
                 AdminMenuItem("Users", Icons.Default.Person, AdminDashboardObject.USER),
                 AdminMenuItem("Loans", Icons.AutoMirrored.Filled.ReceiptLong, AdminDashboardObject.LOAN),
                 AdminMenuItem("Notifications", Icons.Default.Notifications, AdminDashboardObject.NOTIFICATION),
-                AdminMenuItem("Fees", Icons.Default.AttachMoney, AdminDashboardObject.FEE),
                 AdminMenuItem("Plans", Icons.AutoMirrored.Filled.List, AdminDashboardObject.PLAN),
                 AdminMenuItem("Active Plans", Icons.Default.PlayCircleFilled, AdminDashboardObject.ACTIVE_PLAN),
                 AdminMenuItem("Audit Log", Icons.Default.Terminal, AdminDashboardObject.AUDIT_LOG)
