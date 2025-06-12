@@ -59,7 +59,7 @@ class ActivePlanViewModel() : BaseViewModel() {
             if (result.isSuccess) {
                 if(result.getOrNull()?.data?.isNotEmpty() == true) {
                     result.getOrNull()?.data?.forEach { ap ->
-                        if(ap.plan_status?.plan_status == "ACTIVE") {
+                        if(ap.plan_status?.plan_status == "ACTIVE" || ap.plan_status?.plan_status == "RENEWED") {
                             _activePlan.value = ap
                         }
                     }

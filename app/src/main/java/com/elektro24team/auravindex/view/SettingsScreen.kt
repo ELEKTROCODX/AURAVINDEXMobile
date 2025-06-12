@@ -232,7 +232,10 @@ fun SettingsScreen(
                                     SimpleTextRow("User ID:", localSettings[SettingKey.ID.keySetting])
                                     SimpleTextRow("User email:", localSettings[SettingKey.EMAIL.keySetting])
                                     SimpleTextRow("User role:", localSettings[SettingKey.ROLE_NAME.keySetting])
-                                    SimpleTextRow("Active plan:", localSettings[SettingKey.ACTIVE_PLAN.keySetting])
+                                    SimpleTextRow("Active plan ID:", localSettings[SettingKey.ACTIVE_PLAN_ID.keySetting])
+                                    SimpleTextRow("Active plan name:", localSettings[SettingKey.ACTIVE_PLAN.keySetting])
+
+                                    SimpleTextRow("Active plan ending date:", localSettings[SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting])
                                     SimpleTextRow("User token:", localSettings[SettingKey.TOKEN.keySetting])
                                 }
                             }

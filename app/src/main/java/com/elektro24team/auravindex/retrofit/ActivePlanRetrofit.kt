@@ -31,7 +31,8 @@ interface ActivePlanService{
         @Query("page") page: String = "1",
         @Query("limit") limit: String = "none",
         @Query("sort") sort: String? = "desc",
-        @Query("sort_by") sortBy: String? = "createdAt"
+        @Query("sort_by") sortBy: String? = "createdAt",
+        @Query("is_active") isActive: Boolean? = true
     ): ApiResponse<List<ActivePlan>>
     @GET("active_plan/{id}")
     suspend fun getActivePlanById(

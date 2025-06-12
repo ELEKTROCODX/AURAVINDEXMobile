@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.LocalSettingRepository

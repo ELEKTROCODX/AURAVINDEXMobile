@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -72,6 +73,7 @@ fun LoginScreen(
     val context = LocalContext.current
     val loginResult by authViewModel.loginResult.observeAsState()
     val user by userViewModel.myUser.observeAsState()
+    val activePlan by activePlanViewModel.activePlan.observeAsState()
     val userEmail = remember { mutableStateOf("") }
     val userPassword = remember { mutableStateOf("") }
     ObserveError(authViewModel)
@@ -83,7 +85,8 @@ fun LoginScreen(
         }
     }
     LaunchedEffect(user) {
-        if (user != null) {
+        Log.d("AVDEBUG", "User: ${user}")
+        if (user != null && loginResult != null) {
             AuthPrefsHelper.saveUserId(context, user?._id.toString())
             localSettingViewModel.saveSetting(SettingKey.TOKEN.keySetting, loginResult!!)
             localSettingViewModel.saveSetting(SettingKey.EMAIL.keySetting, userEmail.value)
@@ -92,13 +95,13 @@ fun LoginScreen(
             localSettingViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user?.role?._id.toString())
             localSettingViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user?.role?.name.toString())
             checkAndSyncFcmToken(context)
-            activePlanViewModel.loadActivePlanByUserId(
-                loginResult!!,
-                user?._id.toString()
-            )
             userViewModel.getMyUserById(
                 token = loginResult!!,
                 userId = user?._id.toString()
+            )
+            activePlanViewModel.loadActivePlanByUserId(
+                loginResult!!,
+                user?._id.toString()
             )
             userEmail.value = ""
             userPassword.value = ""

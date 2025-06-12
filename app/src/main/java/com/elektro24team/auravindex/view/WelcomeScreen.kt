@@ -69,7 +69,7 @@ fun WelcomeScreen(
         isReadyToNavigate = true
     }
     LaunchedEffect(activePlan) {
-        if (!activePlan?._id.isNullOrEmpty()) {
+        if (activePlan != null && isLoggedIn(settings)) {
             localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN.keySetting, activePlan?.plan?._id.toString())
             localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN_ID.keySetting, activePlan?._id.toString())
             localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, activePlan?.ending_date.toString())

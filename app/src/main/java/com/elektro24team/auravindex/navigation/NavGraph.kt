@@ -225,7 +225,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             AuthPrefsHelper.clearFcmToken(context)
             AuthPrefsHelper.clearPermissionRequested(context)
             AuthPrefsHelper.clearUserId(context)
-            Toast.makeText(LocalContext.current, "Successfully logged out.", Toast.LENGTH_LONG).show()
+            Toast.makeText(LocalContext.current, "Successfully logged out.", Toast.LENGTH_SHORT).show()
             navController.navigate(Routes.WELCOME)
         }
         composable(Routes.MAIN){
