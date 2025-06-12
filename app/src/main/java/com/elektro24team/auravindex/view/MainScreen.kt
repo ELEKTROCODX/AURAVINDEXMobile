@@ -144,7 +144,10 @@ fun MainScreen(
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
-                TopBar(navController = navController, drawerState = drawerState)
+                TopBar(
+                    navController = navController,
+                    drawerState = drawerState
+                )
             },
             bottomBar = {
                 BottomNavBar(
@@ -160,62 +163,64 @@ fun MainScreen(
                     }
                 )
             },
-            content = { paddingValues ->
+            content = { innerPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(innerPadding)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
                             )
                         )
                 ) {
+                    val app = LocalContext.current.applicationContext as AuraVindexApp
+                    val isConnected by app.networkLiveData.observeAsState(true)
+                    ConnectionAlert(isConnected)
+
+                    if (showMustBeLoggedInDialog) {
+                        MustBeLoggedInDialog(
+                            navController = navController,
+                            action = actionMustBeLoggedInDialog,
+                            onDismiss = { showMustBeLoggedInDialog = false }
+                        )
+                    }
                     Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(innerPadding),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if(isLoggedIn(localSettings) && recentBooks?.books?.size!=0 ) {
+                            HomePageSection(
+                                "Recent searches",
+                                recentBooks?.books,
+                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                                navController
+                            )
+                        }
+                        HomePageSection(
+                            "Recommendations",
+                            books?.take(10),
+                            seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                            navController
+                        )
+                        HomePageSection(
+                            "New releases",
+                            latestReleases,
+                            seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                            navController
+                        )
+                    }
+                    /*Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                     ) {
-                        val app = LocalContext.current.applicationContext as AuraVindexApp
-                        val isConnected by app.networkLiveData.observeAsState(true)
-                        ConnectionAlert(isConnected)
 
-                        if (showMustBeLoggedInDialog) {
-                            MustBeLoggedInDialog(
-                                navController = navController,
-                                action = actionMustBeLoggedInDialog,
-                                onDismiss = { showMustBeLoggedInDialog = false }
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                            verticalArrangement = Arrangement.Top,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            if(isLoggedIn(localSettings) && recentBooks?.books?.size!=0 ) {
-                                HomePageSection(
-                                    "Recent searches",
-                                    recentBooks?.books,
-                                    seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                    navController
-                                )
-                            }
-                            HomePageSection(
-                                "Recommendations",
-                                books?.take(10),
-                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                navController
-                            )
-                            HomePageSection(
-                                "New releases",
-                                latestReleases,
-                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                navController
-                            )
-                        }
-                    }
+                    }*/
                 }
             }
         )

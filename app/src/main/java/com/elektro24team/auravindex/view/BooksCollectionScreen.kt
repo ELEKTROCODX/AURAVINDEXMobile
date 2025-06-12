@@ -39,6 +39,7 @@ fun BooksCollectionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.statusBarsPadding(),
                 title = {
                     Text(
                         "Collection: $bookCollectionName",
@@ -64,10 +65,10 @@ fun BooksCollectionScreen(
                 onItemClick = { route -> navController.navigate(route) }
             )
         },
-        content = { paddingValues ->
+        content = { innerPadding ->
             Column(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(innerPadding)
                     .fillMaxSize()
                     .background(WhiteC)
                     .background(

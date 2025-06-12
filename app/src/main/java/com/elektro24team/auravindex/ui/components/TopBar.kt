@@ -42,6 +42,7 @@ fun TopBar(
         )
 
         TopAppBar(
+            modifier = Modifier.statusBarsPadding(),
             title = {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

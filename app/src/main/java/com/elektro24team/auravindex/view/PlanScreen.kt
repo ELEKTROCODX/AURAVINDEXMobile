@@ -106,11 +106,11 @@ fun PlanScreen(
                     onItemClick = { route -> navController.navigate(route) }
                 )
             },
-            content = { paddingValues ->
+            content = { innerPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(innerPadding)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))

@@ -107,7 +107,10 @@ fun AdminDashboardScreen(
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
-                TopBar(navController = navController, drawerState = drawerState)
+                TopBar(
+                    navController = navController,
+                    drawerState = drawerState
+                )
             },
             bottomBar = {
                 BottomNavBar(
@@ -115,11 +118,11 @@ fun AdminDashboardScreen(
                     onItemClick = { route -> navController.navigate(route) }
                 )
             },
-            content = { paddingValues ->
+            content = { innerPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(innerPadding)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))

@@ -49,6 +49,7 @@ fun SearchResultsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.statusBarsPadding(),
                 title = {
                     Text(
                         text = "Results",
@@ -76,11 +77,10 @@ fun SearchResultsScreen(
                 onItemClick = { route -> navController.navigate(route) }
             )
         },
-        content = { paddingValues ->
-
+        content = { innerPadding ->
             Column(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(innerPadding)
                     .fillMaxSize()
                     .background(
                         brush = Brush.verticalGradient(
