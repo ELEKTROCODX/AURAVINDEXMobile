@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.navigation
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
@@ -14,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.rememberActivePlanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberAuditLogViewModel
 import com.elektro24team.auravindex.utils.functions.rememberAuthViewModel
@@ -211,22 +213,29 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             )
         }
         composable(Routes.LOGOUT) {
-            localSettingViewModel.clearUserSettings()
-            activePlanViewModel.clearViewModelData()
-            auditLogViewModel.clearViewModelData()
-            bookViewModel.clearViewModelData()
-            bookCollectionViewModel.clearViewModelData()
-            loanViewModel.clearViewModelData()
-            planViewModel.clearViewModelData()
-            recentBookViewModel.clearViewModelData()
-            userViewModel.clearViewModelData()
-            authViewModel.clearViewModelData()
-            AuthPrefsHelper.clearAuthToken(context)
-            AuthPrefsHelper.clearFcmToken(context)
-            AuthPrefsHelper.clearPermissionRequested(context)
-            AuthPrefsHelper.clearUserId(context)
-            Toast.makeText(LocalContext.current, "Successfully logged out.", Toast.LENGTH_SHORT).show()
-            navController.navigate(Routes.WELCOME)
+            val context = LocalContext.current
+            LaunchedEffect(Unit) {
+                localSettingViewModel.clearUserSettings()
+                activePlanViewModel.clearViewModelData()
+                auditLogViewModel.clearViewModelData()
+                bookViewModel.clearViewModelData()
+                bookCollectionViewModel.clearViewModelData()
+                loanViewModel.clearViewModelData()
+                planViewModel.clearViewModelData()
+                recentBookViewModel.clearViewModelData()
+                userViewModel.clearViewModelData()
+                authViewModel.clearViewModelData()
+                AuthPrefsHelper.clearAuthToken(context)
+                AuthPrefsHelper.clearFcmToken(context)
+                AuthPrefsHelper.clearPermissionRequested(context)
+                AuthPrefsHelper.clearUserId(context)
+                Toast.makeText(context, "Successfully logged out.", Toast.LENGTH_SHORT).show()
+                navController.navigate(Routes.WELCOME) {
+                    popUpTo(Routes.WELCOME) {
+                        inclusive = true
+                    }
+                }
+            }
         }
         composable(Routes.MAIN){
             MainScreen(

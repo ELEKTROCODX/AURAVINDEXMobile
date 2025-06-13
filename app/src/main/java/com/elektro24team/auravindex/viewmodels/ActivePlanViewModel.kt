@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.viewmodels
 
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -19,8 +20,10 @@ class ActivePlanViewModel() : BaseViewModel() {
 
     private val _activePlan = MutableLiveData<ActivePlan?>()
     private val _activePlans = MutableLiveData<List<ActivePlan>?>()
+    private val _isActivePlanChecked = MutableLiveData(false)
     val activePlan: LiveData<ActivePlan?> = _activePlan
     val activePlans: LiveData<List<ActivePlan>?> = _activePlans
+    val isActivePlanChecked: LiveData<Boolean> get() = _isActivePlanChecked
 
     fun loadActivePlanById(token: String, activePlanId: String) {
         viewModelScope.launch {
@@ -77,6 +80,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                     notifyError("Network error: ${error?.message}")
                 }
             }
+            _isActivePlanChecked.value = true
         }
     }
 
@@ -249,8 +253,12 @@ class ActivePlanViewModel() : BaseViewModel() {
             }
         }
     }
+    fun resetIsActivePlanChecked() {
+        _isActivePlanChecked.value = false
+    }
     override fun clearViewModelData() {
         _activePlan.value = null
         _activePlans.value = null
+        _isActivePlanChecked.value = false
     }
 }

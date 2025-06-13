@@ -104,6 +104,6 @@ class UserViewModel(
     override fun clearViewModelData() {
         _users.value = null
         _myUser.value = null
-
+        _user.value = null
     }
 }

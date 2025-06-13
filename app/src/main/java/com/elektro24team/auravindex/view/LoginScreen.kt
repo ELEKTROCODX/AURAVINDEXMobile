@@ -74,6 +74,7 @@ fun LoginScreen(
     val loginResult by authViewModel.loginResult.observeAsState()
     val user by userViewModel.myUser.observeAsState()
     val activePlan by activePlanViewModel.activePlan.observeAsState()
+    val isActivePlanChecked by activePlanViewModel.isActivePlanChecked.observeAsState(false)
     val userEmail = remember { mutableStateOf("") }
     val userPassword = remember { mutableStateOf("") }
     ObserveError(authViewModel)
@@ -85,7 +86,6 @@ fun LoginScreen(
         }
     }
     LaunchedEffect(user) {
-        Log.d("AVDEBUG", "User: ${user}")
         if (user != null && loginResult != null) {
             AuthPrefsHelper.saveUserId(context, user?._id.toString())
             localSettingViewModel.saveSetting(SettingKey.TOKEN.keySetting, loginResult!!)
@@ -99,15 +99,28 @@ fun LoginScreen(
                 token = loginResult!!,
                 userId = user?._id.toString()
             )
+            activePlanViewModel.clearViewModelData()
             activePlanViewModel.loadActivePlanByUserId(
                 loginResult!!,
                 user?._id.toString()
             )
+        }
+    }
+    LaunchedEffect(activePlan) {
+        if (activePlan != null && loginResult != null) {
+            localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN.keySetting, activePlan?._id.toString())
+            localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN_ID.keySetting, activePlan?.plan?._id.toString())
+            localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, activePlan?.ending_date.toString())
+        }
+    }
+    LaunchedEffect(isActivePlanChecked) {
+        if (isActivePlanChecked) {
             userEmail.value = ""
             userPassword.value = ""
             authViewModel.loginResult.value = ""
             Toast.makeText(context, "Successfully logged in.", Toast.LENGTH_SHORT).show()
             localSettingViewModel.saveSetting(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis().toString())
+            activePlanViewModel.resetIsActivePlanChecked()
             navController.navigate(Routes.MAIN)
         }
     }

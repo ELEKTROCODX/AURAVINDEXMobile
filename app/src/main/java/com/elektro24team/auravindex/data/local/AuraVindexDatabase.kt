@@ -49,7 +49,7 @@ import com.elektro24team.auravindex.model.local.UserEntity
         LogActionEntity::class,
         AuditLogEntity::class,
                ],
-    version = 17 // Note: Increase version number when database schema changes
+    version = 18 // Note: Increase version number when database schema changes
     /* Note: be careful when updating schema, due local settings might be lost */
 )
 
@@ -80,7 +80,7 @@ internal abstract class AuraVindexDatabase : RoomDatabase() {
                     "auravindex.db"
                 )
                     /*.addMigrations(MIGRATION_2_3)*/
-                    /*.fallbackToDestructiveMigration(true)*/  /*TODO: Remove this in production*/
+                    .fallbackToDestructiveMigration(true)  /*TODO: Remove this in production*/
                     .build()
                     .also { INSTANCE = it }
             }
