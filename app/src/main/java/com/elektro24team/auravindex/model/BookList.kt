@@ -6,7 +6,7 @@ data class BookList (
     val title: String,
     val description: String,
     val owner: User,
-    val books: List<User>,
+    val books: List<Book>,
     val createdAt: String,
     val updatedAt: String,
 )

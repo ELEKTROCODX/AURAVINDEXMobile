@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.ui.components
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -10,9 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,13 +35,13 @@ import com.elektro24team.auravindex.ui.theme.BrownC
 import com.elektro24team.auravindex.ui.theme.OrangeC
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
+import com.elektro24team.auravindex.viewmodels.BookListViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
-/*
 
 @Composable
-fun BookListCard(bookList: BookList?, navController: NavController) {
+fun BookListCard(bookList: BookList?, navController: NavController, bookListViewModel: BookListViewModel, context: Context, token : String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,33 +58,6 @@ fun BookListCard(bookList: BookList?, navController: NavController) {
                 .padding(12.dp)
                 .fillMaxWidth()
         ) {
-            GlideImage(
-                imageModel = { IMG_url.trimEnd('/') + "/" + bookList?.bookList_img?.trimStart('/') },
-                modifier = Modifier
-                    .width(90.dp)
-                    .height(130.dp)
-                    .padding(end = 12.dp),
-                imageOptions = ImageOptions(contentScale = ContentScale.Crop),
-                loading = {
-                    Box(
-                        modifier = Modifier
-                            .width(90.dp)
-                            .height(130.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = PurpleC, strokeWidth = 2.dp)
-                    }
-                },
-                failure = {
-                    Image(
-                        painter = painterResource(id = R.mipmap.ic_launcher),
-                        contentDescription = "Default image",
-                        modifier = Modifier
-                            .width(90.dp)
-                            .height(130.dp)
-                    )
-                }
-            )
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -92,7 +70,7 @@ fun BookListCard(bookList: BookList?, navController: NavController) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = bookList?.summary.toString(),
+                    text = bookList?.description.toString(),
                     style = MaterialTheme.typography.bodySmall,
                     color = BrownC,
                     maxLines = 3
@@ -101,17 +79,21 @@ fun BookListCard(bookList: BookList?, navController: NavController) {
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = "Authors: ${bookList?.authors?.joinToString { "${it.name} ${it.last_name}" }}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PurpleC
-                )
-
-                Text(
-                    text = "Genres: ${bookList?.genres?.joinToString()}",
+                    text = "Books: ${bookList?.books?.joinToString(",") { it.title }}",
                     style = MaterialTheme.typography.bodySmall,
                     color = OrangeC
                 )
             }
+
+            Button(
+                onClick = {
+                    if (bookList != null) {
+                        bookListViewModel.deleteList(bookList._id,context, token)
+                    }
+                }
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete")
+            }
         }
     }
-}*/
+}

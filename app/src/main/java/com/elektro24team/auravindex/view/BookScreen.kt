@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.view
 
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
@@ -69,12 +70,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
+import com.elektro24team.auravindex.model.BookList
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.RequestLoanDialog
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.ui.components.UserBookLists
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
@@ -90,6 +93,7 @@ import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.utils.functions.mustBeSubscribedToast
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
+import com.elektro24team.auravindex.viewmodels.BookListViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
@@ -110,8 +114,8 @@ fun BookScreen(
     loanViewModel: LoanViewModel,
     loanStatusViewModel: LoanStatusViewModel,
     localSettingViewModel: LocalSettingViewModel,
-    userViewModel: UserViewModel
-
+    userViewModel: UserViewModel,
+    bookListViewModel: BookListViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val context = LocalContext.current
@@ -126,8 +130,11 @@ fun BookScreen(
     val settings = localSettingViewModel.settings.collectAsState()
     val userLoans = loanViewModel.userLoans.observeAsState()
     val bookLoans = loanViewModel.bookLoans.observeAsState()
+    val userLists by bookListViewModel.bookLists.collectAsState()
+    Log.d("BookListScreen", "userLists: ${userLists?.map { it.title }}")
     LaunchedEffect(bookId) {
         if(isLoggedIn(settings.value)) {
+            bookListViewModel.loadUserLists(settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
             bookViewModel.fetchBookWithAuth(settings.value[SettingKey.TOKEN.keySetting].toString(), bookId)
             loanViewModel.loadBookLoans(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookId)
         } else {
@@ -562,6 +569,7 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
+                                book.value?.let { UserBookLists(bookLists = userLists, bookId = it._id, bookListViewModel = bookListViewModel,token = settings.value[SettingKey.TOKEN.keySetting].toString(),context = context) }
                                 if (isLoggedIn(settings.value) && book.value?.book_status?.book_status == "AVAILABLE") {
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Button(

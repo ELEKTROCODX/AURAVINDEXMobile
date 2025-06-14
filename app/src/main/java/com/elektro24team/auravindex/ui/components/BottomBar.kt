@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
@@ -35,23 +36,19 @@ fun BottomNavBar(
     val outlinedIcons = listOf(
         Icons.Outlined.Home,
         Icons.Outlined.Search,
-/*
-        Icons.Outlined.List,
-*/
+        Icons.AutoMirrored.Outlined.List,
         Icons.Outlined.Diamond
     )
 
     val filledIcons = listOf(
         Icons.Filled.Home,
         Icons.Filled.Search,
-/*
-        Icons.Filled.List,
-*/
+        Icons.AutoMirrored.Filled.List,
         Icons.Filled.Diamond
     )
 
-    val routes = listOf("main", "search", /*"lists",*/ "plans")
-    val labels = listOf("Home", "Search", /*"Lists",*/ "Plans")
+    val routes = listOf("main", "search", "lists", "plans")
+    val labels = listOf("Home", "Search", "Lists", "Plans")
 
     Box(
         modifier = modifier

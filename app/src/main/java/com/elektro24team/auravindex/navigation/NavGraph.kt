@@ -9,6 +9,7 @@ import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,6 +35,7 @@ import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
+import com.elektro24team.auravindex.viewmodels.BookListViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
@@ -88,6 +90,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val notificationViewModel: NotificationViewModel = rememberNotificationViewModel()
     val genderViewModel : GenderViewModel = rememberGenderViewModel()
     val localSettings by localSettingViewModel.settings.collectAsState()
+    val bookListViewModel: BookListViewModel = viewModel()
     val context = LocalContext.current
 
     NavHost(navController = navController, startDestination = startDestination) {
@@ -164,7 +167,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 loanViewModel = loanViewModel,
                 loanStatusViewModel = loanStatusViewModel,
                 localSettingViewModel = localSettingViewModel,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
+                bookListViewModel = bookListViewModel
             )
         }
         composable(
@@ -186,7 +190,9 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.LISTS) {
            ListsScreen(
                navController = navController,
-               userViewModel = userViewModel
+               userViewModel = userViewModel,
+               localSettingViewModel= localSettingViewModel,
+               bookListViewModel = bookListViewModel
            )
         }
         composable(Routes.LOANS) {
