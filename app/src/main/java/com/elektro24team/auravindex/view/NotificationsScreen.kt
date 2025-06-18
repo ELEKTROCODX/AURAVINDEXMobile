@@ -62,6 +62,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.unit.Dp
 import com.elektro24team.auravindex.ui.components.NotificationCard
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.utils.functions.isNotificationRecent
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 
@@ -83,6 +86,12 @@ fun NotificationsScreen(
     val userNotifications by notificationViewModel.userNotifications.observeAsState()
     val localSettings by localSettingViewModel.settings.collectAsState()
     val recentNotifications = userNotifications?.filter { isNotificationRecent(it.createdAt) }
+    ObserveTokenExpiration(notificationViewModel, navController, localSettingViewModel)
+    ObserveTokenExpiration(userViewModel, navController, localSettingViewModel)
+    ObserveInsufficientPermissions(notificationViewModel, navController)
+    ObserveInsufficientPermissions(userViewModel, navController)
+    ObserveError(notificationViewModel)
+    ObserveError(userViewModel)
     LaunchedEffect(Unit) {
         localSettingViewModel.loadUserSettings()
         notificationViewModel.loadUserNotifications(

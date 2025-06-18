@@ -71,7 +71,7 @@ fun SearchScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val filteredBooks by bookViewModel.filteredBooks.observeAsState(emptyList())
+    val filteredBooks by bookViewModel.filteredBooks.collectAsState()
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
     }

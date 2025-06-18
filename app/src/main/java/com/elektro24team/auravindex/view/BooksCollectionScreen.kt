@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -31,7 +32,7 @@ fun BooksCollectionScreen(
     bookCollectionName: String,
     collectionId: String,
 ) {
-    val books by bookViewModel.filteredBooks.observeAsState(emptyList())
+    val books by bookViewModel.filteredBooks.collectAsState()
 
     LaunchedEffect(collectionId) {
         bookViewModel.loadBooksAndFilter(showDuplicates = false, showLents = true, filterField = "book_collection", filterValue = collectionId)

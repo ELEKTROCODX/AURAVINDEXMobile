@@ -122,18 +122,20 @@ fun BookScreen(
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val context = LocalContext.current
-    val colors = androidx.compose.material3.MaterialTheme.colorScheme
+    val colors = MaterialTheme.colorScheme
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val showRequestLoanDialog = remember { mutableStateOf(false) }
-    val book = bookViewModel.book.observeAsState()
+    val book = bookViewModel.book.collectAsState()
     val loanStatus = loanStatusViewModel.loanStatus.observeAsState()
     val activePlan = activePlanViewModel.activePlan.observeAsState()
     val settings = localSettingViewModel.settings.collectAsState()
-    val userLoans = loanViewModel.userLoans.observeAsState()
-    val bookLoans = loanViewModel.bookLoans.observeAsState()
+    val userLoans = loanViewModel.userLoans.collectAsState()
+    val bookLoans = loanViewModel.bookLoans.collectAsState()
+    val createdLoan = loanViewModel.createdLoan.collectAsState()
     LaunchedEffect(bookId) {
+        loanViewModel.clearViewModelData()
         if(isLoggedIn(settings.value)) {
             bookViewModel.fetchBookWithAuth(settings.value[SettingKey.TOKEN.keySetting].toString(), bookId)
             loanViewModel.loadBookLoans(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookId)
@@ -154,6 +156,15 @@ fun BookScreen(
                 settings.value[SettingKey.TOKEN.keySetting].toString(),
                 settings.value[SettingKey.ID.keySetting].toString()
             )
+        }
+    }
+    LaunchedEffect(createdLoan.value) {
+        if(createdLoan.value) {
+            loanViewModel.loadUserLoans(
+                settings.value[SettingKey.TOKEN.keySetting].toString(),
+                settings.value[SettingKey.ID.keySetting].toString()
+            )
+            bookViewModel.loadBook(bookId)
         }
     }
     ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
@@ -223,6 +234,7 @@ fun BookScreen(
 
                         if (showRequestLoanDialog.value) {
                             RequestLoanDialog(
+                                navController = navController,
                                 showRequestLoanDialog = showRequestLoanDialog,
                                 loanViewModel = loanViewModel,
                                 bookViewModel = bookViewModel,
@@ -609,7 +621,7 @@ fun BookScreen(
                                 }
                             }
                         }
-                        if (isLoggedIn(settings.value) && (book.value?.book_status?.book_status?.lowercase() == "lent")) {
+                        if(isLoggedIn(settings.value) && (book.value?.book_status?.book_status?.lowercase() == "lent")) {
                             bookLoans.value?.forEach { loan ->
                                 if ((loan?.book?._id == bookId) && (loan?.loan_status?.loan_status?.lowercase() != "finished") && (loan?.user?._id == settings.value.getOrDefault(SettingKey.ID.keySetting, ""))) {
                                     Card(
@@ -740,6 +752,7 @@ fun BookScreen(
                                                                     loan,
                                                                     notificationViewModel
                                                                 )
+                                                                navController.navigate("book/$bookId")
                                                             }
                                                         },
                                                         modifier = Modifier
@@ -910,6 +923,7 @@ fun BookScreen(
                                                                 Button(
                                                                     onClick = {
                                                                         loanViewModel.approveLoan(settings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""), bookLoan, notificationViewModel)
+                                                                        navController.navigate("book/${bookId}")
                                                                     },
                                                                     modifier = Modifier
                                                                         .height(48.dp)
@@ -937,6 +951,7 @@ fun BookScreen(
                                                                         bookLoan,
                                                                         notificationViewModel
                                                                     )
+                                                                    navController.navigate("book/${bookId}")
                                                                 },
                                                                 modifier = Modifier
                                                                     .height(48.dp)

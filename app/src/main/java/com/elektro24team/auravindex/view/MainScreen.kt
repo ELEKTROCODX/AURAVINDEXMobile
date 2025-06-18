@@ -71,8 +71,8 @@ fun MainScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val books by bookViewModel.books.observeAsState(emptyList())
-    val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
+    val books by bookViewModel.books.collectAsState()
+    val latestReleases by bookViewModel.latestReleases.collectAsState()
     val localSettings by localSettingViewModel.settings.collectAsState()
     val recentBooks by recentBookViewModel.recentBook.observeAsState()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }

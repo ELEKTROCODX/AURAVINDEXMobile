@@ -110,7 +110,7 @@ fun LoansScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val userLoans by loanViewModel.userLoans.observeAsState()
+    val userLoans by loanViewModel.userLoans.collectAsState()
     val settings by localSettingViewModel.settings.collectAsState()
     var currentPage by remember { mutableIntStateOf(1) }
     val itemsPerPage by remember { mutableIntStateOf(6) }

@@ -163,7 +163,7 @@ fun AdminDashboardScreen(
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
                                     ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
                                     ObserveInsufficientPermissions(bookViewModel, navController)
-                                    val books by bookViewModel.books.observeAsState()
+                                    val books by bookViewModel.books.collectAsState()
                                     LaunchedEffect(Unit) {
                                         bookViewModel.loadBooks(showDuplicates = true, showLents = true)
                                     }
@@ -192,7 +192,7 @@ fun AdminDashboardScreen(
                                     ObserveTokenExpiration(loanViewModel, navController, localSettingViewModel)
                                     ObserveInsufficientPermissions(loanViewModel, navController)
                                     ObserveError(loanViewModel)
-                                    val loans by loanViewModel.loans.observeAsState()
+                                    val loans by loanViewModel.loans.collectAsState()
                                     LaunchedEffect(Unit) {
                                         loanViewModel.loadLoans(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
                                     }
