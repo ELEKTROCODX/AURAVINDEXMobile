@@ -68,6 +68,7 @@ object Routes {
     const val TEAM = "team"
     const val TERMS = "terms"
     const val WELCOME = "welcome"
+    const val MYLIST = "myList/{listId}"
 }
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
@@ -298,6 +299,14 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         }
         composable(Routes.SIGNUP){
             RegisterScreen(genderViewModel,authViewModel,navController)
+        }
+        composable(
+            Routes.MYLIST,
+            arguments = listOf(
+                navArgument("listId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val listId = backStackEntry.arguments?.getString("listId") ?: ""
+            MyListScreen(navController, userViewModel,localSettingViewModel,bookListViewModel, listId = listId)
         }
     }
 }

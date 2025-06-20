@@ -41,12 +41,12 @@ import com.skydoves.landscapist.glide.GlideImage
 
 
 @Composable
-fun BookListCard(bookList: BookList?, navController: NavController, bookListViewModel: BookListViewModel, context: Context, token : String) {
+fun BookListCard(bookList: BookList?, navController: NavController, bookListViewModel: BookListViewModel, context: Context, token : String, userId: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { navController.navigate("bookList/${bookList?._id}") },
+            .clickable { navController.navigate("myList/${bookList?._id}") },
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
@@ -88,7 +88,7 @@ fun BookListCard(bookList: BookList?, navController: NavController, bookListView
             Button(
                 onClick = {
                     if (bookList != null) {
-                        bookListViewModel.deleteList(bookList._id,context, token)
+                        bookListViewModel.deleteList(bookList._id,context, token,userId)
                     }
                 }
             ) {

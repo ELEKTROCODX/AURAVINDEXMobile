@@ -26,6 +26,7 @@ interface BookListService{
 
     @GET("book_list/{id}")
     suspend fun getBookListById(
+        @Header("Authorization") token: String,
         @Path("id") id: String
     ): BookList
 

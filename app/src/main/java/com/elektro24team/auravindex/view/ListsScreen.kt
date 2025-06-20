@@ -148,7 +148,7 @@ fun ListsScreen(
                                 .padding(16.dp)
                         ) {
                             userLists?.forEach{ list ->
-                                BookListCard(list,navController, bookListViewModel, context,settings.value[SettingKey.TOKEN.keySetting].toString())
+                                BookListCard(list,navController, bookListViewModel, context,settings.value[SettingKey.TOKEN.keySetting].toString(),settings.value[SettingKey.ID.keySetting].toString())
                             }
                         }
                     }

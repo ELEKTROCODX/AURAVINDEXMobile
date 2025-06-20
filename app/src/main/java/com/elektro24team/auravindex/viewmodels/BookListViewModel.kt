@@ -24,6 +24,8 @@ class BookListViewModel(
 ) :BaseViewModel() {
     private val _bookLists = MutableStateFlow<List<BookList>?>(null)
     val bookLists: StateFlow<List<BookList>?> = _bookLists.asStateFlow()
+    private val _myBookList = MutableStateFlow<BookList?>(null)
+    val myBookList: StateFlow<BookList?> = _myBookList.asStateFlow()
 
     fun loadUserLists(token: String, userId: String){
         viewModelScope.launch {
@@ -104,7 +106,7 @@ class BookListViewModel(
         }
     }
 
-    fun deleteList(bookList: String, context: Context, token: String){
+    fun deleteList(bookList: String, context: Context, token: String, userId: String){
         viewModelScope.launch {
             val result = try {
                 val remote = BookListClient.apiService.deleteList(bookListId = bookList, token = "Bearer $token")
@@ -120,6 +122,7 @@ class BookListViewModel(
             }
 
             if (result.isSuccess) {
+                loadUserLists(token, userId)
                 Toast.makeText(context, "List deleted", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Failed to delete List", Toast.LENGTH_SHORT).show()
@@ -127,5 +130,49 @@ class BookListViewModel(
         }
     }
 
+    fun getMyList(token: String, listId: String){
+        viewModelScope.launch {
+            val result = try{
+                val remote = BookListClient.apiService.getBookListById("Bearer $token",listId)
+                Result.success(remote)
+            }catch (e: retrofit2.HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                Log.e("BookListViewModel", "Error HTTP: ${e.code()} ${e.message()}")
+                Log.e("BookListViewModel", "error body: $errorBody")
+                Result.failure(e)
+            } catch (e: Exception) {
+                Log.e("BookListViewModel", "Error getting list", e)
+                Result.failure(e)
+            }
+
+            if (result.isSuccess){
+                val myList = result.getOrNull()
+                _myBookList.value = myList
+            }
+        }
+    }
+
+    fun removeBookFromList(token: String, bookListId: String, bookId : String,context: Context){
+        viewModelScope.launch {
+            val result = try{
+                val remote = BookListClient.apiService.removeBookFromList("Bearer $token",bookListId,bookId)
+                Result.success(remote)
+            }catch (e: retrofit2.HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                Log.e("BookListViewModel", "Error HTTP: ${e.code()} ${e.message()}")
+                Log.e("BookListViewModel", "error body: $errorBody")
+                Result.failure(e)
+            } catch (e: Exception) {
+                Log.e("BookListViewModel", "Error removing book", e)
+                Result.failure(e)
+            }
+            if (result.isSuccess){
+                getMyList(token, listId = bookListId)
+                Toast.makeText(context, "Book removed", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Failed to remove book", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 }
