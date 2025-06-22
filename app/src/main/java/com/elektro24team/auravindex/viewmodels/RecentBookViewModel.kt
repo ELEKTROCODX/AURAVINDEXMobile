@@ -21,7 +21,6 @@ class RecentBookViewModel() : BaseViewModel() {
 
     fun loadRecentBooks(token: String, userId: String) {
         viewModelScope.launch {
-            /*val result = RecentBookClient.apiService.getRecentBooksById(token, userId)*/
             val result = try {
                 val remote = RecentBookClient.apiService.getRecentBooksByUserId(token = "Bearer $token", filterValue = userId)
                 Result.success(remote)

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.model.Notification
+import com.elektro24team.auravindex.model.api.NotificationRequest
 import com.elektro24team.auravindex.retrofit.NotificationClient
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
@@ -19,10 +20,36 @@ class NotificationViewModel() : BaseViewModel() {
     val userNotifications: LiveData<List<Notification>?> = _userNotifications
     val notification: LiveData<Notification?> = _notification
 
+    fun createNotification(token: String, notification: NotificationRequest) {
+        viewModelScope.launch {
+            val result = try {
+                val remote = NotificationClient.apiService.createNotification(token = "Bearer $token", notification)
+                Result.success(remote)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+            if (result.isSuccess) {
+                //notifySuccess("You have successfully subscribed to the plan.")
+            } else {
+                val error = result.exceptionOrNull()
+                if (error is HttpException) {
+                    when (error.code()) {
+                        401 -> notifyTokenExpired()
+                        403 -> notifyInsufficentPermissions()
+                        404 -> notifyError(error.message())
+                        409 -> notifyError(error.message())
+                        else -> notifyError("HTTP error: ${error.code()}")
+                    }
+                } else {
+                    notifyError("Network error: ${error?.message}")
+                }
+            }
+        }
+    }
     fun loadNotifications(token: String) {
         viewModelScope.launch {
             val result = try {
-                val remote = NotificationClient.apiService.getNotifications(token = "Bearer $token")
+                val remote = NotificationClient.apiService.getNotifications(token = "Bearer $token", sort = "desc", sortBy = "createdAt")
                 Result.success(remote)
             } catch (e: Exception) {
                 Result.failure(e)
@@ -71,7 +98,7 @@ class NotificationViewModel() : BaseViewModel() {
     fun loadUserNotifications(token: String, userId: String) {
         viewModelScope.launch {
             val result = try {
-                val remote = NotificationClient.apiService.getUserNotifications(token = "Bearer $token", filterValue =  userId)
+                val remote = NotificationClient.apiService.getUserNotifications(token = "Bearer $token", filterValue =  userId, sort = "desc", sortBy = "createdAt")
                 Result.success(remote)
             } catch (e: Exception) {
                 Result.failure(e)
@@ -101,7 +128,16 @@ class NotificationViewModel() : BaseViewModel() {
                 Result.failure(e)
             }
             if (result.isSuccess) {
-                notifySuccess("Notification marked as read")
+                val currentList = _userNotifications.value
+                val updatedList = currentList?.map { notification ->
+                    if (notification._id == notificationId) {
+                        notification.copy(is_read = true)
+                    } else {
+                        notification
+                    }
+                }
+                _userNotifications.value = updatedList
+                //notifySuccess("Notification marked as read")
             } else {
                 val error = result.exceptionOrNull()
                 if (error is HttpException) {

@@ -49,6 +49,7 @@ import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,6 +59,7 @@ fun MainScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
     userViewModel: UserViewModel,
+    notificationViewModel: NotificationViewModel,
     recentBookViewModel: RecentBookViewModel,
     localSettingViewModel: LocalSettingViewModel
 ) {
@@ -69,8 +71,8 @@ fun MainScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val books by bookViewModel.books.observeAsState(emptyList())
-    val latestReleases by bookViewModel.latestReleases.observeAsState(emptyList())
+    val books by bookViewModel.books.collectAsState()
+    val latestReleases by bookViewModel.latestReleases.collectAsState()
     val localSettings by localSettingViewModel.settings.collectAsState()
     val recentBooks by recentBookViewModel.recentBook.observeAsState()
     var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
@@ -79,17 +81,17 @@ fun MainScreen(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            Log.d("PERMISSIONTEST", "Notification permission granted")
+            //Log.d("PERMISSIONTEST", "Notification permission granted")
         } else {
             val permanentlyDenied = !ActivityCompat.shouldShowRequestPermissionRationale(
                 activity,
                 android.Manifest.permission.POST_NOTIFICATIONS
             )
             if (permanentlyDenied) {
-                Log.w("PERMISSIONTEST", "Permission permanently denied. Guide user to settings.")
-                Toast.makeText(context, "Please enable notifications in app settings.", Toast.LENGTH_SHORT).show()
+                //Log.d("PERMISSIONTEST", "Permission permanently denied. Guide user to settings.")
+               // Toast.makeText(context, "Please enable notifications in app settings.", Toast.LENGTH_SHORT).show()
             } else {
-                Log.d("PERMISSIONTEST", "Notification permission denied (can ask again)")
+                //Log.d("PERMISSIONTEST", "Notification permission denied (can ask again)")
             }
         }
     }
@@ -110,7 +112,6 @@ fun MainScreen(
         localSettingViewModel.loadUserSettings()
         bookViewModel.fetchLatestReleases()
         if(isLoggedIn(localSettings)) {
-            userViewModel.getUserById(localSettings[SettingKey.TOKEN.keySetting] ?: "", localSettings[SettingKey.ID.keySetting] ?: "")
             recentBookViewModel.loadRecentBooks(localSettings[SettingKey.TOKEN.keySetting] ?: "", localSettings[SettingKey.ID.keySetting] ?: "")
         }
     }
@@ -123,6 +124,8 @@ fun MainScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
+                localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,
@@ -141,7 +144,10 @@ fun MainScreen(
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
-                TopBar(navController = navController, drawerState = drawerState)
+                TopBar(
+                    navController = navController,
+                    drawerState = drawerState
+                )
             },
             bottomBar = {
                 BottomNavBar(
@@ -157,62 +163,64 @@ fun MainScreen(
                     }
                 )
             },
-            content = { paddingValues ->
+            content = { innerPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(innerPadding)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
                             )
                         )
                 ) {
+                    val app = LocalContext.current.applicationContext as AuraVindexApp
+                    val isConnected by app.networkLiveData.observeAsState(true)
+                    ConnectionAlert(isConnected)
+
+                    if (showMustBeLoggedInDialog) {
+                        MustBeLoggedInDialog(
+                            navController = navController,
+                            action = actionMustBeLoggedInDialog,
+                            onDismiss = { showMustBeLoggedInDialog = false }
+                        )
+                    }
                     Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(innerPadding),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if(isLoggedIn(localSettings) && recentBooks?.books?.size!=0 ) {
+                            HomePageSection(
+                                "Recent searches",
+                                recentBooks?.books,
+                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                                navController
+                            )
+                        }
+                        HomePageSection(
+                            "Recommendations",
+                            books?.take(10),
+                            seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                            navController
+                        )
+                        HomePageSection(
+                            "New releases",
+                            latestReleases,
+                            seeMoreAction = { navController.navigate(Routes.SEARCH) },
+                            navController
+                        )
+                    }
+                    /*Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                     ) {
-                        val app = LocalContext.current.applicationContext as AuraVindexApp
-                        val isConnected by app.networkLiveData.observeAsState(true)
-                        ConnectionAlert(isConnected)
 
-                        if (showMustBeLoggedInDialog) {
-                            MustBeLoggedInDialog(
-                                navController = navController,
-                                action = actionMustBeLoggedInDialog,
-                                onDismiss = { showMustBeLoggedInDialog = false }
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                            verticalArrangement = Arrangement.Top,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            if(isLoggedIn(localSettings) && recentBooks?.books?.size!=0 ) {
-                                HomePageSection(
-                                    "Recent searches",
-                                    recentBooks?.books,
-                                    seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                    navController
-                                )
-                            }
-                            HomePageSection(
-                                "Recommendations",
-                                books?.take(10),
-                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                navController
-                            )
-                            HomePageSection(
-                                "New releases",
-                                latestReleases,
-                                seeMoreAction = { navController.navigate(Routes.SEARCH) },
-                                navController
-                            )
-                        }
-                    }
+                    }*/
                 }
             }
         )

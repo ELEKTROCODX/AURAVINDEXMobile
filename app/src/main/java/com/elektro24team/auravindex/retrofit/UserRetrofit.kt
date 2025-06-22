@@ -19,6 +19,8 @@ interface UserService{
         @Header("Authorization") token: String,
         @Query("filter_field") filterField: String,
         @Query("filter_value") filterValue: String,
+        @Query("sort") sort: String? = "asc",
+        @Query("sort_by") sortBy: String? = "createdAt"
     ): ApiResponse<List<User>>
     @GET("user")
     suspend fun getUsers(

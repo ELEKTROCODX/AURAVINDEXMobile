@@ -47,6 +47,8 @@ import com.elektro24team.auravindex.ui.theme.WhiteC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -59,7 +61,9 @@ fun SearchScreen(
     navController: NavController,
     bookViewModel: BookViewModel,
     bookCollectionViewModel: BookCollectionViewModel,
-    userViewModel: UserViewModel, // <-- AGREGA ESTO
+    userViewModel: UserViewModel,
+    notificationViewModel: NotificationViewModel,
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     rememberCoroutineScope()
@@ -67,7 +71,7 @@ fun SearchScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val filteredBooks by bookViewModel.filteredBooks.observeAsState(emptyList())
+    val filteredBooks by bookViewModel.filteredBooks.collectAsState()
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
     }
@@ -78,6 +82,8 @@ fun SearchScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
+                localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,
@@ -105,11 +111,11 @@ fun SearchScreen(
                     onItemClick = { route -> navController.navigate(route) }
                 )
             },
-            content = { paddingValues ->
+            content = { innerPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(innerPadding)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
@@ -126,10 +132,7 @@ fun SearchScreen(
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
-
                         var bookQuery by remember { mutableStateOf("") }
-
-                        // Barra de búsqueda
                         OutlinedTextField(
                             value = bookQuery,
                             onValueChange = {
@@ -171,8 +174,6 @@ fun SearchScreen(
                                                 .fillMaxWidth()
                                                 .padding(8.dp)
                                         ) {
-
-                                            // Imagen a la izquierda
                                             GlideImage(
                                                 imageModel = { IMG_url.trimEnd('/') + "/" + book?.book_img?.trimStart('/') },
                                                 modifier = Modifier
@@ -199,8 +200,6 @@ fun SearchScreen(
                                                     )
                                                 }
                                             )
-
-                                            // Info textual a la derecha
                                             Column(
                                                 modifier = Modifier
                                                     .padding(start = 12.dp, end = 8.dp)

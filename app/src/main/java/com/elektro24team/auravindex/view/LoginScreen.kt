@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,11 +9,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 //noinspection UsingMaterialAndMaterial3Libraries
@@ -55,7 +59,6 @@ import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
-import kotlin.math.log
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,7 +72,9 @@ fun LoginScreen(
 ) {
     val context = LocalContext.current
     val loginResult by authViewModel.loginResult.observeAsState()
-    val user by userViewModel.user.observeAsState()
+    val user by userViewModel.myUser.observeAsState()
+    val activePlan by activePlanViewModel.activePlan.observeAsState()
+    val isActivePlanChecked by activePlanViewModel.isActivePlanChecked.observeAsState(false)
     val userEmail = remember { mutableStateOf("") }
     val userPassword = remember { mutableStateOf("") }
     ObserveError(authViewModel)
@@ -81,7 +86,7 @@ fun LoginScreen(
         }
     }
     LaunchedEffect(user) {
-        if (user != null) {
+        if (user != null && loginResult != null) {
             AuthPrefsHelper.saveUserId(context, user?._id.toString())
             localSettingViewModel.saveSetting(SettingKey.TOKEN.keySetting, loginResult!!)
             localSettingViewModel.saveSetting(SettingKey.EMAIL.keySetting, userEmail.value)
@@ -89,26 +94,43 @@ fun LoginScreen(
             localSettingViewModel.saveSetting(SettingKey.PROFILE_IMAGE.keySetting, user?.user_img.toString())
             localSettingViewModel.saveSetting(SettingKey.ROLE_ID.keySetting, user?.role?._id.toString())
             localSettingViewModel.saveSetting(SettingKey.ROLE_NAME.keySetting, user?.role?.name.toString())
-            userEmail.value = ""
-            userPassword.value = ""
-            authViewModel.loginResult.value = ""
             checkAndSyncFcmToken(context)
-            userViewModel.getUserById(
+            userViewModel.getMyUserById(
                 token = loginResult!!,
                 userId = user?._id.toString()
             )
+            activePlanViewModel.clearViewModelData()
+            activePlanViewModel.loadActivePlanByUserId(
+                loginResult!!,
+                user?._id.toString()
+            )
+        }
+    }
+    LaunchedEffect(activePlan) {
+        if (activePlan != null && loginResult != null) {
+            localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN.keySetting, activePlan?._id.toString())
+            localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN_ID.keySetting, activePlan?.plan?._id.toString())
+            localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, activePlan?.ending_date.toString())
+        }
+    }
+    LaunchedEffect(isActivePlanChecked) {
+        if (isActivePlanChecked) {
+            userEmail.value = ""
+            userPassword.value = ""
+            authViewModel.loginResult.value = ""
             Toast.makeText(context, "Successfully logged in.", Toast.LENGTH_SHORT).show()
             localSettingViewModel.saveSetting(SettingKey.LAST_LOGIN.keySetting, System.currentTimeMillis().toString())
+            activePlanViewModel.resetIsActivePlanChecked()
             navController.navigate(Routes.MAIN)
         }
     }
     Scaffold(
         containerColor = Color(0xFFEDE7F6),
-        content = { paddingValues ->
+        content = { innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
                 val app = LocalContext.current.applicationContext as AuraVindexApp

@@ -20,7 +20,6 @@ import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.ui.components.AdminActivePlanTable
 import com.elektro24team.auravindex.ui.components.AdminAuditLogTable
-import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
 import com.elektro24team.auravindex.ui.components.AdminLoanTable
 import com.elektro24team.auravindex.ui.components.AdminNotificationTable
@@ -88,6 +87,8 @@ fun AdminDashboardScreen(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
+                localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,
@@ -106,7 +107,10 @@ fun AdminDashboardScreen(
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
-                TopBar(navController = navController, drawerState = drawerState)
+                TopBar(
+                    navController = navController,
+                    drawerState = drawerState
+                )
             },
             bottomBar = {
                 BottomNavBar(
@@ -114,11 +118,11 @@ fun AdminDashboardScreen(
                     onItemClick = { route -> navController.navigate(route) }
                 )
             },
-            content = { paddingValues ->
+            content = { innerPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(innerPadding)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
@@ -159,7 +163,7 @@ fun AdminDashboardScreen(
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
                                     ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
                                     ObserveInsufficientPermissions(bookViewModel, navController)
-                                    val books by bookViewModel.books.observeAsState()
+                                    val books by bookViewModel.books.collectAsState()
                                     LaunchedEffect(Unit) {
                                         bookViewModel.loadBooks(showDuplicates = true, showLents = true)
                                     }
@@ -188,7 +192,7 @@ fun AdminDashboardScreen(
                                     ObserveTokenExpiration(loanViewModel, navController, localSettingViewModel)
                                     ObserveInsufficientPermissions(loanViewModel, navController)
                                     ObserveError(loanViewModel)
-                                    val loans by loanViewModel.loans.observeAsState()
+                                    val loans by loanViewModel.loans.collectAsState()
                                     LaunchedEffect(Unit) {
                                         loanViewModel.loadLoans(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
                                     }
@@ -231,15 +235,7 @@ fun AdminDashboardScreen(
                         } else if((objectName != null || objectName != "") && (objectId != null || objectId != "")) {
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
-                                    ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficientPermissions(bookViewModel, navController)
-                                    AdminBookCard(
-                                        navController = navController,
-                                        bookViewModel = bookViewModel,
-                                        loanViewModel = loanViewModel,
-                                        localSettingViewModel = localSettingViewModel,
-                                        bookId = objectId,
-                                    )
+                                    navController.navigate("book/${objectId}")
                                 }
                                 AdminDashboardObject.PLAN.name.lowercase() -> {
                                     ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)

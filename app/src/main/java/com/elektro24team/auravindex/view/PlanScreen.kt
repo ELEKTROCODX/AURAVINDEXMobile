@@ -34,6 +34,7 @@ import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
@@ -44,9 +45,9 @@ fun PlanScreen(
     navController: NavController,
     planViewModel: PlanViewModel,
     activePlanViewModel: ActivePlanViewModel,
-    localSettingViewModel: LocalSettingViewModel,
     userViewModel: UserViewModel,
-
+    notificationViewModel: NotificationViewModel,
+    localSettingViewModel: LocalSettingViewModel,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     rememberCoroutineScope()
@@ -75,7 +76,9 @@ fun PlanScreen(
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
-                userViewModel = userViewModel, // <- este es el parámetro faltante
+                userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel,
+                notificationViewModel = notificationViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,
@@ -103,11 +106,11 @@ fun PlanScreen(
                     onItemClick = { route -> navController.navigate(route) }
                 )
             },
-            content = { paddingValues ->
+            content = { innerPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(innerPadding)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
@@ -141,7 +144,8 @@ fun PlanScreen(
                                     plan = plans?.get(index),
                                     navController,
                                     localSettingViewModel,
-                                    activePlanViewModel
+                                    activePlanViewModel,
+                                    notificationViewModel
                                 )
                             }
                         }

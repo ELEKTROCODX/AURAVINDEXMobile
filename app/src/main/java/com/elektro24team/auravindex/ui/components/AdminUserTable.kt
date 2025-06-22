@@ -73,7 +73,9 @@ fun AdminUserTable(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = 16.dp).horizontalScroll(
+                    rememberScrollState()
+                ),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(

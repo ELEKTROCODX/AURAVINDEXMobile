@@ -10,7 +10,7 @@ import retrofit2.http.POST
 data class LoginRequest(
     val email: String,
     val password: String,
-    val expires_in: String? = "1w"
+    val expires_in: String? = "4w"
 )
 
 data class RegisterInfo(

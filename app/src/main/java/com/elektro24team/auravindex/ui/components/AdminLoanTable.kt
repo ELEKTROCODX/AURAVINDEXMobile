@@ -26,7 +26,7 @@ import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.Loan
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
-import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHour
+import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHourAndSeconds
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -69,7 +69,7 @@ fun AdminLoanTable(
                         TableCell(loan.user?.email ?: "Unknown", 180.dp)
                         TableCell(loan.book.title, 180.dp)
                         TableCell(loan.loan_status.loan_status, 180.dp)
-                        TableCell(formatUtcToLocalWithHour(loan.createdAt), 160.dp)
+                        TableCell(formatUtcToLocalWithHourAndSeconds(loan.createdAt), 160.dp)
                     }
                     Divider()
                 }
@@ -79,7 +79,9 @@ fun AdminLoanTable(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = 16.dp).horizontalScroll(
+                    rememberScrollState()
+                ),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(

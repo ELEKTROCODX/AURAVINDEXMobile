@@ -16,7 +16,9 @@ interface BookService{
         @Query("show_duplicates") showDuplicates: Boolean = true,
         @Query("show_lents") showLents: Boolean = true,
         @Query("page") page: String = "1",
-        @Query("limit") limit: String = "none"
+        @Query("limit") limit: String = "none",
+        @Query("sort") sort: String? = "asc",
+        @Query("sort_by") sortBy: String? = "createdAt"
     ): ApiResponse<List<Book>>
     @GET("book/latest_releases")
     suspend fun getLatestReleases(

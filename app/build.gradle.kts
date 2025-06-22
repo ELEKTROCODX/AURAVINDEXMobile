@@ -44,9 +44,6 @@ android {
 }
 
 dependencies {
-    implementation("io.coil-kt:coil-compose:2.4.0")
-
-
     //Arreglo del chat de lo que hizo @Efrain_Morales(AlexMarin)
     implementation(libs.androidx.room.runtime) {
         exclude(group = "com.intellij", module = "annotations")

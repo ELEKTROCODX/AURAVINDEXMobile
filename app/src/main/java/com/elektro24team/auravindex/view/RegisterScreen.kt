@@ -104,13 +104,14 @@ fun RegisterScreen(
             navController.navigate(Routes.LOGIN)
         }
     }
-    Scaffold { paddingValues ->
+    Scaffold(
+        ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))))
-                .padding(paddingValues)
+                .padding(innerPadding)
         )
         val app = LocalContext.current.applicationContext as AuraVindexApp
         val isConnected by app.networkLiveData.observeAsState(true)

@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.model.BookStatus
 import com.elektro24team.auravindex.model.api.LoanRequest
@@ -39,6 +40,7 @@ import com.elektro24team.auravindex.model.User
 import com.elektro24team.auravindex.utils.functions.formatApiDateFormat
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -49,9 +51,11 @@ import java.util.Locale
 @RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
 @Composable
 fun RequestLoanDialog(
+    navController: NavController,
     showRequestLoanDialog: MutableState<Boolean>,
     loanViewModel: LoanViewModel,
     bookViewModel: BookViewModel,
+    notificationViewModel: NotificationViewModel,
     loanStatus: LoanStatus,
     token: String,
     book: Book,
@@ -124,9 +128,11 @@ fun RequestLoanDialog(
                 loanViewModel.createLoan(
                     token = token,
                     loan = loanRequest,
-                    context = context
+                    book = book,
+                    notificationViewModel = notificationViewModel
                 )
                 bookViewModel.loadBook(book._id)
+                navController.navigate("book/${book._id}")
             }) {
                 Text("Request loan")
             }

@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
 import androidx.annotation.RequiresPermission
+import androidx.core.view.WindowCompat
 import com.elektro24team.auravindex.data.local.AuraVindexDatabase
 import com.elektro24team.auravindex.data.repository.PlanRepository
 import com.elektro24team.auravindex.navigation.NavGraph
@@ -19,8 +20,9 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     @RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate(savedInstanceState: Bundle?) {
-        createNotificationChannel(this)
         super.onCreate(savedInstanceState)
+        createNotificationChannel(this)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             AppTheme {
                 NavGraph()

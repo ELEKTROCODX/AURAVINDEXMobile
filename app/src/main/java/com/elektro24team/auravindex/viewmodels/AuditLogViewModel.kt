@@ -45,7 +45,7 @@ class AuditLogViewModel(
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     fun getAuditLogs(token: String){
         viewModelScope.launch {
-            val result = repository.getAllAuditLogs(token)
+            val result = repository.getAllAuditLogs(token, sort = "desc", sortBy = "createdAt")
             when {
                 result.isSuccess -> _auditLogs.value = result.getOrNull()
                 result.isFailure -> {

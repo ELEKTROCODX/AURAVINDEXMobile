@@ -1,4 +1,5 @@
 package com.elektro24team.auravindex.ui.components
+/*
 
 import android.content.res.Resources
 import androidx.compose.foundation.Image
@@ -188,7 +189,9 @@ fun AdminBookCard(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = { /* Acción Editar */ },
+                    onClick = { */
+/* Acción Editar *//*
+ },
                     modifier = Modifier.weight(1f).height(48.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF572365)),
                     shape = RoundedCornerShape(12.dp)
@@ -199,7 +202,9 @@ fun AdminBookCard(
                 }
 
                 Button(
-                    onClick = { /* Acción Eliminar */ },
+                    onClick = { */
+/* Acción Eliminar *//*
+ },
                     modifier = Modifier.weight(1f).height(48.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFDD7F12)),
                     shape = RoundedCornerShape(12.dp)
@@ -383,4 +388,4 @@ fun AdminBookCard(
         }
     }
 
-}
+}*/
