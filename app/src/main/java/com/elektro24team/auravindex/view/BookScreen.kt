@@ -120,7 +120,7 @@ fun BookScreen(
     loanStatusViewModel: LoanStatusViewModel,
     localSettingViewModel: LocalSettingViewModel,
     userViewModel: UserViewModel,
-    notificationViewModel: NotificationViewModel
+    notificationViewModel: NotificationViewModel,
     bookListViewModel: BookListViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -135,6 +135,7 @@ fun BookScreen(
     val activePlan = activePlanViewModel.activePlan.observeAsState()
     val settings = localSettingViewModel.settings.collectAsState()
     val userLoans = loanViewModel.userLoans.collectAsState()
+    val userLists by bookListViewModel.bookLists.collectAsState()
     val bookLoans = loanViewModel.bookLoans.collectAsState()
     val createdLoan = loanViewModel.createdLoan.collectAsState()
     LaunchedEffect(bookId) {

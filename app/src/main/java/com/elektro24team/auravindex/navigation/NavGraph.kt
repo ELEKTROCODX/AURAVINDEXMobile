@@ -1,8 +1,6 @@
 package com.elektro24team.auravindex.navigation
 
-import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
@@ -16,7 +14,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.rememberActivePlanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberAuditLogViewModel
 import com.elektro24team.auravindex.utils.functions.rememberAuthViewModel
@@ -27,7 +24,6 @@ import com.elektro24team.auravindex.utils.functions.rememberLoanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberGenderViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLocalSettingViewModel
 import com.elektro24team.auravindex.utils.functions.rememberNotificationViewModel
-import com.elektro24team.auravindex.utils.functions.rememberPlanStatusViewModel
 import com.elektro24team.auravindex.utils.functions.rememberPlanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberRecentBookViewModel
 import com.elektro24team.auravindex.utils.functions.rememberUserViewModel
@@ -60,6 +56,7 @@ object Routes {
     const val SIGNUP ="signup"
     const val LOGOUT = "logout"
     const val MAIN = "main"
+    const val MY_LIST = "myList/{listId}"
     const val NOTIFICATIONS = "notifications"
     const val PLANS = "plans"
     const val PRIVACY = "privacy"
@@ -70,7 +67,6 @@ object Routes {
     const val TEAM = "team"
     const val TERMS = "terms"
     const val WELCOME = "welcome"
-    const val MYLIST = "myList/{listId}"
 }
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
@@ -171,7 +167,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 loanStatusViewModel = loanStatusViewModel,
                 localSettingViewModel = localSettingViewModel,
                 userViewModel = userViewModel,
-                notificationViewModel = notificationViewModel
+                notificationViewModel = notificationViewModel,
                 bookListViewModel = bookListViewModel
             )
         }
@@ -196,8 +192,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                navController = navController,
                userViewModel = userViewModel,
                notificationViewModel = notificationViewModel,
-               localSettingViewModel = localSettingViewModel
-               localSettingViewModel= localSettingViewModel,
+               localSettingViewModel = localSettingViewModel,
                bookListViewModel = bookListViewModel
            )
         }
@@ -252,6 +247,21 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 notificationViewModel = notificationViewModel,
                 recentBookViewModel = recentBookViewModel,
                 localSettingViewModel = localSettingViewModel,
+            )
+        }
+        composable(
+            Routes.MY_LIST,
+            arguments = listOf(
+                navArgument("listId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val listId = backStackEntry.arguments?.getString("listId") ?: ""
+            MyListScreen(
+                navController = navController,
+                userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel,
+                bookListViewModel = bookListViewModel,
+                notificationViewModel = notificationViewModel,
+                listId = listId
             )
         }
         composable(Routes.NOTIFICATIONS) {
@@ -319,14 +329,6 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         }
         composable(Routes.SIGNUP){
             RegisterScreen(genderViewModel,authViewModel,navController)
-        }
-        composable(
-            Routes.MYLIST,
-            arguments = listOf(
-                navArgument("listId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val listId = backStackEntry.arguments?.getString("listId") ?: ""
-            MyListScreen(navController, userViewModel,localSettingViewModel,bookListViewModel, listId = listId)
         }
     }
 }

@@ -48,7 +48,6 @@ import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
-import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.BookListViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
