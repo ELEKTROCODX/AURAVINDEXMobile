@@ -49,7 +49,7 @@ import com.elektro24team.auravindex.model.local.UserEntity
         LogActionEntity::class,
         AuditLogEntity::class,
                ],
-    version = 18 // Note: Increase version number when database schema changes
+    version = 19 // Note: Increase version number when database schema changes
     /* Note: be careful when updating schema, due local settings might be lost */
 )
 

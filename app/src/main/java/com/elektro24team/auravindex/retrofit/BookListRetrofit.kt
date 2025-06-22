@@ -4,6 +4,7 @@ import com.elektro24team.auravindex.model.ApiResponse
 import com.elektro24team.auravindex.model.BookList
 import com.elektro24team.auravindex.model.api.BookListRequest
 import com.elektro24team.auravindex.utils.constants.URLs.BASE_URL
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -25,11 +26,13 @@ interface BookListService{
 
     @GET("book_list/{id}")
     suspend fun getBookListById(
+        @Header("Authorization") token: String,
         @Path("id") id: String
     ): BookList
 
     @GET("book_list")
     suspend fun getUserBookLists(
+        @Header("Authorization") token: String,
         @Query("filter_field") filterField: String = "owner",
         @Query("filter_value") filterValue: String,
         @Query("page") page: String = "1",
@@ -42,10 +45,10 @@ interface BookListService{
         @Body bookList: BookListRequest
     )
 
-    @POST("book_list/{bokListId}/book/{bookId}")
+    @POST("book_list/{bookListId}/book/{bookId}")
     suspend fun addBookToList(
         @Header("Authorization") token: String,
-        @Path("bokListId") bookListId: String,
+        @Path("bookListId") bookListId: String,
         @Path("bookId") bookId: String
     )
 
@@ -54,6 +57,12 @@ interface BookListService{
         @Header("Authorization") token: String,
         @Path("bokListId") bookListId: String,
         @Path("bookId") bookId: String
+    )
+
+    @DELETE("book_list/{bookListId}")
+    suspend fun deleteList(
+        @Header("Authorization") token: String,
+        @Path("bookListId") bookListId: String
     )
 }
 
