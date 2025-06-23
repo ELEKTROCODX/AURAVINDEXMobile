@@ -4,8 +4,11 @@ import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
+import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,20 +23,23 @@ import com.elektro24team.auravindex.utils.functions.rememberLoanStatusViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLoanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberGenderViewModel
 import com.elektro24team.auravindex.utils.functions.rememberLocalSettingViewModel
-import com.elektro24team.auravindex.utils.functions.rememberPlanStatusViewModel
+import com.elektro24team.auravindex.utils.functions.rememberNotificationViewModel
 import com.elektro24team.auravindex.utils.functions.rememberPlanViewModel
 import com.elektro24team.auravindex.utils.functions.rememberRecentBookViewModel
 import com.elektro24team.auravindex.utils.functions.rememberUserViewModel
+import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
 import com.elektro24team.auravindex.view.*
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
+import com.elektro24team.auravindex.viewmodels.BookListViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.GenderViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
@@ -50,6 +56,7 @@ object Routes {
     const val SIGNUP ="signup"
     const val LOGOUT = "logout"
     const val MAIN = "main"
+    const val MY_LIST = "myList/{listId}"
     const val NOTIFICATIONS = "notifications"
     const val PLANS = "plans"
     const val PRIVACY = "privacy"
@@ -64,6 +71,7 @@ object Routes {
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @RequiresApi(Build.VERSION_CODES.O)
+@RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
 @Composable
 fun NavGraph(startDestination: String = Routes.WELCOME) {
     val navController = rememberNavController()
@@ -78,8 +86,11 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
     val loanViewModel: LoanViewModel = rememberLoanViewModel()
     val recentBookViewModel: RecentBookViewModel = rememberRecentBookViewModel()
     val loanStatusViewModel: LoanStatusViewModel = rememberLoanStatusViewModel()
-    rememberPlanStatusViewModel()
+    val notificationViewModel: NotificationViewModel = rememberNotificationViewModel()
     val genderViewModel : GenderViewModel = rememberGenderViewModel()
+    val localSettings by localSettingViewModel.settings.collectAsState()
+    val bookListViewModel: BookListViewModel = viewModel()
+    val context = LocalContext.current
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.ADMIN_DASHBOARD) {
@@ -91,6 +102,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 planViewModel = planViewModel,
                 activePlanViewModel = activePlanViewModel,
                 auditLogViewModel = auditLogViewModel,
+                notificationViewModel = notificationViewModel,
                 localSettingViewModel = localSettingViewModel,
                 objectName = "",
                 objectId = ""
@@ -111,6 +123,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 planViewModel = planViewModel,
                 activePlanViewModel = activePlanViewModel,
                 auditLogViewModel = auditLogViewModel,
+                notificationViewModel = notificationViewModel,
                 localSettingViewModel = localSettingViewModel,
                 objectName = objectName,
                 objectId = ""
@@ -133,6 +146,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                     planViewModel = planViewModel,
                     activePlanViewModel = activePlanViewModel,
                     auditLogViewModel = auditLogViewModel,
+                    notificationViewModel = notificationViewModel,
                     localSettingViewModel = localSettingViewModel,
                     objectName = objectName,
                     objectId = objectId
@@ -152,7 +166,9 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 loanViewModel = loanViewModel,
                 loanStatusViewModel = loanStatusViewModel,
                 localSettingViewModel = localSettingViewModel,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
+                bookListViewModel = bookListViewModel
             )
         }
         composable(
@@ -174,15 +190,20 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
         composable(Routes.LISTS) {
            ListsScreen(
                navController = navController,
-               userViewModel = userViewModel
+               userViewModel = userViewModel,
+               notificationViewModel = notificationViewModel,
+               localSettingViewModel = localSettingViewModel,
+               bookListViewModel = bookListViewModel,
+               loanViewModel = loanViewModel
            )
         }
         composable(Routes.LOANS) {
             LoansScreen(
                 navController = navController,
                 loanViewModel = loanViewModel,
-                localSettingViewModel = localSettingViewModel,
-                userViewModel = userViewModel
+                notificationViewModel = notificationViewModel,
+                userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel
             )
         }
         composable(Routes.LOGIN) {
@@ -195,46 +216,79 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             )
         }
         composable(Routes.LOGOUT) {
-            localSettingViewModel.clearUserSettings()
-            activePlanViewModel.clearViewModelData()
-            auditLogViewModel.clearViewModelData()
-            bookViewModel.clearViewModelData()
-            bookCollectionViewModel.clearViewModelData()
-            loanViewModel.clearViewModelData()
-            planViewModel.clearViewModelData()
-            recentBookViewModel.clearViewModelData()
-            userViewModel.clearViewModelData()
-            authViewModel.clearViewModelData()
-
-            Toast.makeText(LocalContext.current, "Successfully logged out.", Toast.LENGTH_LONG).show()
-            navController.navigate(Routes.WELCOME)
+            val context = LocalContext.current
+            LaunchedEffect(Unit) {
+                localSettingViewModel.clearUserSettings()
+                activePlanViewModel.clearViewModelData()
+                auditLogViewModel.clearViewModelData()
+                bookViewModel.clearViewModelData()
+                bookCollectionViewModel.clearViewModelData()
+                loanViewModel.clearViewModelData()
+                planViewModel.clearViewModelData()
+                recentBookViewModel.clearViewModelData()
+                userViewModel.clearViewModelData()
+                authViewModel.clearViewModelData()
+                AuthPrefsHelper.clearAuthToken(context)
+                AuthPrefsHelper.clearFcmToken(context)
+                AuthPrefsHelper.clearPermissionRequested(context)
+                AuthPrefsHelper.clearUserId(context)
+                Toast.makeText(context, "Successfully logged out.", Toast.LENGTH_SHORT).show()
+                navController.navigate(Routes.WELCOME) {
+                    popUpTo(Routes.WELCOME) {
+                        inclusive = true
+                    }
+                }
+            }
         }
-        composable(Routes.MAIN) {
+        composable(Routes.MAIN){
             MainScreen(
                 navController = navController,
                 bookViewModel = bookViewModel,
                 userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
                 recentBookViewModel = recentBookViewModel,
                 localSettingViewModel = localSettingViewModel,
             )
         }
-        /*composable(Routes.NOTIFICATIONS) {
-            NotificationsScreen(navController = navController)
-        }*/
+        composable(
+            Routes.MY_LIST,
+            arguments = listOf(
+                navArgument("listId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val listId = backStackEntry.arguments?.getString("listId") ?: ""
+            MyListScreen(
+                navController = navController,
+                userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel,
+                bookListViewModel = bookListViewModel,
+                notificationViewModel = notificationViewModel,
+                listId = listId
+            )
+        }
+        composable(Routes.NOTIFICATIONS) {
+            NotificationsScreen(
+                navController = navController,
+                localSettingViewModel = localSettingViewModel,
+                userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel
+            )
+        }
         composable(Routes.PLANS) {
             PlanScreen(
                 navController = navController,
                 planViewModel = planViewModel,
                 activePlanViewModel = activePlanViewModel,
                 localSettingViewModel = localSettingViewModel,
-                userViewModel=userViewModel
+                userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel
             )
         }
         composable(Routes.PROFILE) {
             ProfileScreen(
                 navController = navController,
                 userViewModel = userViewModel,
-                localSettingViewModel = localSettingViewModel
+                localSettingViewModel = localSettingViewModel,
+                notificationViewModel = notificationViewModel
             )
         }
         composable(Routes.SEARCH) {
@@ -242,7 +296,9 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 navController = navController,
                 bookViewModel = bookViewModel,
                 bookCollectionViewModel = bookCollectionViewModel,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
+                localSettingViewModel = localSettingViewModel
             )
         }
         composable(
@@ -257,7 +313,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
             SettingsScreen(
                 navController = navController,
                 localSettingViewModel = localSettingViewModel,
-                userViewModel=userViewModel
+                userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel
             )
         }
         composable(Routes.WELCOME) {
@@ -266,6 +323,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                 bookViewModel = bookViewModel,
                 planViewModel = planViewModel,
                 bookCollectionViewModel = bookCollectionViewModel,
+                activePlanViewModel = activePlanViewModel,
+                userViewModel = userViewModel,
                 localSettingViewModel = localSettingViewModel
             )
         }

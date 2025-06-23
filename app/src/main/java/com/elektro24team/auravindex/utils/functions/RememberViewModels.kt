@@ -23,6 +23,7 @@ import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.GenderViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.PlanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
@@ -120,6 +121,11 @@ fun rememberLoanStatusViewModel(): LoanStatusViewModel {
 @Composable
 fun rememberPlanStatusViewModel(): PlanStatusViewModel {
     return viewModel()
+}
+
+@Composable
+fun rememberNotificationViewModel(): NotificationViewModel {
+    return viewModel ()
 }
 
 @Composable

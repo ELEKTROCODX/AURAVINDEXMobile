@@ -46,13 +46,15 @@ import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 
 @Composable
 fun PlanCard(
     plan: Plan?,
     navController: NavController,
     localSettingViewModel: LocalSettingViewModel,
-    activePlanViewModel: ActivePlanViewModel
+    activePlanViewModel: ActivePlanViewModel,
+    notificationViewModel: NotificationViewModel
 ) {
     MaterialTheme.colorScheme
     val context = LocalContext.current
@@ -133,26 +135,25 @@ fun PlanCard(
                     }
                 }
 
-                val isActive = localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN.keySetting, "").toString() == plan?._id
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                if (isActive) {
+                if (activePlan.value != null && activePlan.value?.plan?._id == plan?._id) {
                     Text(
-                        text = "ACTIVE PLAN (until ${formatUtcToLocalWithDate(localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, "").toString())})",
+                        text = "ACTIVE PLAN (until ${formatUtcToLocalWithDate(activePlan.value?.ending_date.toString())})",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color=WhiteC
                     )
                     Spacer(modifier = Modifier)
                     Row {
-                        // Botón RENEW
                         Button(
                             onClick = {
                                 if (isLoggedIn(localSettings.value)) {
                                     activePlanViewModel.renewActivePlan(
                                         localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-                                        localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ID.keySetting, "")
+                                        activePlan.value!!,
+                                        notificationViewModel
                                     )
                                 } else {
                                     mustBeLoggedInToast(context, AppAction.RENEW_ACTIVE_PLAN, navController)
@@ -175,16 +176,14 @@ fun PlanCard(
                                 color = WhiteC
                             )
                         }
-
                         Spacer(modifier = Modifier.width(10.dp))
-
-// Botón CANCEL
                         Button(
                             onClick = {
                                 if (isLoggedIn(localSettings.value)) {
                                     activePlanViewModel.cancelActivePlan(
                                         localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-                                        localSettings.value.getOrDefault(SettingKey.ACTIVE_PLAN_ID.keySetting, "")
+                                        activePlan.value!!,
+                                        notificationViewModel
                                     )
                                     activePlanViewModel.clearViewModelData()
                                     localSettingViewModel.clearUserActivePlanSettings()
@@ -218,7 +217,8 @@ fun PlanCard(
                                 activePlanViewModel.createActivePlan(
                                     token = localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
                                     userId = localSettings.value.getOrDefault(SettingKey.ID.keySetting, ""),
-                                    planId = plan?._id ?: ""
+                                    plan = plan!!,
+                                    notificationViewModel
                                 )
                             } else {
                                 mustBeLoggedInToast(context, AppAction.SUBSCRIBE_TO_PLAN, navController)
@@ -243,8 +243,6 @@ fun PlanCard(
                             color = WhiteC
                         )
                     }
-
-
                 }
             }
         }

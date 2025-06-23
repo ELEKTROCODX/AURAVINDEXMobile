@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.view
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -17,6 +18,7 @@ import com.elektro24team.auravindex.ui.components.BottomNavBar
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.ui.components.BookCard
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -35,7 +37,7 @@ fun SearchResultsScreen(
     LocalContext.current
     var currentQuery by remember { mutableStateOf(query) }
     var currentPage by remember { mutableIntStateOf(1) }
-    val filteredBooks by bookViewModel.filteredBooks.observeAsState(emptyList())
+    val filteredBooks by bookViewModel.filteredBooks.collectAsState()
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
     }
@@ -44,15 +46,14 @@ fun SearchResultsScreen(
         ?.drop((currentPage - 1) * itemsPerPage)
         ?.take(itemsPerPage)
     val totalPages = (filteredBooks?.size?.plus(itemsPerPage)?.minus(1))?.div(itemsPerPage)
-
-
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.statusBarsPadding(),
                 title = {
                     Text(
                         text = "Results",
-                        color = Color.White // Título en blanco
+                        color = Color.White
                     )
                 },
                 navigationIcon = {
@@ -76,11 +77,10 @@ fun SearchResultsScreen(
                 onItemClick = { route -> navController.navigate(route) }
             )
         },
-        content = { paddingValues ->
-
+        content = { innerPadding ->
             Column(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(innerPadding)
                     .fillMaxSize()
                     .background(
                         brush = Brush.verticalGradient(
@@ -88,7 +88,6 @@ fun SearchResultsScreen(
                         )
                     )
             ) {
-                // Barra de búsqueda local (filtra entre los resultados previos)
                 TextField(
                     value = currentQuery,
                     onValueChange = {
@@ -124,20 +123,17 @@ fun SearchResultsScreen(
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
                 }
-
                 Divider(modifier = Modifier.padding(horizontal = 8.dp))
-
-                // Resultados filtrados
                 if (filteredBooks?.isNotEmpty() == true) {
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         items(paginatedBooks?.size ?: 0) { index ->
                             BookCard(paginatedBooks?.get(index), navController)
                         }
                     }
-                    // Paginación
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().horizontalScroll(
+                            rememberScrollState()
+                        ),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         if(totalPages != null) {

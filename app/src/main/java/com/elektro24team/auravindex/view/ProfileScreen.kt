@@ -5,11 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -60,6 +63,7 @@ import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -69,6 +73,7 @@ import com.skydoves.landscapist.glide.GlideImage
 fun ProfileScreen(
     navController: NavController,
     userViewModel: UserViewModel,
+    notificationViewModel: NotificationViewModel,
     localSettingViewModel: LocalSettingViewModel,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -77,30 +82,28 @@ fun ProfileScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val user = userViewModel.user.observeAsState()
+    val user = userViewModel.myUser.observeAsState()
     val localSettings = localSettingViewModel.settings.collectAsState()
-
     LaunchedEffect(Unit) {
         localSettingViewModel.loadSettings(SettingKey.TOKEN.keySetting, SettingKey.ID.keySetting)
-        userViewModel.getUserById(
+        userViewModel.getMyUserById(
             localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
             localSettings.value.getOrDefault(SettingKey.ID.keySetting, "")
         )
     }
-
     val isLoggedIn = isLoggedIn(localSettings.value)
     val userData = user.value
-
     if (!isLoggedIn) {
         mustBeLoggedInToast(context, AppAction.ACCESS_PROFILE_PAGE, navController)
     }
-
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
                 userViewModel = userViewModel,
+                localSettingViewModel = localSettingViewModel,
+                notificationViewModel = notificationViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(route, navController, showTermsDialog, showPrivacyDialog, showTeamDialog)
                 }
@@ -111,7 +114,6 @@ fun ProfileScreen(
         ShowExternalLinkDialog(showTermsDialog, context, "https://auravindex.me/tos/")
         ShowExternalLinkDialog(showPrivacyDialog, context, "https://auravindex.me/privacy/")
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
-
         Scaffold(
             topBar = {
                 TopBar(navController = navController, drawerState = drawerState)
@@ -122,11 +124,11 @@ fun ProfileScreen(
                     onItemClick = { route -> navController.navigate(route) }
                 )
             },
-            content = { paddingValues ->
+            content = { innerPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(innerPadding)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color(0xFFEDE7F6), Color(0xFFFFFFFF))
@@ -140,7 +142,6 @@ fun ProfileScreen(
                             .padding(vertical = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Card 1: Avatar + Nombre
                         Card(
                             modifier = Modifier.fillMaxWidth(0.9f),
                             colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -173,9 +174,7 @@ fun ProfileScreen(
                                         }
                                     )
                                 }
-
                                 Spacer(modifier = Modifier.height(16.dp))
-
                                 Text(
                                     text = if (isLoggedIn) "${userData?.name} ${userData?.last_name}" else "Usuario invitado",
                                     fontSize = 22.sp,
@@ -185,10 +184,7 @@ fun ProfileScreen(
                                 )
                             }
                         }
-
                         Spacer(modifier = Modifier.height(20.dp))
-
-                        // Card 2: Info Detallada
                         Card(
                             modifier = Modifier.fillMaxWidth(0.9f),
                             shape = RoundedCornerShape(24.dp),
@@ -203,10 +199,7 @@ fun ProfileScreen(
                                 ProfileInfoText("Bio", userData?.biography ?: "No disponible", longText = true)
                             }
                         }
-
                         Spacer(modifier = Modifier.height(20.dp))
-
-                        // Card 3: Botón Editar
                         Card(
                             modifier = Modifier.fillMaxWidth(0.9f),
                             shape = RoundedCornerShape(24.dp),
@@ -236,7 +229,6 @@ fun ProfileScreen(
                                 }
                             }
                         }
-
                         Spacer(modifier = Modifier.height(32.dp))
                     }
                 }

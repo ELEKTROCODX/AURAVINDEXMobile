@@ -49,11 +49,11 @@ import com.elektro24team.auravindex.model.local.UserEntity
         LogActionEntity::class,
         AuditLogEntity::class,
                ],
-    version = 16 // Note: Increase version number when database schema changes
+    version = 19 // Note: Increase version number when database schema changes
     /* Note: be careful when updating schema, due local settings might be lost */
 )
 
-@TypeConverters(com.elektro24team.auravindex.utils.TypeConverters::class)
+@TypeConverters(com.elektro24team.auravindex.utils.classes.TypeConverters::class)
 internal abstract class AuraVindexDatabase : RoomDatabase() {
     abstract fun planDao(): PlanDao
     abstract fun bookCollectionDao(): BookCollectionDao
@@ -80,7 +80,7 @@ internal abstract class AuraVindexDatabase : RoomDatabase() {
                     "auravindex.db"
                 )
                     /*.addMigrations(MIGRATION_2_3)*/
-                    /*.fallbackToDestructiveMigration(true)*/  /*TODO: Remove this in production*/
+                    .fallbackToDestructiveMigration(true)  /*TODO: Remove this in production*/
                     .build()
                     .also { INSTANCE = it }
             }

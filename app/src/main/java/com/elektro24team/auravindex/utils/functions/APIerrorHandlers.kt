@@ -13,17 +13,6 @@ import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.delay
 
 object APIerrorHandlers {
-    fun tokenExpirationHandler(
-        context: Context,
-        navController: NavController,
-        localSettingViewModel: LocalSettingViewModel
-    ) {
-        Toast.makeText(context, "Session expired, please login again.", Toast.LENGTH_SHORT).show()
-        localSettingViewModel.clearUserSettings()
-        navController.navigate(Routes.LOGIN) {
-            popUpTo(Routes.MAIN) { inclusive = true }
-        }
-    }
     fun insufficientPermissionsHandler(
         context: Context,
         navController: NavController
@@ -57,7 +46,11 @@ object APIerrorHandlers {
 
         LaunchedEffect(tokenExpired.value) {
             if (tokenExpired.value == true) {
-                tokenExpirationHandler(context, navController, localSettingViewModel)
+                Toast.makeText(context, "Session expired, please login again.", Toast.LENGTH_SHORT).show()
+                localSettingViewModel.clearUserSettings()
+                navController.navigate(Routes.LOGIN) {
+                    popUpTo(Routes.MAIN) { inclusive = true }
+                }
                 delay(3000)
                 viewModel.clearNotifications()
             }

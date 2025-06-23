@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.view
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -30,6 +31,7 @@ import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
+import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,8 +40,12 @@ fun WelcomeScreen(
     bookViewModel: BookViewModel,
     planViewModel: PlanViewModel,
     bookCollectionViewModel: BookCollectionViewModel,
+    activePlanViewModel: ActivePlanViewModel,
+    userViewModel: UserViewModel,
     localSettingViewModel: LocalSettingViewModel
 ) {
+    val bookCollections by bookCollectionViewModel.bookCollections.observeAsState()
+    val activePlan by activePlanViewModel.activePlan.observeAsState()
     val colors = MaterialTheme.colorScheme
     val settings by localSettingViewModel.settings.collectAsState()
     var isReadyToNavigate by remember { mutableStateOf(false) }
@@ -53,13 +59,7 @@ fun WelcomeScreen(
         )
         val loaded = localSettingViewModel.loadSettings(*keys)
         localSettingViewModel.loadUserSettings()
-        if(isConnected) {
-            bookViewModel.loadBooks(showDuplicates = true, showLents = true)
-            bookViewModel.fetchLatestReleases()
-            planViewModel.loadPlans()
-            bookCollectionViewModel.loadBookCollections()
-        }
-
+        bookCollectionViewModel.loadBookCollections()
         if (loaded[SettingKey.DARK_MODE.keySetting].isNullOrBlank()) {
             localSettingViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, "false")
         }
@@ -67,6 +67,34 @@ fun WelcomeScreen(
             localSettingViewModel.saveSetting(SettingKey.LANGUAGE.keySetting, "English")
         }
         isReadyToNavigate = true
+    }
+    LaunchedEffect(activePlan) {
+        if (activePlan != null && isLoggedIn(settings)) {
+            localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN.keySetting, activePlan?.plan?._id.toString())
+            localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN_ID.keySetting, activePlan?._id.toString())
+            localSettingViewModel.saveSetting(SettingKey.ACTIVE_PLAN_ENDING_DATE.keySetting, activePlan?.ending_date.toString())
+        }
+    }
+    LaunchedEffect(settings) {
+        if (isLoggedIn(settings)) {
+            Log.d("AVDEBUG", "IS LOGGED IN")
+            activePlanViewModel.loadActivePlanByUserId(
+                settings[SettingKey.TOKEN.keySetting].toString(),
+                settings[SettingKey.ID.keySetting].toString()
+            )
+            userViewModel.getMyUserById(
+                settings[SettingKey.TOKEN.keySetting].toString(),
+                settings[SettingKey.ID.keySetting].toString()
+            )
+            localSettingViewModel.loadUserSettings()
+        } else {
+            Log.d("AVDEBUG", "IS NOT LOGGED IN")
+        }
+    }
+    LaunchedEffect(bookCollections) {
+        bookViewModel.loadBooks(showDuplicates = true, showLents = true)
+        bookViewModel.fetchLatestReleases()
+        planViewModel.loadPlans()
     }
     Box(
         modifier = Modifier

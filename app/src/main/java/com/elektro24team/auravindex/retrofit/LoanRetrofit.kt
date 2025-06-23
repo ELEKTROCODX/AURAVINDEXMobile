@@ -19,7 +19,9 @@ interface LoanService{
     suspend fun getLoans(
         @Header("Authorization") token: String,
         @Query("page") page: String = "1",
-        @Query("limit") limit: String = "none"
+        @Query("limit") limit: String = "none",
+        @Query("sort") sort: String = "desc",
+        @Query("sort_by") sortBy: String = "createdAt"
     ): ApiResponse<List<Loan>>
     @GET("loan")
     suspend fun getObjectLoans(
@@ -27,7 +29,9 @@ interface LoanService{
         @Query("page") page: String = "1",
         @Query("limit") limit: String = "none",
         @Query("filter_field") filterField: String,
-        @Query("filter_value") filterValue: String
+        @Query("filter_value") filterValue: String,
+        @Query("sort") sort: String = "desc",
+        @Query("sort_by") sortBy: String = "createdAt"
     ): ApiResponse<List<Loan>>
     @GET("loan/{id}")
     suspend fun getLoanById(

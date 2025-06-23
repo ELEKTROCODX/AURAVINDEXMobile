@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.classes.AdminMenuItem
@@ -36,7 +36,8 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.*
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
-import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 
@@ -46,21 +47,28 @@ fun DrawerMenu(
     navController: NavController,
     currentRoute: String?,
     onItemSelected: (String) -> Unit,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    notificationViewModel: NotificationViewModel,
+    localSettingViewModel: LocalSettingViewModel
 ) {
     val colors = MaterialTheme.colorScheme
-    val localSettingsViewModel = rememberLocalSettingViewModel()
-    val localSettings by localSettingsViewModel.settings.collectAsState()
-    val user by userViewModel.user.observeAsState()
-
-
+    val localSettings by localSettingViewModel.settings.collectAsState()
+    val user by userViewModel.myUser.observeAsState()
+    val userNotifications by notificationViewModel.userNotifications.observeAsState()
+    var unreadNotifications by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
-        localSettingsViewModel.loadSetting(SettingKey.ID.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.EMAIL.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.TOKEN.keySetting)
-        localSettingsViewModel.loadSetting(SettingKey.ROLE_NAME.keySetting)
+        notificationViewModel.loadUserNotifications(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""), localSettings.getOrDefault(SettingKey.ID.keySetting, ""))
     }
-
+    LaunchedEffect(userNotifications) {
+        if(userNotifications?.isNotEmpty() == true) {
+            unreadNotifications = 0
+            userNotifications?.forEach {
+                if(!it.is_read) {
+                    unreadNotifications++
+                }
+            }
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -132,7 +140,6 @@ fun DrawerMenu(
                 AdminMenuItem("Users", Icons.Default.Person, AdminDashboardObject.USER),
                 AdminMenuItem("Loans", Icons.AutoMirrored.Filled.ReceiptLong, AdminDashboardObject.LOAN),
                 AdminMenuItem("Notifications", Icons.Default.Notifications, AdminDashboardObject.NOTIFICATION),
-                AdminMenuItem("Fees", Icons.Default.AttachMoney, AdminDashboardObject.FEE),
                 AdminMenuItem("Plans", Icons.AutoMirrored.Filled.List, AdminDashboardObject.PLAN),
                 AdminMenuItem("Active Plans", Icons.Default.PlayCircleFilled, AdminDashboardObject.ACTIVE_PLAN),
                 AdminMenuItem("Audit Log", Icons.Default.Terminal, AdminDashboardObject.AUDIT_LOG)
@@ -168,13 +175,12 @@ fun DrawerMenu(
         } else {
             val menuItems = listOf(
                 DefaultMenuItem("Home", Icons.Default.Home, Routes.MAIN),
+                DefaultMenuItem(if(unreadNotifications != 0) "Notifications (${unreadNotifications} new)" else "Notifications", Icons.Default.Notifications, Routes.NOTIFICATIONS),
                 DefaultMenuItem("My Loans", Icons.AutoMirrored.Filled.LibraryBooks, Routes.LOANS),
                 DefaultMenuItem("Terms of Services", Icons.Default.Newspaper, Routes.TERMS),
                 DefaultMenuItem("Privacy Policy", Icons.Default.PrivacyTip, Routes.PRIVACY),
                 DefaultMenuItem("Team", Icons.Default.Groups, Routes.TEAM),
-/*
                 DefaultMenuItem("Settings", Icons.Default.Settings, Routes.SETTINGS)
-*/
             )
 
             menuItems.forEach { item ->

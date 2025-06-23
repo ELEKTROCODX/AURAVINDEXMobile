@@ -16,7 +16,7 @@ class AuditLogRepository(
     @Volatile
     private var lastCacheTime: Long = 0
 
-    suspend fun getAllAuditLogs(token: String): Result<List<AuditLog>> {
+    suspend fun getAllAuditLogs(token: String, sort: String?, sortBy: String?): Result<List<AuditLog>> {
         return try {
             val currentTime = System.currentTimeMillis()
             val isCacheExpired = (currentTime - lastCacheTime) > CACHE_EXPIRY_MS
@@ -24,7 +24,7 @@ class AuditLogRepository(
             if(local.isNotEmpty() && !isCacheExpired) {
                 Result.success(local.map { it.toDomain() })
             } else {
-                val remote = AuditLogClient.apiService.getAuditLogs("Bearer $token")
+                val remote = AuditLogClient.apiService.getAuditLogs(token = "Bearer $token", sort = sort, sortBy = sortBy)
                 val auditLogs = remote.data ?: emptyList()
                 auditLogDao.clearAuditLogs()
                 auditLogs.forEach { auditLog ->

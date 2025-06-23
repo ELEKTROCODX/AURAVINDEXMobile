@@ -1,6 +1,5 @@
 package com.elektro24team.auravindex.viewmodels
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.AuthRepository
@@ -10,7 +9,7 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 class AuthViewModel: BaseViewModel() {
-    private val repository = AuthRepository()
+    private var repository = AuthRepository()
     private val _loginResult = MutableLiveData<String?>()
     private val _registerResult = MutableLiveData<Boolean>()
     val loginResult: MutableLiveData<String?> = _loginResult
@@ -37,7 +36,7 @@ class AuthViewModel: BaseViewModel() {
     }
     fun register(userData: RegisterInfo){
         viewModelScope.launch {
-            val  result = repository.register(userData)
+            val result = repository.register(userData)
             if(result.isSuccess){
                 _registerResult.value = true
                 notifySuccess("Registration successful.")
@@ -58,5 +57,6 @@ class AuthViewModel: BaseViewModel() {
     override fun clearViewModelData() {
         _loginResult.value = null
         _registerResult.value = false
+        repository = AuthRepository()
     }
 }

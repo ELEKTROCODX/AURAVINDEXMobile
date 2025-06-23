@@ -48,7 +48,6 @@ class UserRepository(
                 return Result.success(local.toDomain())
             }
             val remote = UserClient.apiService.getUserById("Bearer $token", userId)
-            saveUserToCache(remote)
             Result.success(remote)
         } catch (e: Exception) {
             Result.failure(e)
@@ -69,7 +68,6 @@ class UserRepository(
             )
             val user = response.data?.firstOrNull()
             user?.let {
-                saveUserToCache(it)
                 Result.success(it)
             } ?: Result.failure(Exception("No user found"))
         } catch (e: Exception) {

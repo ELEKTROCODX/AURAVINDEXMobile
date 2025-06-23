@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.LocalSettingRepository
@@ -73,17 +74,17 @@ class LocalSettingViewModel(
         }
     }
     suspend fun clearSettings(vararg keys: String) {
-        mutableMapOf<String, String>()
         keys.forEach { key ->
             repository.clearSetting(key)
         }
-    }
-    fun clearUserSettings() {
-        viewModelScope.launch {
-            clearSettings(*userKeys.toTypedArray())
+        _settings.update { currentSettings ->
+            currentSettings - keys.toSet()
         }
     }
-    fun clearUserActivePlanSettings() {
+    suspend fun clearUserSettings() {
+        clearSettings(*userKeys.toTypedArray())
+    }
+        fun clearUserActivePlanSettings() {
         viewModelScope.launch {
             clearSettings(*userActivePlanKeys.toTypedArray())
         }

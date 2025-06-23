@@ -17,15 +17,17 @@ import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.ui.components.AdminActivePlanTable
 import com.elektro24team.auravindex.ui.components.AdminAuditLogTable
-import com.elektro24team.auravindex.ui.components.AdminBookCard
 import com.elektro24team.auravindex.ui.components.AdminBookTable
 import com.elektro24team.auravindex.ui.components.AdminLoanTable
+import com.elektro24team.auravindex.ui.components.AdminNotificationTable
 import com.elektro24team.auravindex.ui.components.AdminPlanCard
 import com.elektro24team.auravindex.ui.components.AdminPlanTable
 import com.elektro24team.auravindex.ui.components.AdminUserCard
 import com.elektro24team.auravindex.ui.components.AdminUserTable
+import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.ui.components.TopBar
@@ -41,6 +43,7 @@ import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -55,6 +58,7 @@ fun AdminDashboardScreen(
     planViewModel: PlanViewModel,
     activePlanViewModel: ActivePlanViewModel,
     auditLogViewModel: AuditLogViewModel,
+    notificationViewModel: NotificationViewModel,
     localSettingViewModel: LocalSettingViewModel,
     objectName: String?,
     objectId: String?
@@ -82,7 +86,9 @@ fun AdminDashboardScreen(
             DrawerMenu(
                 navController = navController,
                 currentRoute = navController.currentBackStackEntry?.destination?.route,
-                userViewModel = userViewModel, // <- este es el parámetro faltante
+                userViewModel = userViewModel,
+                notificationViewModel = notificationViewModel,
+                localSettingViewModel = localSettingViewModel,
                 onItemSelected = { route ->
                     hamburguerMenuNavigator(
                         route,
@@ -101,7 +107,10 @@ fun AdminDashboardScreen(
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
-                TopBar(navController = navController, drawerState = drawerState)
+                TopBar(
+                    navController = navController,
+                    drawerState = drawerState
+                )
             },
             bottomBar = {
                 BottomNavBar(
@@ -109,11 +118,11 @@ fun AdminDashboardScreen(
                     onItemClick = { route -> navController.navigate(route) }
                 )
             },
-            content = { paddingValues ->
+            content = { innerPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(innerPadding)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))
@@ -125,6 +134,9 @@ fun AdminDashboardScreen(
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                     ) {
+                        val app = LocalContext.current.applicationContext as AuraVindexApp
+                        val isConnected by app.networkLiveData.observeAsState(true)
+                        ConnectionAlert(isConnected)
                         if(isLoggedIn) {
                             actionMustBeLoggedInDialog = AppAction.ACCESS_ADMIN_DASHBOARD
                             showMustBeLoggedInDialog = true
@@ -151,7 +163,7 @@ fun AdminDashboardScreen(
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
                                     ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
                                     ObserveInsufficientPermissions(bookViewModel, navController)
-                                    val books by bookViewModel.books.observeAsState()
+                                    val books by bookViewModel.books.collectAsState()
                                     LaunchedEffect(Unit) {
                                         bookViewModel.loadBooks(showDuplicates = true, showLents = true)
                                     }
@@ -180,7 +192,7 @@ fun AdminDashboardScreen(
                                     ObserveTokenExpiration(loanViewModel, navController, localSettingViewModel)
                                     ObserveInsufficientPermissions(loanViewModel, navController)
                                     ObserveError(loanViewModel)
-                                    val loans by loanViewModel.loans.observeAsState()
+                                    val loans by loanViewModel.loans.collectAsState()
                                     LaunchedEffect(Unit) {
                                         loanViewModel.loadLoans(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
                                     }
@@ -206,6 +218,16 @@ fun AdminDashboardScreen(
                                     }
                                     AdminAuditLogTable(navController, auditLogs ?: emptyList())
                                 }
+                                AdminDashboardObject.NOTIFICATION.name.lowercase() -> {
+                                    ObserveTokenExpiration(notificationViewModel, navController, localSettingViewModel)
+                                    ObserveInsufficientPermissions(notificationViewModel, navController)
+                                    ObserveError(notificationViewModel)
+                                    val notifications by notificationViewModel.notifications.observeAsState()
+                                    LaunchedEffect(Unit) {
+                                        notificationViewModel.loadNotifications(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""))
+                                    }
+                                    AdminNotificationTable(navController, notifications ?: emptyList())
+                                }
                                 else -> {
                                     Text("Unknown object")
                                 }
@@ -213,15 +235,7 @@ fun AdminDashboardScreen(
                         } else if((objectName != null || objectName != "") && (objectId != null || objectId != "")) {
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
-                                    ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
-                                    ObserveInsufficientPermissions(bookViewModel, navController)
-                                    AdminBookCard(
-                                        navController = navController,
-                                        bookViewModel = bookViewModel,
-                                        loanViewModel = loanViewModel,
-                                        localSettingViewModel = localSettingViewModel,
-                                        bookId = objectId,
-                                    )
+                                    navController.navigate("book/${objectId}")
                                 }
                                 AdminDashboardObject.PLAN.name.lowercase() -> {
                                     ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)

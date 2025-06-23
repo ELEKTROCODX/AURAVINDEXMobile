@@ -66,7 +66,7 @@ fun AdminBookTable(
                 currentPageBooks.forEach { book ->
                     Row(
                         modifier = Modifier
-                            .clickable { navController.navigate("admin_dashboard/book/${book._id}") }
+                            .clickable { navController.navigate("book/${book._id}") }
                             .padding(vertical = 6.dp)
                     ) {
                         TableCell(book.title, 220.dp)
@@ -89,7 +89,9 @@ fun AdminBookTable(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = 16.dp).horizontalScroll(
+                    rememberScrollState()
+                ),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(

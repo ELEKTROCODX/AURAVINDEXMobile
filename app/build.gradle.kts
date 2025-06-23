@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -43,9 +44,6 @@ android {
 }
 
 dependencies {
-    implementation("io.coil-kt:coil-compose:2.4.0")
-
-
     //Arreglo del chat de lo que hizo @Efrain_Morales(AlexMarin)
     implementation(libs.androidx.room.runtime) {
         exclude(group = "com.intellij", module = "annotations")
@@ -63,6 +61,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.firebase.messaging.ktx)
     kapt("androidx.room:room-compiler:2.7.1")
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -88,7 +87,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-
+    implementation(libs.firebase.messaging)
     implementation(libs.annotations)
 
     testImplementation(libs.junit)

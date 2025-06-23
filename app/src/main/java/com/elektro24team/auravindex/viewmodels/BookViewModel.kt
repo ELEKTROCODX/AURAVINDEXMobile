@@ -1,7 +1,5 @@
 package com.elektro24team.auravindex.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.BookRepository
@@ -9,6 +7,9 @@ import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.model.local.BookEntity
 import com.elektro24team.auravindex.retrofit.BookClient
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import kotlin.collections.filter
@@ -18,18 +19,18 @@ class BookViewModel(
     private val repository: BookRepository
 ) : BaseViewModel() {
 
-    private val _books = MutableLiveData<List<Book>?>()
-    private val _book = MutableLiveData<Book?>()
-    private val _filteredBooks = MutableLiveData<List<Book>?>()
-    private val _latestReleases = MutableLiveData<List<Book>?>()
-    val books: MutableLiveData<List<Book>?> = _books
-    val book: MutableLiveData<Book?> = _book
-    val filteredBooks: MutableLiveData<List<Book>?> = _filteredBooks
-    val latestReleases: MutableLiveData<List<Book>?> = _latestReleases
+    private val _books = MutableStateFlow<List<Book>?>(null)
+    private val _book = MutableStateFlow<Book?>(null)
+    private val _filteredBooks = MutableStateFlow<List<Book>?>(null)
+    private val _latestReleases = MutableStateFlow<List<Book>?>(null)
+    val books: StateFlow<List<Book>?> = _books.asStateFlow()
+    val book: StateFlow<Book?> = _book.asStateFlow()
+    val filteredBooks: StateFlow<List<Book>?> = _filteredBooks.asStateFlow()
+    val latestReleases: StateFlow<List<Book>?> = _latestReleases.asStateFlow()
 
     suspend fun loadBooks(showDuplicates: Boolean, showLents: Boolean) {
         val result = repository.getAllBooks(showDuplicates, showLents)
-        _books.postValue(result)
+        _books.value = result
     }
 
     suspend fun loadBooksAndFilter(
@@ -39,7 +40,7 @@ class BookViewModel(
         filterValue: String
     ) {
         val result = repository.getAllBooks(showDuplicates, showLents)
-        _books.postValue(result)
+        _books.value = result
         filterBook(filterField, filterValue, showDuplicates, showLents)
     }
 
@@ -71,7 +72,7 @@ class BookViewModel(
                 else -> false
             }
         }
-        _filteredBooks.postValue(filtered ?: emptyList())
+        _filteredBooks.value = filtered ?: emptyList()
     }
 
      fun fetchLatestReleases(limit: String = "10"){
@@ -113,16 +114,15 @@ class BookViewModel(
 
             if (score > 0) book to score else null
         }?.sortedByDescending { it.second }?.map { it.first }
-        _filteredBooks.postValue(filtered ?: emptyList())
+        _filteredBooks.value = (filtered ?: emptyList())
     }
     fun loadBook(bookId: String, forceApiRequest: Boolean = false) {
         viewModelScope.launch {
             if( _books.value?.find{ it._id == bookId } == null || forceApiRequest) {
                 val result = repository.getBookById(bookId)
-                _books.postValue(listOf(result))
-                _book.postValue(result)
+                _book.value = result
             } else {
-                _book.postValue(_books.value?.find{ it._id == bookId })
+                _book.value = (_books.value?.find{ it._id == bookId })
             }
         }
     }
