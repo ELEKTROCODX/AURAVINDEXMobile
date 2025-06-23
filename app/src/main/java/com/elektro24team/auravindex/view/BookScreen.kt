@@ -592,6 +592,7 @@ fun BookScreen(
                                         modifier = Modifier.padding(bottom = 12.dp))
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
+                                Spacer(modifier = Modifier.height(8.dp))
                                 book.value?.let { UserBookLists(bookLists = userLists, bookId = it._id, bookListViewModel = bookListViewModel, context = context, token = settings.value[SettingKey.TOKEN.keySetting].toString()) }
                                 if (isLoggedIn(settings.value) && book.value?.book_status?.book_status == "AVAILABLE") {
                                     Spacer(modifier = Modifier.height(16.dp))
