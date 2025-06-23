@@ -47,9 +47,14 @@ import com.elektro24team.auravindex.ui.components.ListForm
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.BookListViewModel
+import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
@@ -61,20 +66,24 @@ fun ListsScreen(
     notificationViewModel: NotificationViewModel,
     localSettingViewModel: LocalSettingViewModel,
     bookListViewModel: BookListViewModel,
+    loanViewModel: LoanViewModel,
 ) {
     val settings = localSettingViewModel.settings.collectAsState()
     val userLists by bookListViewModel.bookLists.collectAsState()
     var showForm by remember { mutableStateOf(false) }
-    LaunchedEffect(userLists) {
-        bookListViewModel.loadUserLists(settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
-    }
-
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     rememberCoroutineScope()
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
+    LaunchedEffect(userLists) {
+        bookListViewModel.loadUserLists(settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
+    }
+    ObserveTokenExpiration(bookListViewModel, navController, localSettingViewModel)
+    ObserveInsufficientPermissions(bookListViewModel, navController)
+    ObserveError(bookListViewModel)
+    ObserveSuccess(bookListViewModel)
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -137,14 +146,13 @@ fun ListsScreen(
                             .padding(horizontal = 16.dp)
                     ) {
                         if(showForm){
-                            ListForm(onDismiss = {showForm = false}, bookListViewModel = bookListViewModel,user = settings.value[SettingKey.ID.keySetting].toString()
-                                ,token = settings.value[SettingKey.TOKEN.keySetting].toString(), context = context)
+                            ListForm(onDismiss = {showForm = false}, bookListViewModel = bookListViewModel, user = settings.value[SettingKey.ID.keySetting].toString(), token = settings.value[SettingKey.TOKEN.keySetting].toString(), context = context)
                         }
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
                         Text(
-                            text = "Lists screen (dev)",
+                            text = "My lists",
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterHorizontally)
                         )
@@ -153,8 +161,20 @@ fun ListsScreen(
                                 .fillMaxSize()
                                 .padding(16.dp)
                         ) {
+                            // Active loans
+                            // Pending loans
+
+                            // Favorites
                             userLists?.forEach{ list ->
-                                BookListCard(list,navController, bookListViewModel, context,settings.value[SettingKey.TOKEN.keySetting].toString(),settings.value[SettingKey.ID.keySetting].toString())
+                                if((list.title == "Favorites") && (list.owner._id == settings.value[SettingKey.ID.keySetting].toString())) {
+                                    BookListCard(list,navController, bookListViewModel, settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
+                                }
+                            }
+                            // Custom
+                            userLists?.forEach{ list ->
+                                if((list.title != "Favorites") && (list.owner._id == settings.value[SettingKey.ID.keySetting].toString())) {
+                                    BookListCard(list,navController, bookListViewModel, settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
+                                }
                             }
                         }
                     }

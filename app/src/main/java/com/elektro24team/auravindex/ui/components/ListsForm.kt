@@ -30,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.model.api.BookListRequest
 import com.elektro24team.auravindex.viewmodels.BookListViewModel
@@ -46,7 +45,6 @@ fun ListForm(
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -98,8 +96,8 @@ fun ListForm(
                     Button(
                         onClick = {
                             if (title.isNotBlank() && title.length <= 10) {
-                                    var newList = BookListRequest(user,title,description, emptyList())
-                                    bookListViewModel.createList(token,newList,context)
+                                    var newList = BookListRequest(user, title, description, emptyList())
+                                    bookListViewModel.createList(token, newList)
                                     onDismiss()
                             }else{
                                 Toast.makeText(context, "Title must be 1-10 characters", Toast.LENGTH_SHORT).show()

@@ -6,11 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,30 +16,29 @@ import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.AuraVindexApp
-import com.elektro24team.auravindex.ui.components.BookCollectionsSection
-import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
-import com.elektro24team.auravindex.model.Book
-import com.elektro24team.auravindex.model.BookList
+import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.ui.theme.BlackC
 import com.elektro24team.auravindex.ui.theme.BrownC
@@ -50,9 +47,11 @@ import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.ui.theme.WhiteC
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.utils.enums.SettingKey
-import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.viewmodels.BookListViewModel
-import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
@@ -71,6 +70,7 @@ fun MyListScreen(
     notificationViewModel: NotificationViewModel,
     listId: String
 ) {
+    val colors = MaterialTheme.colorScheme
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     rememberCoroutineScope()
     val context = LocalContext.current
@@ -81,9 +81,12 @@ fun MyListScreen(
     val myList by bookListViewModel.myBookList.collectAsState()
 
     LaunchedEffect(Unit) {
-        bookListViewModel.getMyList(settings.value[SettingKey.TOKEN.keySetting].toString(),listId)
+        bookListViewModel.getBookList(settings.value[SettingKey.TOKEN.keySetting].toString(),listId)
     }
-
+    ObserveTokenExpiration(bookListViewModel, navController, localSettingViewModel)
+    ObserveInsufficientPermissions(bookListViewModel, navController)
+    ObserveError(bookListViewModel)
+    ObserveSuccess(bookListViewModel)
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -136,7 +139,15 @@ fun MyListScreen(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
+                        val app = LocalContext.current.applicationContext as AuraVindexApp
+                        val isConnected by app.networkLiveData.observeAsState(true)
+                        ConnectionAlert(isConnected)
+                        androidx.compose.material3.Text(
+                            text = myList?.title.toString(),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
                         if (myList?.books?.isNotEmpty() == true) {
                             val booksInList = myList?.books ?: emptyList()
                             LazyColumn {
@@ -161,7 +172,7 @@ fun MyListScreen(
                                             GlideImage(
                                                 imageModel = { IMG_url.trimEnd('/') + "/" + book.book_img.trimStart('/') },
                                                 modifier = Modifier
-                                                    .size(width = 100.dp, height = 150.dp)
+                                                    .size(width = 100.dp, height = 185.dp)
                                                     .clip(RoundedCornerShape(10.dp)),
                                                 imageOptions = ImageOptions(contentScale = ContentScale.Crop),
                                                 loading = {
@@ -231,10 +242,30 @@ fun MyListScreen(
                                                 )
                                                 Button(
                                                     onClick = {
-                                                        bookListViewModel.removeBookFromList(settings.value[SettingKey.TOKEN.keySetting].toString(),listId,book._id,context)
-                                                    }
-                                                ){
-                                                    Icon(Icons.Default.Delete, contentDescription = "Delete")
+                                                        bookListViewModel.removeBookFromList(settings.value[SettingKey.TOKEN.keySetting].toString(),listId,book._id)
+                                                    },
+                                                    modifier = Modifier
+                                                        .height(36.dp),
+                                                    colors = androidx.compose.material.ButtonDefaults.buttonColors(
+                                                        backgroundColor = colors.error
+                                                    ),
+                                                    shape = RoundedCornerShape(12.dp),
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Delete,
+                                                        contentDescription = "Remove from list",
+                                                        tint = Color.White,
+                                                        modifier = Modifier.size(14.dp)
+                                                    )
+                                                    Text(
+                                                        text = "Remove from list",
+                                                        color = Color.White,
+                                                        style = TextStyle(
+                                                            fontWeight = FontWeight.Bold,
+                                                            fontSize = 12.sp,
+                                                            color = Color(0xFF572365)
+                                                        )
+                                                    )
                                                 }
                                             }
                                         }

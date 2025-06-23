@@ -42,7 +42,6 @@ class BookRepository(
 
         val remote = BookClient.apiService.getBookById(bookId)
         saveBookToCache(remote)
-
         return remote
     }
     suspend fun getBookByIdWithAuth(token: String, bookId: String): Result<Book> {

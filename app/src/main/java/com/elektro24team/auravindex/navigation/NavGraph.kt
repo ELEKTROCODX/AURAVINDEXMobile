@@ -193,7 +193,8 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                userViewModel = userViewModel,
                notificationViewModel = notificationViewModel,
                localSettingViewModel = localSettingViewModel,
-               bookListViewModel = bookListViewModel
+               bookListViewModel = bookListViewModel,
+               loanViewModel = loanViewModel
            )
         }
         composable(Routes.LOANS) {
