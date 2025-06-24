@@ -99,42 +99,40 @@ fun UserBookLists(bookLists: List<BookList>?, bookId: String, modifier: Modifier
                         bookLists.forEach { list ->
                             // Check if book is already in list
                             val isBookInList = list.books.any { it._id == bookId }
-                            if(isBookInList){
-                                Button(
-                                    onClick = {
-                                        if(!isBookInList) {
-                                            bookListViewModel.addBookToList(bookId, list._id, token)
-                                            showCard = false
-                                        } else {
-                                            Toast.makeText(context, "This book is already in the list.", Toast.LENGTH_SHORT).show()
-                                        }
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(36.dp),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = OrangeC),
-                                    shape = RoundedCornerShape(12.dp),
-                                ) {
-                                    if(list.title == "Favorites") {
-                                        Icon(
-                                            imageVector = Icons.Default.Favorite,
-                                            contentDescription = "Favorites",
-                                            tint = Color.White,
-                                            modifier = Modifier.padding(end = 8.dp)
-                                        )
+                            Button(
+                                onClick = {
+                                    if(!isBookInList) {
+                                        bookListViewModel.addBookToList(bookId, list._id, token)
+                                        showCard = false
+                                    } else {
+                                        Toast.makeText(context, "This book is already in the list.", Toast.LENGTH_SHORT).show()
                                     }
-                                    Text(
-                                        text = list.title,
-                                        color = Color.White,
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color(0xFF572365)
-                                        )
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(36.dp),
+                                colors = ButtonDefaults.buttonColors(backgroundColor = OrangeC),
+                                shape = RoundedCornerShape(12.dp),
+                            ) {
+                                if(list.title == "Favorites") {
+                                    Icon(
+                                        imageVector = Icons.Default.Favorite,
+                                        contentDescription = "Favorites",
+                                        tint = Color.White,
+                                        modifier = Modifier.padding(end = 8.dp)
                                     )
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = list.title,
+                                    color = Color.White,
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = Color(0xFF572365)
+                                    )
+                                )
                             }
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
                 }

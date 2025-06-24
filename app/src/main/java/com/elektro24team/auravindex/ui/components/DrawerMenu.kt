@@ -180,7 +180,7 @@ fun DrawerMenu(
                 DefaultMenuItem("Terms of Services", Icons.Default.Newspaper, Routes.TERMS),
                 DefaultMenuItem("Privacy Policy", Icons.Default.PrivacyTip, Routes.PRIVACY),
                 DefaultMenuItem("Team", Icons.Default.Groups, Routes.TEAM),
-                DefaultMenuItem("Settings", Icons.Default.Settings, Routes.SETTINGS)
+                /*DefaultMenuItem("Settings", Icons.Default.Settings, Routes.SETTINGS)*/
             )
 
             menuItems.forEach { item ->
