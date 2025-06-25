@@ -59,7 +59,6 @@ fun WelcomeScreen(
         )
         val loaded = localSettingViewModel.loadSettings(*keys)
         localSettingViewModel.loadUserSettings()
-        bookCollectionViewModel.loadBookCollections()
         if (loaded[SettingKey.DARK_MODE.keySetting].isNullOrBlank()) {
             localSettingViewModel.saveSetting(SettingKey.DARK_MODE.keySetting, "false")
         }
@@ -78,6 +77,7 @@ fun WelcomeScreen(
     LaunchedEffect(settings) {
         if (isLoggedIn(settings)) {
             Log.d("AVDEBUG", "IS LOGGED IN")
+            //bookCollectionViewModel.loadBookCollections()
             activePlanViewModel.loadActivePlanByUserId(
                 settings[SettingKey.TOKEN.keySetting].toString(),
                 settings[SettingKey.ID.keySetting].toString()
@@ -88,13 +88,15 @@ fun WelcomeScreen(
             )
             localSettingViewModel.loadUserSettings()
         } else {
-            Log.d("AVDEBUG", "IS NOT LOGGED IN")
+            //Log.d("AVDEBUG", "IS NOT LOGGED IN")
         }
     }
     LaunchedEffect(bookCollections) {
-        bookViewModel.loadBooks(showDuplicates = true, showLents = true)
-        bookViewModel.fetchLatestReleases()
-        planViewModel.loadPlans()
+        if(isLoggedIn(settings)) {
+            bookViewModel.loadBooks(showDuplicates = true, showLents = true)
+            bookViewModel.fetchLatestReleases()
+            planViewModel.loadPlans()
+        }
     }
     Box(
         modifier = Modifier

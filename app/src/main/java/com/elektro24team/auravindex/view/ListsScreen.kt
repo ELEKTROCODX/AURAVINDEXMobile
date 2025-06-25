@@ -1,18 +1,12 @@
 package com.elektro24team.auravindex.view
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -39,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
+import com.elektro24team.auravindex.ui.NotLoggedInAlert
 import com.elektro24team.auravindex.ui.components.BookListCard
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
@@ -52,6 +47,7 @@ import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsu
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.BookListViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
@@ -68,7 +64,7 @@ fun ListsScreen(
     bookListViewModel: BookListViewModel,
     loanViewModel: LoanViewModel,
 ) {
-    val settings = localSettingViewModel.settings.collectAsState()
+    val localSettings = localSettingViewModel.settings.collectAsState()
     val userLists by bookListViewModel.bookLists.collectAsState()
     var showForm by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -78,7 +74,9 @@ fun ListsScreen(
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     LaunchedEffect(userLists) {
-        bookListViewModel.loadUserLists(settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
+        if(isLoggedIn(localSettings.value)) {
+            bookListViewModel.loadUserLists(localSettings.value[SettingKey.TOKEN.keySetting].toString(), localSettings.value[SettingKey.ID.keySetting].toString())
+        }
     }
     ObserveTokenExpiration(bookListViewModel, navController, localSettingViewModel)
     ObserveInsufficientPermissions(bookListViewModel, navController)
@@ -145,12 +143,13 @@ fun ListsScreen(
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                     ) {
-                        if(showForm){
-                            ListForm(onDismiss = {showForm = false}, bookListViewModel = bookListViewModel, user = settings.value[SettingKey.ID.keySetting].toString(), token = settings.value[SettingKey.TOKEN.keySetting].toString(), context = context)
-                        }
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
+                        NotLoggedInAlert(localSettings.value)
+                        if(showForm){
+                            ListForm(onDismiss = {showForm = false}, bookListViewModel = bookListViewModel, user = localSettings.value[SettingKey.ID.keySetting].toString(), token = localSettings.value[SettingKey.TOKEN.keySetting].toString(), context = context)
+                        }
                         Text(
                             text = "My lists",
                             style = MaterialTheme.typography.titleLarge,
@@ -166,14 +165,14 @@ fun ListsScreen(
 
                             // Favorites
                             userLists?.forEach{ list ->
-                                if((list.title == "Favorites") && (list.owner._id == settings.value[SettingKey.ID.keySetting].toString())) {
-                                    BookListCard(list,navController, bookListViewModel, settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
+                                if((list.title == "Favorites") && (list.owner._id == localSettings.value[SettingKey.ID.keySetting].toString())) {
+                                    BookListCard(list,navController, bookListViewModel, localSettings.value[SettingKey.TOKEN.keySetting].toString(), localSettings.value[SettingKey.ID.keySetting].toString())
                                 }
                             }
                             // Custom
                             userLists?.forEach{ list ->
-                                if((list.title != "Favorites") && (list.owner._id == settings.value[SettingKey.ID.keySetting].toString())) {
-                                    BookListCard(list,navController, bookListViewModel, settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
+                                if((list.title != "Favorites") && (list.owner._id == localSettings.value[SettingKey.ID.keySetting].toString())) {
+                                    BookListCard(list,navController, bookListViewModel, localSettings.value[SettingKey.TOKEN.keySetting].toString(), localSettings.value[SettingKey.ID.keySetting].toString())
                                 }
                             }
                         }

@@ -133,9 +133,6 @@ fun LoginScreen(
                     .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                val app = LocalContext.current.applicationContext as AuraVindexApp
-                val isConnected by app.networkLiveData.observeAsState(true)
-                ConnectionAlert(isConnected)
                 Card(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
@@ -150,6 +147,9 @@ fun LoginScreen(
                             .fillMaxWidth()
                             .padding(24.dp)
                     ) {
+                        val app = LocalContext.current.applicationContext as AuraVindexApp
+                        val isConnected by app.networkLiveData.observeAsState(true)
+                        ConnectionAlert(isConnected)
                         Spacer(modifier = Modifier.height(16.dp))
                         Image(
                             painter = painterResource(id = R.drawable.logo),
