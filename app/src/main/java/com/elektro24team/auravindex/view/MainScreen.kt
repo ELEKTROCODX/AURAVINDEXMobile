@@ -152,15 +152,7 @@ fun MainScreen(
             bottomBar = {
                 BottomNavBar(
                     currentRoute = navController.currentBackStackEntry?.destination?.route ?: "main",
-                    onItemClick = { route ->
-                        if((route == Routes.PLANS || route == Routes.LISTS) && !isLoggedIn(localSettings)) {
-                            showMustBeLoggedInDialog = true
-                            if(route == Routes.PLANS) actionMustBeLoggedInDialog = AppAction.SUBSCRIBE_TO_PLAN
-                            if(route == Routes.LISTS) actionMustBeLoggedInDialog = AppAction.CHECK_LISTS
-                        } else {
-                            navController.navigate(route)
-                        }
-                    }
+                    onItemClick = { route -> navController.navigate(route) }
                 )
             },
             content = { innerPadding ->
