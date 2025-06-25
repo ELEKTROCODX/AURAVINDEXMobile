@@ -61,10 +61,12 @@ import java.util.TimeZone
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.unit.Dp
+import com.elektro24team.auravindex.ui.NotLoggedInAlert
 import com.elektro24team.auravindex.ui.components.NotificationCard
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.isNotificationRecent
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 
@@ -94,10 +96,12 @@ fun NotificationsScreen(
     ObserveError(userViewModel)
     LaunchedEffect(Unit) {
         localSettingViewModel.loadUserSettings()
-        notificationViewModel.loadUserNotifications(
-            token = localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-            userId = localSettings.getOrDefault(SettingKey.ID.keySetting, "")
-        )
+        if(isLoggedIn(localSettings)) {
+            notificationViewModel.loadUserNotifications(
+                token = localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                userId = localSettings.getOrDefault(SettingKey.ID.keySetting, "")
+            )
+        }
     }
     ModalNavigationDrawer(
         drawerContent = {
@@ -148,6 +152,7 @@ fun NotificationsScreen(
                         val app = context.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
+                        NotLoggedInAlert(localSettings)
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()

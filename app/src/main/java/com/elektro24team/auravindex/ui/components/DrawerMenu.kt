@@ -57,7 +57,9 @@ fun DrawerMenu(
     val userNotifications by notificationViewModel.userNotifications.observeAsState()
     var unreadNotifications by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
-        notificationViewModel.loadUserNotifications(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""), localSettings.getOrDefault(SettingKey.ID.keySetting, ""))
+        if(isLoggedIn(localSettings)) {
+            notificationViewModel.loadUserNotifications(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""), localSettings.getOrDefault(SettingKey.ID.keySetting, ""))
+        }
     }
     LaunchedEffect(userNotifications) {
         if(userNotifications?.isNotEmpty() == true) {

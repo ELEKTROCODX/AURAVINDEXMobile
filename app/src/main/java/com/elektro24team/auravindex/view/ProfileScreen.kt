@@ -31,6 +31,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,8 +51,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
+import com.elektro24team.auravindex.ui.NotLoggedInAlert
 import com.elektro24team.auravindex.ui.components.BottomNavBar
+import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
@@ -93,9 +97,6 @@ fun ProfileScreen(
     }
     val isLoggedIn = isLoggedIn(localSettings.value)
     val userData = user.value
-    if (!isLoggedIn) {
-        mustBeLoggedInToast(context, AppAction.ACCESS_PROFILE_PAGE, navController)
-    }
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -142,6 +143,10 @@ fun ProfileScreen(
                             .padding(vertical = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        val app = LocalContext.current.applicationContext as AuraVindexApp
+                        val isConnected by app.networkLiveData.observeAsState(true)
+                        ConnectionAlert(isConnected)
+                        NotLoggedInAlert(localSettings.value)
                         Card(
                             modifier = Modifier.fillMaxWidth(0.9f),
                             colors = CardDefaults.cardColors(containerColor = Color.White),
