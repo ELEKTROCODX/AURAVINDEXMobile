@@ -18,6 +18,7 @@ import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
+import com.elektro24team.auravindex.ui.NotLoggedInAlert
 import com.elektro24team.auravindex.ui.components.AdminActivePlanTable
 import com.elektro24team.auravindex.ui.components.AdminAuditLogTable
 import com.elektro24team.auravindex.ui.components.AdminBookTable
@@ -37,6 +38,7 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
@@ -70,9 +72,6 @@ fun AdminDashboardScreen(
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val localSettings by localSettingViewModel.settings.collectAsState()
-    val isLoggedIn = localSettings.getOrDefault(SettingKey.TOKEN.keySetting, "").isNotEmpty()
-    var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
-    var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.ACCESS_ADMIN_DASHBOARD) }
     MaterialTheme.colorScheme
     LaunchedEffect(Unit) {
         localSettingViewModel.loadSettings(
@@ -137,16 +136,13 @@ fun AdminDashboardScreen(
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
-                        if(isLoggedIn) {
-                            actionMustBeLoggedInDialog = AppAction.ACCESS_ADMIN_DASHBOARD
-                            showMustBeLoggedInDialog = true
-                        }
+                        NotLoggedInAlert(localSettings)
                         /*
                         * Case 1: Object name and ID are null (show welcome screen)
                         * Case 2: Object name is not null but ID is null (show object table)
                         * Case 3: Object name and ID are not null (show object details)
                         * */
-                        if(objectName == null || objectName == "") {
+                        if(objectName == "") {
                             Text(
                                 text = "Admin Dashboard",
                                 style = MaterialTheme.typography.headlineMedium,
@@ -158,7 +154,7 @@ fun AdminDashboardScreen(
                             * Check statistics
                             * Check pending loans
                             * */
-                        } else if(objectId == null || objectId == "") {
+                        } else if(objectId == "") {
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
                                     ObserveTokenExpiration(bookViewModel, navController, localSettingViewModel)
@@ -232,7 +228,7 @@ fun AdminDashboardScreen(
                                     Text("Unknown object")
                                 }
                             }
-                        } else if((objectName != null || objectName != "") && (objectId != null || objectId != "")) {
+                        } else if((objectName != "") && (objectId != "")) {
                             when(objectName) {
                                 AdminDashboardObject.BOOK.name.lowercase() -> {
                                     navController.navigate("book/${objectId}")
@@ -243,7 +239,7 @@ fun AdminDashboardScreen(
                                     AdminPlanCard(
                                         navController = navController,
                                         planViewModel = planViewModel,
-                                        planId = objectId,
+                                        planId = objectId.toString(),
                                     )
                                 }
                                 AdminDashboardObject.USER.name.lowercase() -> {
@@ -253,7 +249,7 @@ fun AdminDashboardScreen(
                                         navController = navController,
                                         userViewModel = userViewModel,
                                         localSettingViewModel = localSettingViewModel,
-                                        userId = objectId,
+                                        userId = objectId.toString(),
                                     )
                                 }
                                 else -> {

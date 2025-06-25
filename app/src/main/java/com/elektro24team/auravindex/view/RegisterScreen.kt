@@ -113,9 +113,6 @@ fun RegisterScreen(
                     brush = Brush.verticalGradient(colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))))
                 .padding(innerPadding)
         )
-        val app = LocalContext.current.applicationContext as AuraVindexApp
-        val isConnected by app.networkLiveData.observeAsState(true)
-        ConnectionAlert(isConnected)
         Card(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
@@ -124,6 +121,9 @@ fun RegisterScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
+            val app = LocalContext.current.applicationContext as AuraVindexApp
+            val isConnected by app.networkLiveData.observeAsState(true)
+            ConnectionAlert(isConnected)
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()

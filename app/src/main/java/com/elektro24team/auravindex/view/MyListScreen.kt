@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
+import com.elektro24team.auravindex.ui.NotLoggedInAlert
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.ui.theme.BlackC
@@ -51,6 +52,7 @@ import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveToke
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.BookListViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
@@ -81,7 +83,9 @@ fun MyListScreen(
     val myList by bookListViewModel.myBookList.collectAsState()
 
     LaunchedEffect(Unit) {
-        bookListViewModel.getBookList(settings.value[SettingKey.TOKEN.keySetting].toString(),listId)
+        if(isLoggedIn(settings.value)){
+            bookListViewModel.getBookList(settings.value[SettingKey.TOKEN.keySetting].toString(),listId)
+        }
     }
     ObserveTokenExpiration(bookListViewModel, navController, localSettingViewModel)
     ObserveInsufficientPermissions(bookListViewModel, navController)
@@ -142,6 +146,7 @@ fun MyListScreen(
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
+                        NotLoggedInAlert(settings.value)
                         androidx.compose.material3.Text(
                             text = myList?.title.toString(),
                             style = MaterialTheme.typography.titleLarge,
@@ -168,7 +173,6 @@ fun MyListScreen(
                                                 .fillMaxWidth()
                                                 .padding(8.dp)
                                         ) {
-                                            // Imagen a la izquierda
                                             GlideImage(
                                                 imageModel = { IMG_url.trimEnd('/') + "/" + book.book_img.trimStart('/') },
                                                 modifier = Modifier
@@ -193,8 +197,6 @@ fun MyListScreen(
                                                     )
                                                 }
                                             )
-
-                                            // Info textual a la derecha
                                             Column(
                                                 modifier = Modifier
                                                     .padding(start = 12.dp, end = 8.dp)
