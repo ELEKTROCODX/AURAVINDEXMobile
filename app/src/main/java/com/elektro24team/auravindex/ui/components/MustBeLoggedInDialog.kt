@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.enums.AppAction
 
+/* Deprecated */
 @Composable
 fun MustBeLoggedInDialog (
     navController: NavController,

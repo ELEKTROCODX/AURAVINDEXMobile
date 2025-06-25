@@ -75,8 +75,6 @@ fun MainScreen(
     val latestReleases by bookViewModel.latestReleases.collectAsState()
     val localSettings by localSettingViewModel.settings.collectAsState()
     val recentBooks by recentBookViewModel.recentBook.observeAsState()
-    var showMustBeLoggedInDialog by remember { mutableStateOf(false) }
-    var actionMustBeLoggedInDialog by remember { mutableStateOf(AppAction.SUBSCRIBE_TO_PLAN) }
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -169,14 +167,6 @@ fun MainScreen(
                     val app = LocalContext.current.applicationContext as AuraVindexApp
                     val isConnected by app.networkLiveData.observeAsState(true)
                     ConnectionAlert(isConnected)
-
-                    if (showMustBeLoggedInDialog) {
-                        MustBeLoggedInDialog(
-                            navController = navController,
-                            action = actionMustBeLoggedInDialog,
-                            onDismiss = { showMustBeLoggedInDialog = false }
-                        )
-                    }
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
