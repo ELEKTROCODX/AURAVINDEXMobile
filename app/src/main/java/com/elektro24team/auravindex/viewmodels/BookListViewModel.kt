@@ -40,6 +40,7 @@ class BookListViewModel(
                     when (error.code()) {
                         401 -> notifyTokenExpired()
                         403 -> notifyInsufficentPermissions()
+                        409 -> notifyError("You've exceeded the limit of lists per user.")
                         else -> notifyError("HTTP error: ${error.code()}")
                     }
                 } else {
@@ -150,7 +151,7 @@ class BookListViewModel(
                         401 -> notifyTokenExpired()
                         403 -> notifyInsufficentPermissions()
                         404 -> notifyError(error.message())
-                        409 -> notifyError("This book is already in that list.")
+                        409 -> notifyError("You've exceeded the limit of books per list.")
                         else -> notifyError("HTTP error: ${error.code()}")
                     }
                 } else {
