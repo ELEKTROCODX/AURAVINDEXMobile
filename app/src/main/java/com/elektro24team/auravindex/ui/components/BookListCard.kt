@@ -48,7 +48,7 @@ fun BookListCard(
         Column(modifier = Modifier.fillMaxWidth()) {
             Image(
                 painter = painterResource(id = R.drawable.ima),
-                contentDescription = "Imagen de lista",
+                contentDescription = "Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -95,7 +95,7 @@ fun BookListCard(
 
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
-                            text = "${bookList?.books?.size ?: 0} libros",
+                            text = "${bookList?.books?.size ?: 0} books",
                             style = MaterialTheme.typography.labelMedium.copy(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold

@@ -266,6 +266,19 @@ fun AdminDashboardScreen(
                     }
 
                     else -> {
+                        when (objectName?.lowercase()) {
+                            AdminDashboardObject.USER.name.lowercase() -> {
+                                ObserveTokenExpiration(userViewModel, navController, localSettingViewModel)
+                                ObserveInsufficientPermissions(userViewModel, navController)
+                                ObserveError(userViewModel)
+                                AdminUserCard(navController, userViewModel, localSettingViewModel, objectId)
+                            }
+                            AdminDashboardObject.PLAN.name.lowercase() -> {
+                                ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)
+                                ObserveInsufficientPermissions(planViewModel, navController)
+                                AdminPlanCard(navController, planViewModel, objectId)
+                            }
+                        }
                     }
                 }
             }

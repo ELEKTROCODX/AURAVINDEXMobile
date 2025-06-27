@@ -36,7 +36,7 @@ fun AdminLoanTable(
     navController: NavController,
     loans: List<Loan>
 ) {
-    var rowsPerPage by remember { mutableStateOf(9) }
+    var rowsPerPage by remember { mutableStateOf(8) }
     var currentPage by remember { mutableStateOf(0) }
     val totalPages = (loans.size + rowsPerPage - 1) / rowsPerPage
     val currentPageLoans = loans.drop(currentPage * rowsPerPage).take(rowsPerPage)
@@ -80,7 +80,7 @@ fun AdminLoanTable(
                         modifier = Modifier
                             .background(backgroundColor)
                             .clickable {
-                                navController.navigate("admin_dashboard/book/${loan.book._id}")
+                                navController.navigate("book/${loan.book._id}")
                             }
                             .padding(vertical = 8.dp)
                     ) {
