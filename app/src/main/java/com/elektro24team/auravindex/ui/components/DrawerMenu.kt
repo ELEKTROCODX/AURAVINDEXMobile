@@ -54,21 +54,10 @@ fun DrawerMenu(
     val colors = MaterialTheme.colorScheme
     val localSettings by localSettingViewModel.settings.collectAsState()
     val user by userViewModel.myUser.observeAsState()
-    val userNotifications by notificationViewModel.userNotifications.observeAsState()
-    var unreadNotifications by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
         notificationViewModel.loadUserNotifications(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""), localSettings.getOrDefault(SettingKey.ID.keySetting, ""))
     }
-    LaunchedEffect(userNotifications) {
-        if(userNotifications?.isNotEmpty() == true) {
-            unreadNotifications = 0
-            userNotifications?.forEach {
-                if(!it.is_read) {
-                    unreadNotifications++
-                }
-            }
-        }
-    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -139,7 +128,6 @@ fun DrawerMenu(
                 AdminMenuItem("Books", Icons.AutoMirrored.Filled.MenuBook, AdminDashboardObject.BOOK),
                 AdminMenuItem("Users", Icons.Default.Person, AdminDashboardObject.USER),
                 AdminMenuItem("Loans", Icons.AutoMirrored.Filled.ReceiptLong, AdminDashboardObject.LOAN),
-                AdminMenuItem("Notifications", Icons.Default.Notifications, AdminDashboardObject.NOTIFICATION),
                 AdminMenuItem("Plans", Icons.AutoMirrored.Filled.List, AdminDashboardObject.PLAN),
                 AdminMenuItem("Active Plans", Icons.Default.PlayCircleFilled, AdminDashboardObject.ACTIVE_PLAN),
                 AdminMenuItem("Audit Log", Icons.Default.Terminal, AdminDashboardObject.AUDIT_LOG)
@@ -175,7 +163,6 @@ fun DrawerMenu(
         } else {
             val menuItems = listOf(
                 DefaultMenuItem("Home", Icons.Default.Home, Routes.MAIN),
-                DefaultMenuItem(if(unreadNotifications != 0) "Notifications (${unreadNotifications} new)" else "Notifications", Icons.Default.Notifications, Routes.NOTIFICATIONS),
                 DefaultMenuItem("My Loans", Icons.AutoMirrored.Filled.LibraryBooks, Routes.LOANS),
                 DefaultMenuItem("Terms of Services", Icons.Default.Newspaper, Routes.TERMS),
                 DefaultMenuItem("Privacy Policy", Icons.Default.PrivacyTip, Routes.PRIVACY),

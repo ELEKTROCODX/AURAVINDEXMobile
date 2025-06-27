@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 
 @Composable
 fun ConnectionAlert(isConnected: Boolean) {
@@ -28,6 +29,7 @@ fun ConnectionAlert(isConnected: Boolean) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp)
+                .zIndex(100f)
         ) {
             Box(
                 modifier = Modifier

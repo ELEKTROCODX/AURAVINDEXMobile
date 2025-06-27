@@ -6,24 +6,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -38,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -46,27 +41,18 @@ import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.DrawerMenu
+import com.elektro24team.auravindex.ui.components.NotificationCard
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
-import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
-import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
-import com.elektro24team.auravindex.viewmodels.UserViewModel
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
-import java.util.TimeZone
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.ui.unit.Dp
-import com.elektro24team.auravindex.ui.components.NotificationCard
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
+import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.functions.isNotificationRecent
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
+import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,7 +63,6 @@ fun NotificationsScreen(
     userViewModel: UserViewModel,
     notificationViewModel: NotificationViewModel
 ) {
-    MaterialTheme.colorScheme
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
@@ -86,12 +71,14 @@ fun NotificationsScreen(
     val userNotifications by notificationViewModel.userNotifications.observeAsState()
     val localSettings by localSettingViewModel.settings.collectAsState()
     val recentNotifications = userNotifications?.filter { isNotificationRecent(it.createdAt) }
+
     ObserveTokenExpiration(notificationViewModel, navController, localSettingViewModel)
     ObserveTokenExpiration(userViewModel, navController, localSettingViewModel)
     ObserveInsufficientPermissions(notificationViewModel, navController)
     ObserveInsufficientPermissions(userViewModel, navController)
     ObserveError(notificationViewModel)
     ObserveError(userViewModel)
+
     LaunchedEffect(Unit) {
         localSettingViewModel.loadUserSettings()
         notificationViewModel.loadUserNotifications(
@@ -99,6 +86,7 @@ fun NotificationsScreen(
             userId = localSettings.getOrDefault(SettingKey.ID.keySetting, "")
         )
     }
+
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -117,13 +105,13 @@ fun NotificationsScreen(
                     )
                 }
             )
-
         },
         drawerState = drawerState
     ) {
         ShowExternalLinkDialog(showTermsDialog, context, "https://auravindex.me/tos/")
         ShowExternalLinkDialog(showPrivacyDialog, context, "https://auravindex.me/privacy/")
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
+
         Scaffold(
             topBar = {
                 TopBar(navController = navController, drawerState = drawerState)
@@ -139,38 +127,49 @@ fun NotificationsScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFEDE7F6), Color(0xFFD1C4E9))))
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f),
+                                    MaterialTheme.colorScheme.surfaceContainerHigh
+                                )
+                            )
+                        )
                 ) {
+                    val app = context.applicationContext as AuraVindexApp
+                    val isConnected by app.networkLiveData.observeAsState(true)
+                    ConnectionAlert(isConnected)
+
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
+                            .padding(horizontal = 20.dp, vertical = 14.dp)
                     ) {
-                        val app = context.applicationContext as AuraVindexApp
-                        val isConnected by app.networkLiveData.observeAsState(true)
-                        ConnectionAlert(isConnected)
-                        Column(
+                        Card(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp)
+                                .fillMaxWidth()
+                                .weight(1f),
+                            shape = MaterialTheme.shapes.medium,
+                            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                         ) {
-                            Card(
-                                modifier = Modifier.fillMaxSize(),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                                shape = MaterialTheme.shapes.medium,
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text(
-                                        text = "Notifications",
-                                        style = MaterialTheme.typography.titleLarge,
-                                        modifier = Modifier.padding(bottom = 12.dp)
-                                    )
-                                }
+                            Column(modifier = Modifier.padding(14.dp)) {
+                                Text(
+                                    text = "Notifications",
+                                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.padding(bottom = 12.dp)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+
                                 if(recentNotifications?.isNullOrEmpty() == false) {
-                                    LazyColumn {
-                                        items(recentNotifications?.size ?: 0) {
+                                    LazyColumn(
+                                        modifier = Modifier.fillMaxSize(),
+                                        verticalArrangement = Arrangement.spacedBy(14.dp)
+                                    ) {
+                                        items(recentNotifications!!) { notification ->
                                             NotificationCard(
-                                                notification = userNotifications!![it],
+                                                notification = notification,
                                                 notificationViewModel = notificationViewModel,
                                                 localSettingViewModel = localSettingViewModel,
                                                 navController = navController
@@ -178,11 +177,20 @@ fun NotificationsScreen(
                                         }
                                     }
                                 } else {
-                                    Text(
-                                        text = "You don't have recent notifications.",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
-                                    )
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 32.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = "You don't have recent notifications.",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.padding(16.dp)
+                                        )
+                                    }
                                 }
                             }
                         }

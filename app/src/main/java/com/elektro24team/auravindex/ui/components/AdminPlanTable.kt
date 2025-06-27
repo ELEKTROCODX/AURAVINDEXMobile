@@ -1,5 +1,6 @@
 package com.elektro24team.auravindex.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -32,31 +33,39 @@ fun AdminPlanTable(
 ) {
     var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
-    var totalPages = (plans.size + rowsPerPage - 1) / rowsPerPage
+    val totalPages = (plans.size + rowsPerPage - 1) / rowsPerPage
     val currentPagePlans = plans.drop(currentPage * rowsPerPage).take(rowsPerPage)
-    Text(
-        text = "Plans",
-        style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
-        modifier = Modifier.padding(start = 4.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
-    )
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-        ) {
+
+    Column(modifier = Modifier.fillMaxSize().padding(0.dp)) {
+        Text(
+            text = "Plans",
+            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
             Column {
-                Row(modifier = Modifier.padding(vertical = 8.dp)) {
+                Row(
+                    modifier = Modifier
+                        .background(androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                        .padding(vertical = 8.dp)
+                ) {
                     TableHeaderCell("Name", 220.dp)
-                    TableHeaderCell("Fixed price", 120.dp)
-                    TableHeaderCell("Monthly price", 120.dp)
+                    TableHeaderCell("Fixed Price", 120.dp)
+                    TableHeaderCell("Monthly Price", 120.dp)
                 }
+
                 Divider()
-                currentPagePlans.forEach { plan ->
+
+                currentPagePlans.forEachIndexed { index, plan ->
+                    val backgroundColor = if (index % 2 == 0)
+                        androidx.compose.material3.MaterialTheme.colorScheme.surface
+                    else
+                        androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant
+
                     Row(
                         modifier = Modifier
+                            .background(backgroundColor)
                             .clickable { navController.navigate("admin_dashboard/plan/${plan._id}") }
                             .padding(vertical = 6.dp)
                     ) {
@@ -64,38 +73,37 @@ fun AdminPlanTable(
                         TableCell("$${plan.fixed_price}", 120.dp)
                         TableCell("$${plan.monthly_price}", 120.dp)
                     }
-                    Divider()
+
+                    Divider(thickness = 0.5.dp)
                 }
             }
         }
-        // Pagination controls
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp).horizontalScroll(
-                    rememberScrollState()
-                ),
-            horizontalArrangement = Arrangement.Center
+                .padding(top = 24.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
                 onClick = { if (currentPage > 0) currentPage-- },
                 enabled = currentPage > 0
             ) {
-                Text("<")
+                Text("Prev")
             }
+
             Text(
-                text = "${currentPage + 1} of $totalPages",
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.CenterVertically)
+                text = "Page ${currentPage + 1} of $totalPages",
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
+
             Button(
                 onClick = { if (currentPage < totalPages - 1) currentPage++ },
                 enabled = currentPage < totalPages - 1
             ) {
-                Text(">")
+                Text("Next")
             }
         }
-
     }
 }

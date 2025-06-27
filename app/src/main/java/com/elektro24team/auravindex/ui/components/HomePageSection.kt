@@ -8,16 +8,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
@@ -31,32 +28,28 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Upcoming
-import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.model.Book
-import com.elektro24team.auravindex.ui.theme.BlackC
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import com.elektro24team.auravindex.ui.theme.OrangeC
+import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.ui.theme.WhiteC
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -69,11 +62,12 @@ fun HomePageSection(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
     ) {
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(start=5.dp, end=5.dp, top=15.dp)
+            ,
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -83,7 +77,7 @@ fun HomePageSection(
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = PurpleC
                 ),
                 textAlign = TextAlign.Center
             )
@@ -123,10 +117,8 @@ fun HomePageSection(
                         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
                     ) {
-                        // Contenedor con fondo
                         Box(modifier = Modifier.fillMaxSize()) {
 
-                            // Imagen de fondo
                             Image(
                                 painter = painterResource(id = R.drawable.bg),
                                 contentDescription = "Background",
@@ -134,11 +126,10 @@ fun HomePageSection(
                                 modifier = Modifier.fillMaxSize()
                             )
 
-                            // Capa semitransparente opcional para mejorar contraste
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .background(Color.White.copy(alpha = 0.1f)) // Ajusta opacidad si es necesario
+                                    .background(Color.White.copy(alpha = 0.1f))
                             )
 
                             // Contenido
@@ -165,7 +156,8 @@ fun HomePageSection(
                                     color = WhiteC,
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
-                                    maxLines = 2,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.fillMaxWidth()
                                 )
