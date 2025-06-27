@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -37,70 +38,87 @@ fun AdminLoanTable(
 ) {
     var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
-    var totalPages = (loans.size + rowsPerPage - 1) / rowsPerPage
+    val totalPages = (loans.size + rowsPerPage - 1) / rowsPerPage
     val currentPageLoans = loans.drop(currentPage * rowsPerPage).take(rowsPerPage)
-    Text(
-        text = "Loans",
-        style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
-        modifier = Modifier.padding(start = 4.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
-    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(0.dp)
     ) {
+        Text(
+            text = "Loans",
+            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
         Row(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
         ) {
             Column {
-                Row(modifier = Modifier.padding(vertical = 8.dp)) {
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .background(androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                ) {
                     TableHeaderCell("User", 180.dp)
                     TableHeaderCell("Book", 180.dp)
-                    TableHeaderCell("Status", 180.dp)
+                    TableHeaderCell("Status", 140.dp)
                     TableHeaderCell("Date", 160.dp)
                 }
+
                 Divider()
-                currentPageLoans.forEach { loan ->
+
+                currentPageLoans.forEachIndexed { index, loan ->
+                    val backgroundColor = if (index % 2 == 0)
+                        androidx.compose.material3.MaterialTheme.colorScheme.surface
+                    else
+                        androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant
+
                     Row(
                         modifier = Modifier
-                            .padding(vertical = 6.dp)
-                            .clickable { navController.navigate("admin_dashboard/book/${loan.book._id}") }
+                            .background(backgroundColor)
+                            .clickable {
+                                navController.navigate("admin_dashboard/book/${loan.book._id}")
+                            }
+                            .padding(vertical = 8.dp)
                     ) {
                         TableCell(loan.user?.email ?: "Unknown", 180.dp)
                         TableCell(loan.book.title, 180.dp)
-                        TableCell(loan.loan_status.loan_status, 180.dp)
+                        TableCell(loan.loan_status.loan_status, 140.dp)
                         TableCell(formatUtcToLocalWithHourAndSeconds(loan.createdAt), 160.dp)
                     }
-                    Divider()
+
+                    Divider(thickness = 0.5.dp)
                 }
             }
         }
-        // Pagination controls
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp).horizontalScroll(
-                    rememberScrollState()
-                ),
-            horizontalArrangement = Arrangement.Center
+                .padding(top = 24.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
                 onClick = { if (currentPage > 0) currentPage-- },
                 enabled = currentPage > 0
             ) {
-                Text("<")
+                Text("Prev")
             }
+
             Text(
-                text = "${currentPage + 1} of $totalPages",
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.CenterVertically)
+                text = "Page ${currentPage + 1} of $totalPages",
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
+
             Button(
                 onClick = { if (currentPage < totalPages - 1) currentPage++ },
                 enabled = currentPage < totalPages - 1
             ) {
-                Text(">")
+                Text("Next")
             }
         }
     }

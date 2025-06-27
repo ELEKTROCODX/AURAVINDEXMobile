@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,71 +36,78 @@ fun AdminNotificationTable(
 ) {
     var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
-    var totalPages = (notifications.size + rowsPerPage - 1) / rowsPerPage
-    val currentPageAuditLogs = notifications.drop(currentPage * rowsPerPage).take(rowsPerPage)
-    Text(
-        text = "Notifications",
-        style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
-        modifier = Modifier.padding(start = 4.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
-    )
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-        ) {
+    val totalPages = (notifications.size + rowsPerPage - 1) / rowsPerPage
+    val currentPageNotifications = notifications.drop(currentPage * rowsPerPage).take(rowsPerPage)
+
+    Column(modifier = Modifier.fillMaxSize().padding(0.dp)) {
+        Text(
+            text = "Notifications",
+            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
             Column {
-                Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                    TableHeaderCell("Receiver", 180.dp)
+                Row(
+                    modifier = Modifier
+                        .background(androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                        .padding(vertical = 8.dp)
+                ) {
+                    TableHeaderCell("Receiver", 200.dp)
                     TableHeaderCell("Type", 180.dp)
-                    TableHeaderCell("Is Read", 180.dp)
+                    TableHeaderCell("Is Read", 100.dp)
                     TableHeaderCell("Date", 160.dp)
                 }
+
                 Divider()
-                currentPageAuditLogs.forEach { notification ->
+
+                currentPageNotifications.forEachIndexed { index, notification ->
+                    val backgroundColor = if (index % 2 == 0)
+                        androidx.compose.material3.MaterialTheme.colorScheme.surface
+                    else
+                        androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant
+
                     Row(
                         modifier = Modifier
+                            .background(backgroundColor)
                             .padding(vertical = 6.dp)
                     ) {
-                        TableCell(notification.receiver?.email ?: "Unknown", 180.dp)
+                        TableCell(notification.receiver?.email ?: "Unknown", 200.dp)
                         TableCell(notification.notification_type, 180.dp)
-                        TableCell(notification.is_read.toString(), 180.dp)
+                        TableCell(if (notification.is_read) "Yes" else "No", 100.dp)
                         TableCell(formatUtcToLocalWithHourAndSeconds(notification.createdAt), 160.dp)
                     }
-                    Divider()
+
+                    Divider(thickness = 0.5.dp)
                 }
             }
         }
-        // Pagination controls
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp).horizontalScroll(
-                    rememberScrollState()
-                ),
-            horizontalArrangement = Arrangement.Center
+                .padding(top = 24.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
                 onClick = { if (currentPage > 0) currentPage-- },
                 enabled = currentPage > 0
             ) {
-                Text("<")
+                Text("Prev")
             }
+
             Text(
-                text = "${currentPage + 1} of $totalPages",
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.CenterVertically)
+                text = "Page ${currentPage + 1} of $totalPages",
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
+
             Button(
                 onClick = { if (currentPage < totalPages - 1) currentPage++ },
                 enabled = currentPage < totalPages - 1
             ) {
-                Text(">")
+                Text("Next")
             }
         }
-
     }
 }

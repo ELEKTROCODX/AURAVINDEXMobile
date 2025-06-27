@@ -2,10 +2,12 @@ package com.elektro24team.auravindex.view
 
 
 import android.app.Activity
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.layout.*
@@ -52,6 +54,7 @@ import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.RecentBookViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
 @Composable
@@ -144,7 +147,7 @@ fun MainScreen(
             topBar = {
                 TopBar(
                     navController = navController,
-                    drawerState = drawerState
+                    drawerState = drawerState,
                 )
             },
             bottomBar = {
@@ -170,8 +173,7 @@ fun MainScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(innerPadding),
+                            .verticalScroll(rememberScrollState()) ,
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -196,13 +198,6 @@ fun MainScreen(
                             navController
                         )
                     }
-                    /*Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp)
-                    ) {
-
-                    }*/
                 }
             }
         )

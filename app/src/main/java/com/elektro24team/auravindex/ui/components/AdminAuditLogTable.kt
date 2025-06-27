@@ -2,6 +2,7 @@ package com.elektro24team.auravindex.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,71 +36,78 @@ fun AdminAuditLogTable(
 ) {
     var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
-    var totalPages = (auditLogs.size + rowsPerPage - 1) / rowsPerPage
+    val totalPages = (auditLogs.size + rowsPerPage - 1) / rowsPerPage
     val currentPageAuditLogs = auditLogs.drop(currentPage * rowsPerPage).take(rowsPerPage)
-    Text(
-        text = "API Audit logs",
-        style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
-        modifier = Modifier.padding(start = 4.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
-    )
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-        ) {
+
+    Column(modifier = Modifier.fillMaxSize().padding(0.dp)) {
+        Text(
+            text = "API Audit Logs",
+            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
             Column {
-                Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                    TableHeaderCell("User", 180.dp)
-                    TableHeaderCell("Action", 180.dp)
+                Row(
+                    modifier = Modifier
+                        .background(androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                        .padding(vertical = 8.dp)
+                ) {
+                    TableHeaderCell("User", 200.dp)
+                    TableHeaderCell("Action", 160.dp)
                     TableHeaderCell("Object", 180.dp)
                     TableHeaderCell("Date", 160.dp)
                 }
+
                 Divider()
-                currentPageAuditLogs.forEach { auditLog ->
+
+                currentPageAuditLogs.forEachIndexed { index, auditLog ->
+                    val backgroundColor = if (index % 2 == 0)
+                        androidx.compose.material3.MaterialTheme.colorScheme.surface
+                    else
+                        androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant
+
                     Row(
                         modifier = Modifier
+                            .background(backgroundColor)
                             .padding(vertical = 6.dp)
                     ) {
-                        TableCell(auditLog.user?.email ?: "Unknown", 180.dp)
-                        TableCell(auditLog.action.action_code, 180.dp)
+                        TableCell(auditLog.user?.email ?: "Unknown", 200.dp)
+                        TableCell(auditLog.action.action_code, 160.dp)
                         TableCell(auditLog.affected_object, 180.dp)
                         TableCell(formatUtcToLocalWithHourAndSeconds(auditLog.createdAt), 160.dp)
                     }
-                    Divider()
+
+                    Divider(thickness = 0.5.dp)
                 }
             }
         }
-        // Pagination controls
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp).horizontalScroll(
-                    rememberScrollState()
-                ),
-            horizontalArrangement = Arrangement.Center
+                .padding(top = 24.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
                 onClick = { if (currentPage > 0) currentPage-- },
                 enabled = currentPage > 0
             ) {
-                Text("<")
+                Text("Prev")
             }
+
             Text(
-                text = "${currentPage + 1} of $totalPages",
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.CenterVertically)
+                text = "Page ${currentPage + 1} of $totalPages",
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
+
             Button(
                 onClick = { if (currentPage < totalPages - 1) currentPage++ },
                 enabled = currentPage < totalPages - 1
             ) {
-                Text(">")
+                Text("Next")
             }
         }
-
     }
 }
