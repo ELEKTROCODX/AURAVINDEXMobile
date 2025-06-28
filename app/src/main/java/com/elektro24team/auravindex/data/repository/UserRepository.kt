@@ -1,6 +1,5 @@
 package com.elektro24team.auravindex.data.repository
 
-import android.util.Log
 import com.elektro24team.auravindex.data.local.dao.GenderDao
 import com.elektro24team.auravindex.data.local.dao.RoleDao
 import com.elektro24team.auravindex.data.local.dao.UserDao

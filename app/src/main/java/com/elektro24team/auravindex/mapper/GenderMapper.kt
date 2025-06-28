@@ -1,9 +1,7 @@
 package com.elektro24team.auravindex.mapper
 
 import com.elektro24team.auravindex.model.Gender
-import com.elektro24team.auravindex.model.User
 import com.elektro24team.auravindex.model.local.GenderEntity
-import com.elektro24team.auravindex.model.local.UserEntity
 
 fun Gender.toEntity(): GenderEntity {
     return GenderEntity(

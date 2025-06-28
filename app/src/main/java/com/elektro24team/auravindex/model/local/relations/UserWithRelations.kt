@@ -1,9 +1,7 @@
 package com.elektro24team.auravindex.model.local.relations
 
 import androidx.room.Embedded
-import androidx.room.Junction
 import androidx.room.Relation
-import com.elektro24team.auravindex.model.Role
 import com.elektro24team.auravindex.model.local.GenderEntity
 import com.elektro24team.auravindex.model.local.RoleEntity
 import com.elektro24team.auravindex.model.local.UserEntity

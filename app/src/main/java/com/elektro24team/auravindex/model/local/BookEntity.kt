@@ -2,12 +2,7 @@ package com.elektro24team.auravindex.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elektro24team.auravindex.data.local.dao.AuthorDao
-import com.elektro24team.auravindex.data.local.dao.BookCollectionDao
-import com.elektro24team.auravindex.data.local.dao.BookStatusDao
-import com.elektro24team.auravindex.data.local.dao.EditorialDao
-import com.elektro24team.auravindex.model.Book
-import com.elektro24team.auravindex.model.Editorial
+
 
 @Entity(tableName = "books")
 data class BookEntity (

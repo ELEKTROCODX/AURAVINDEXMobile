@@ -2,7 +2,6 @@ package com.elektro24team.auravindex.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elektro24team.auravindex.model.Editorial
 
 @Entity(tableName = "editorials")
 class EditorialEntity (

@@ -1,6 +1,5 @@
 package com.elektro24team.auravindex.data.repository
 
-import android.util.Log
 import com.elektro24team.auravindex.data.local.dao.AuditLogDao
 import com.elektro24team.auravindex.mapper.toDomain
 import com.elektro24team.auravindex.mapper.toEntity
