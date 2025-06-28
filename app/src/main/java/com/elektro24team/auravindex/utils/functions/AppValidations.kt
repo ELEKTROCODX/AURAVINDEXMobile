@@ -9,11 +9,8 @@ import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.utils.enums.AppAction
 import java.time.ZoneId
 import java.time.ZonedDateTime

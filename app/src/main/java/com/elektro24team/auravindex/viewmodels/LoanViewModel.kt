@@ -3,7 +3,6 @@ package com.elektro24team.auravindex.viewmodels
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.model.Book
 import com.elektro24team.auravindex.model.Loan
-import com.elektro24team.auravindex.model.Notification
 import com.elektro24team.auravindex.model.api.LoanRequest
 import com.elektro24team.auravindex.model.api.NotificationRequest
 import com.elektro24team.auravindex.retrofit.LoanClient

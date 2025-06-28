@@ -1,12 +1,6 @@
 package com.elektro24team.auravindex.utils.objects
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.elektro24team.auravindex.data.repository.AuthRepository
 import com.elektro24team.auravindex.retrofit.UserClient
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope

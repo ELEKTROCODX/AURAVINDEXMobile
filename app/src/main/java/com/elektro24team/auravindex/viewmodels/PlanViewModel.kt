@@ -2,7 +2,6 @@ package com.elektro24team.auravindex.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.PlanRepository
 import com.elektro24team.auravindex.model.Plan

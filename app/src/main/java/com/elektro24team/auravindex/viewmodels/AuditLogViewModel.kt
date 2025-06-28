@@ -1,11 +1,8 @@
 package com.elektro24team.auravindex.viewmodels
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresExtension
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.AuditLogRepository
 import com.elektro24team.auravindex.model.AuditLog

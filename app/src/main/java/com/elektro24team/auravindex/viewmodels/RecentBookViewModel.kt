@@ -1,17 +1,13 @@
 package com.elektro24team.auravindex.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.model.RecentBook
 import com.elektro24team.auravindex.retrofit.RecentBookClient
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import kotlin.collections.filter
-import kotlin.text.contains
 
 class RecentBookViewModel() : BaseViewModel() {
 

@@ -2,13 +2,13 @@ package com.elektro24team.auravindex.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.model.PlanStatus
 import com.elektro24team.auravindex.retrofit.PlanStatusClient
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+
 class PlanStatusViewModel() : BaseViewModel() {
     private val _planStatuses = MutableLiveData<List<PlanStatus>?>()
     private val _planStatus = MutableLiveData<PlanStatus?>()
