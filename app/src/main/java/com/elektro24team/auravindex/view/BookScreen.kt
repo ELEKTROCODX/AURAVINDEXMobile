@@ -362,20 +362,40 @@ fun BookScreen(
                                             color = Color(0xFF572365)
                                         ),
                                         modifier = Modifier.padding(bottom = 12.dp))
-                                    Text(
-                                        text = book.value?.authors?.joinToString(", ") { it.name + " " + it.last_name } ?: "Not available",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 18.sp,
-                                            color = Color(0xFF572365)
-                                        ),
-                                        modifier = Modifier.padding(bottom = 12.dp))
+                                    Row {
+                                        book.value?.authors?.forEach { author ->
+                                            Text(
+                                                text = "${author.name} ${author.last_name}",
+                                                style = TextStyle(
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = 18.sp,
+                                                    color = Color(0xFF572365)
+                                                ),
+                                                modifier = Modifier
+                                                    .padding(bottom = 12.dp)
+                                                    .clickable { navController.navigate("search_results/${author.name} ${author.last_name}") }
+
+                                            )
+                                            if (book.value?.authors?.indexOf(author) != book.value?.authors?.lastIndex) {
+                                                Text(
+                                                    text = ", ",
+                                                    style = TextStyle(
+                                                        fontWeight = FontWeight.Bold,
+                                                        fontSize = 18.sp,
+                                                        color = Color(0xFF572365)
+                                                    ),
+                                                    modifier = Modifier.padding(bottom = 12.dp)
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
+                                        .padding(vertical = 4.dp)
+                                        .clickable { navController.navigate("search_results/${book.value?.editorial?.name}") },
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(
@@ -399,7 +419,8 @@ fun BookScreen(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
+                                        .padding(vertical = 4.dp)
+                                        .clickable { navController.navigate("search_results/${book.value?.book_collection?.name}") },
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(
@@ -417,7 +438,9 @@ fun BookScreen(
                                             fontSize = 18.sp,
                                             color = Color(0xFF572365)
                                         ),
-                                        modifier = Modifier.padding(bottom = 12.dp))
+                                        modifier = Modifier
+                                            .padding(bottom = 12.dp)
+                                    )
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
                                 Text(
@@ -439,7 +462,9 @@ fun BookScreen(
                                             shape = RoundedCornerShape(10.dp),
                                             colors = CardDefaults.cardColors(containerColor = Color(0xFFEDE7F6)),
                                             elevation = CardDefaults.cardElevation(4.dp),
-                                            modifier = Modifier.padding(end = 6.dp)
+                                            modifier = Modifier
+                                                .padding(end = 6.dp)
+                                                .clickable { navController.navigate("search_results/${genre}") }
                                         ) {
                                             Text(
                                                 text = genre,
@@ -480,7 +505,8 @@ fun BookScreen(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
+                                        .padding(vertical = 4.dp)
+                                        .clickable { navController.navigate("search_results/${book.value?.language}") },
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(

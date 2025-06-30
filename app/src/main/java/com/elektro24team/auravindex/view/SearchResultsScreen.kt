@@ -37,12 +37,12 @@ fun SearchResultsScreen(
     bookViewModel: BookViewModel,
     query: String
 ) {
-    LocalContext.current
     var currentQuery by remember { mutableStateOf(query) }
     var currentPage by remember { mutableIntStateOf(1) }
     val filteredBooks by bookViewModel.filteredBooks.collectAsState()
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
+        bookViewModel.searchBook(query)
     }
     val itemsPerPage = 8
     val paginatedBooks = filteredBooks

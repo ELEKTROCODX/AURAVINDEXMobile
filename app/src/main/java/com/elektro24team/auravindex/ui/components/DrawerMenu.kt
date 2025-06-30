@@ -112,7 +112,7 @@ fun DrawerMenu(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Text(
-                        text = if (isLoggedIn(localSettings)) "${user?.name} ${user?.last_name}".trim() else "Guest user",
+                        text = if (isLoggedIn(localSettings)) "${user?.name} ${user?.last_name}".trim() else "Guest User",
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = Color(0xFF572365),
                             fontSize = 26.sp
