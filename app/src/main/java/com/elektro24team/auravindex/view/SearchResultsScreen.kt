@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -17,10 +18,16 @@ import com.elektro24team.auravindex.ui.components.BottomNavBar
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.ui.components.cards.BookCard
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.zIndex
+import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.ui.theme.PurpleC
+import com.elektro24team.auravindex.ui.theme.WhiteC
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,28 +51,43 @@ fun SearchResultsScreen(
     val totalPages = (filteredBooks?.size?.plus(itemsPerPage)?.minus(1))?.div(itemsPerPage)
     Scaffold(
         topBar = {
-            TopAppBar(
-                modifier = Modifier.statusBarsPadding(),
-                title = {
-                    Text(
-                        text = "Results",
-                        color = Color.White
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Volver",
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = PurpleC
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 56.dp, max = 100.dp)
+                    .zIndex(100f)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.bg),
+                    contentDescription = "Background",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
-            )
 
+                TopAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding(),
+                    title = {
+                        Text(
+                            text = "Results",
+                            color = Color.White
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                tint = Color.White
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
+                    ),
+                )
+            }
         },
         bottomBar = {
             BottomNavBar(
