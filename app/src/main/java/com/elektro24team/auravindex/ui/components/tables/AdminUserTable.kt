@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -38,7 +39,12 @@ fun AdminUserTable(
     val totalPages = (users.size + rowsPerPage - 1) / rowsPerPage
     val currentPageUsers = users.drop(currentPage * rowsPerPage).take(rowsPerPage)
 
-    Column(modifier = Modifier.fillMaxSize().padding(0.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(0.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Text(
             text = "Users",
             style = MaterialTheme.typography.headlineMedium,

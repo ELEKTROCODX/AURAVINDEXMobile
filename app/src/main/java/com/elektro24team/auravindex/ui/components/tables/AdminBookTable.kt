@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -44,7 +45,12 @@ fun AdminBookTable(
     val totalPages = (books.size + rowsPerPage - 1) / rowsPerPage
     val currentPageBooks = books.drop(currentPage * rowsPerPage).take(rowsPerPage)
 
-    Column(modifier = Modifier.fillMaxSize().padding(0.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(0.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Text(
             text = "Books",
             style = MaterialTheme.typography.headlineMedium,
