@@ -143,7 +143,7 @@ fun TopBar(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = unreadNotifications.toString(),
+                                        text = if (unreadNotifications > 3) "3+" else unreadNotifications.toString(),
                                         color = Color.White,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.Bold
