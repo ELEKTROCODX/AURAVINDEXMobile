@@ -70,7 +70,7 @@ object Routes {
 }
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
 @Composable
 fun NavGraph(startDestination: String = Routes.WELCOME) {
@@ -193,8 +193,7 @@ fun NavGraph(startDestination: String = Routes.WELCOME) {
                userViewModel = userViewModel,
                notificationViewModel = notificationViewModel,
                localSettingViewModel = localSettingViewModel,
-               bookListViewModel = bookListViewModel,
-               loanViewModel = loanViewModel
+               bookListViewModel = bookListViewModel
            )
         }
         composable(Routes.LOANS) {

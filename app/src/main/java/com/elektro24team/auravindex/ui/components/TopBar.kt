@@ -37,6 +37,7 @@ import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import kotlinx.coroutines.launch
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.isNotificationRecent
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 
@@ -54,7 +55,9 @@ fun TopBar(
     val userNotifications by notificationViewModel.userNotifications.observeAsState()
     var unreadNotifications by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
-        notificationViewModel.loadUserNotifications(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""), localSettings.getOrDefault(SettingKey.ID.keySetting, ""))
+        if(isLoggedIn(localSettings)) {
+            notificationViewModel.loadUserNotifications(localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""), localSettings.getOrDefault(SettingKey.ID.keySetting, ""))
+        }
     }
     LaunchedEffect(userNotifications) {
         if(userNotifications?.isNotEmpty() == true) {

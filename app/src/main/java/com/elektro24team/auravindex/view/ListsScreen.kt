@@ -44,12 +44,16 @@ import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ListForm
 import com.elektro24team.auravindex.ui.components.dialogs.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.ui.components.alerts.NotLoggedInAlert
+import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.BookListViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
@@ -65,9 +69,8 @@ fun ListsScreen(
     notificationViewModel: NotificationViewModel,
     localSettingViewModel: LocalSettingViewModel,
     bookListViewModel: BookListViewModel,
-    loanViewModel: LoanViewModel,
 ) {
-    val settings = localSettingViewModel.settings.collectAsState()
+    val localSettings = localSettingViewModel.settings.collectAsState()
     val userLists by bookListViewModel.bookLists.collectAsState()
     var showForm by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -77,7 +80,9 @@ fun ListsScreen(
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     LaunchedEffect(userLists) {
-        bookListViewModel.loadUserLists(settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
+        if(isLoggedIn(localSettings.value)) {
+            bookListViewModel.loadUserLists(localSettings.value[SettingKey.TOKEN.keySetting].toString(), localSettings.value[SettingKey.ID.keySetting].toString())
+        }
     }
     ObserveTokenExpiration(bookListViewModel, navController, localSettingViewModel)
     ObserveInsufficientPermissions(bookListViewModel, navController)
@@ -127,7 +132,11 @@ fun ListsScreen(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        showForm = true
+                        if(isLoggedIn(localSettings.value)) {
+                            showForm = true
+                        } else {
+                            mustBeLoggedInToast(context, AppAction.CREATE_LIST, navController)
+                        }
                     }
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Create")
@@ -150,11 +159,20 @@ fun ListsScreen(
                             .padding(horizontal = 16.dp)
                     ) {
                         if(showForm){
-                            ListForm(onDismiss = {showForm = false}, bookListViewModel = bookListViewModel, user = settings.value[SettingKey.ID.keySetting].toString(), token = settings.value[SettingKey.TOKEN.keySetting].toString(), context = context)
+                            ListForm(
+                                navController = navController,
+                                onDismiss = { showForm = false },
+                                bookListViewModel = bookListViewModel,
+                                localSettingViewModel = localSettingViewModel,
+                                token = localSettings.value[SettingKey.TOKEN.keySetting].toString(),
+                                user = localSettings.value[SettingKey.ID.keySetting].toString(),
+                                context = context
+                            )
                         }
                         val app = LocalContext.current.applicationContext as AuraVindexApp
                         val isConnected by app.networkLiveData.observeAsState(true)
                         ConnectionAlert(isConnected)
+                        NotLoggedInAlert(localSettings.value)
                         Text(
                             text = "My lists",
                             style = MaterialTheme.typography.titleLarge,
@@ -168,14 +186,14 @@ fun ListsScreen(
                         ) {
                             // Favorites
                             userLists?.forEach{ list ->
-                                if((list.title == "Favorites") && (list.owner._id == settings.value[SettingKey.ID.keySetting].toString())) {
-                                    BookListCard(list,navController, bookListViewModel, settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
+                                if((list.title == "Favorites") && (list.owner._id == localSettings.value[SettingKey.ID.keySetting].toString())) {
+                                    BookListCard(list,navController, bookListViewModel, localSettings.value[SettingKey.TOKEN.keySetting].toString(), localSettings.value[SettingKey.ID.keySetting].toString())
                                 }
                             }
                             // Custom
                             userLists?.forEach{ list ->
-                                if((list.title != "Favorites") && (list.owner._id == settings.value[SettingKey.ID.keySetting].toString())) {
-                                    BookListCard(list,navController, bookListViewModel, settings.value[SettingKey.TOKEN.keySetting].toString(), settings.value[SettingKey.ID.keySetting].toString())
+                                if((list.title != "Favorites") && (list.owner._id == localSettings.value[SettingKey.ID.keySetting].toString())) {
+                                    BookListCard(list,navController, bookListViewModel, localSettings.value[SettingKey.TOKEN.keySetting].toString(), localSettings.value[SettingKey.ID.keySetting].toString())
                                 }
                             }
                         }

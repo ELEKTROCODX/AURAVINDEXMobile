@@ -144,9 +144,6 @@ fun NotificationsScreen(
                             )
                         )
                 ) {
-                    val app = context.applicationContext as AuraVindexApp
-                    val isConnected by app.networkLiveData.observeAsState(true)
-                    ConnectionAlert(isConnected)
                     Column(
                         modifier = Modifier
                             .fillMaxSize()

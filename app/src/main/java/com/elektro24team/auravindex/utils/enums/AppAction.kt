@@ -8,7 +8,9 @@ enum class AppAction(val appActionTitle: String) {
     ACCESS_LOANS("access your loans"),
     CHECK_LISTS("check your lists"),
     ACCESS_ADMIN_DASHBOARD("access the admin dashboard"),
-    ACCESS_PROFILE_PAGE("access the profile page"), ;
+    ACCESS_PROFILE_PAGE("access the profile page"),
+    CREATE_LIST("create a list"),
+    ADD_BOOK_TO_LIST("add a book to a list"),;
 
     companion object {
         fun fromKey(appActionTitle: String): AppAction? =

@@ -80,7 +80,7 @@ import com.elektro24team.auravindex.ui.components.alerts.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.dialogs.RequestLoanDialog
 import com.elektro24team.auravindex.ui.components.dialogs.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
-import com.elektro24team.auravindex.ui.components.UserBookLists
+import com.elektro24team.auravindex.ui.components.AddBookToListForm
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import com.elektro24team.auravindex.ui.theme.PurpleC
 import com.elektro24team.auravindex.utils.classes.bookStatusIcons
@@ -608,7 +608,14 @@ fun BookScreen(
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
                                 Spacer(modifier = Modifier.height(8.dp))
-                                book.value?.let { UserBookLists(bookLists = userLists, bookId = it._id, bookListViewModel = bookListViewModel, context = context, token = settings.value[SettingKey.TOKEN.keySetting].toString()) }
+                                AddBookToListForm(
+                                    navController = navController,
+                                    bookLists = userLists,
+                                    bookId = bookId,
+                                    bookListViewModel = bookListViewModel,
+                                    localSettingViewModel = localSettingViewModel,
+                                    context = context
+                                )
                                 if (isLoggedIn(settings.value) && book.value?.book_status?.book_status == "AVAILABLE") {
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Button(

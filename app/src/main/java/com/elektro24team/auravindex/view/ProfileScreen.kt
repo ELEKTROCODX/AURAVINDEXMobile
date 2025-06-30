@@ -60,6 +60,9 @@ import com.elektro24team.auravindex.ui.components.dialogs.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
+import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithDate
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
@@ -89,14 +92,16 @@ fun ProfileScreen(
     val user = userViewModel.myUser.observeAsState()
     val localSettings = localSettingViewModel.settings.collectAsState()
     LaunchedEffect(Unit) {
-        localSettingViewModel.loadSettings(SettingKey.TOKEN.keySetting, SettingKey.ID.keySetting)
-        userViewModel.getMyUserById(
-            localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
-            localSettings.value.getOrDefault(SettingKey.ID.keySetting, "")
-        )
+        if(isLoggedIn(localSettings.value)) {
+            userViewModel.getMyUserById(
+                localSettings.value.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                localSettings.value.getOrDefault(SettingKey.ID.keySetting, "")
+            )
+        }
     }
-    val isLoggedIn = isLoggedIn(localSettings.value)
-    val userData = user.value
+    ObserveTokenExpiration(userViewModel, navController, localSettingViewModel)
+    ObserveInsufficientPermissions(userViewModel, navController)
+    ObserveError(userViewModel)
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -172,7 +177,7 @@ fun ProfileScreen(
                                         .background(Color(0xFF572365))
                                 ) {
                                     GlideImage(
-                                        imageModel = { IMG_url + (userData?.user_img ?: "") },
+                                        imageModel = { IMG_url + (user.value?.user_img ?: "") },
                                         imageOptions = ImageOptions(contentScale = ContentScale.Crop),
                                         modifier = Modifier.fillMaxSize(),
                                         failure = {
@@ -187,7 +192,7 @@ fun ProfileScreen(
                                 }
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = if (isLoggedIn) "${userData?.name} ${userData?.last_name}" else "Guest User",
+                                    text = if (isLoggedIn(localSettings.value)) "${user.value?.name} ${user.value?.last_name}" else "Guest User",
                                     fontSize = 22.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF222222),
@@ -202,60 +207,62 @@ fun ProfileScreen(
                             elevation = CardDefaults.cardElevation(6.dp)
                         ) {
                             Column(modifier = Modifier.padding(24.dp)) {
-                                ProfileInfoText("Email", userData?.email ?: "Not available")
-                                ProfileInfoText("Gender", userData?.gender?.name ?: "Not available")
-                                ProfileInfoText("Birthday", formatUtcToLocalWithDate(userData?.birthdate))
-                                ProfileInfoText("Address", userData?.address ?: "Not available")
-                                ProfileInfoText("Role", userData?.role?.name ?: "Not available")
-                                ProfileInfoText("Biography", userData?.biography ?: "Not available", longText = true)
+                                ProfileInfoText("Email", user.value?.email ?: "Not available")
+                                ProfileInfoText("Gender", user.value?.gender?.name ?: "Not available")
+                                ProfileInfoText("Birthday", formatUtcToLocalWithDate(user.value?.birthdate))
+                                ProfileInfoText("Address", user.value?.address ?: "Not available")
+                                ProfileInfoText("Role", user.value?.role?.name ?: "Not available")
+                                ProfileInfoText("Biography", user.value?.biography ?: "Not available", longText = true)
                             }
                         }
                         Spacer(modifier = Modifier.height(20.dp))
-                        Card(
-                            modifier = Modifier.fillMaxWidth(0.9f),
-                            shape = RoundedCornerShape(24.dp),
-                            elevation = CardDefaults.cardElevation(4.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(24.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                        if(isLoggedIn(localSettings.value)) {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(0.9f),
+                                shape = RoundedCornerShape(24.dp),
+                                elevation = CardDefaults.cardElevation(4.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color.White)
                             ) {
-                                /*Button(
-                                    onClick = {  *//* *//*  },
-                                    shape = RoundedCornerShape(20.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF572365),
-                                        contentColor = Color.White
-                                    )
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(24.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(
-                                        text = "Edit profile (not available)",
-                                        style = MaterialTheme.typography.labelLarge.copy(
-                                            fontFamily = FontFamily(Font(R.font.rubik_regular))
+                                    /*Button(
+                                            onClick = {  *//* *//*  },
+                                        shape = RoundedCornerShape(20.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFF572365),
+                                            contentColor = Color.White
                                         )
-                                    )
-                                }*/
-                                Button(
-                                    onClick = { showCloseAccountDialog.value = true },
-                                    shape = RoundedCornerShape(20.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = colors.error,
-                                        contentColor = Color.White
-                                    )
-                                ) {
-                                    Text(
-                                        text = "Close account",
-                                        style = MaterialTheme.typography.labelLarge.copy(
-                                            fontFamily = FontFamily(Font(R.font.rubik_regular))
+                                    ) {
+                                        Text(
+                                            text = "Edit profile (not available)",
+                                            style = MaterialTheme.typography.labelLarge.copy(
+                                                fontFamily = FontFamily(Font(R.font.rubik_regular))
+                                            )
                                         )
-                                    )
+                                    }*/
+                                    Button(
+                                        onClick = { showCloseAccountDialog.value = true },
+                                        shape = RoundedCornerShape(20.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = colors.error,
+                                            contentColor = Color.White
+                                        )
+                                    ) {
+                                        Text(
+                                            text = "Close account",
+                                            style = MaterialTheme.typography.labelLarge.copy(
+                                                fontFamily = FontFamily(Font(R.font.rubik_regular))
+                                            )
+                                        )
+                                    }
                                 }
                             }
+                            Spacer(modifier = Modifier.height(32.dp))
                         }
-                        Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
             }

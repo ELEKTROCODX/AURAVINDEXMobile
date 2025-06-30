@@ -30,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,24 +41,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.BookList
 import com.elektro24team.auravindex.ui.theme.OrangeC
+import com.elektro24team.auravindex.utils.enums.AppAction
+import com.elektro24team.auravindex.utils.enums.SettingKey
+import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektro24team.auravindex.viewmodels.BookListViewModel
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 
 @Composable
-fun UserBookLists(
+fun AddBookToListForm(
+    navController: NavController,
     bookLists: List<BookList>?,
     bookId: String,
     modifier: Modifier = Modifier,
     bookListViewModel: BookListViewModel,
-    token: String,
+    localSettingViewModel: LocalSettingViewModel,
     context: Context
 ) {
     var showCard by remember { mutableStateOf(false) }
+    val localSettings = localSettingViewModel.settings.collectAsState()
 
     Box(modifier = modifier.fillMaxSize()) {
         Button(
-            onClick = { showCard = true },
+            onClick = {
+                if(isLoggedIn(localSettings.value)) {
+                    showCard = true
+                } else {
+                    mustBeLoggedInToast(context, AppAction.ADD_BOOK_TO_LIST, navController)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -117,7 +132,7 @@ fun UserBookLists(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     if (bookLists.isNullOrEmpty()) {
-                        Text("No lists.")
+                        Text("You don't have any lists.")
                     } else {
                         val otherLists = bookLists.filter { it.title != "Favorites" }
 
@@ -131,7 +146,7 @@ fun UserBookLists(
                                     ListSelectButton(
                                         list = favorites,
                                         bookId = bookId,
-                                        token = token,
+                                        token = localSettings.value[SettingKey.TOKEN.keySetting].toString(),
                                         context = context,
                                         bookListViewModel = bookListViewModel,
                                         showCard = { showCard = false }
@@ -145,7 +160,7 @@ fun UserBookLists(
                                 ListSelectButton(
                                     list = list,
                                     bookId = bookId,
-                                    token = token,
+                                    token = localSettings.value[SettingKey.TOKEN.keySetting].toString(),
                                     context = context,
                                     bookListViewModel = bookListViewModel,
                                     showCard = { showCard = false }
@@ -180,7 +195,7 @@ fun ListSelectButton(
                 bookListViewModel.addBookToList(bookId, list._id, token)
                 showCard()
             } else {
-                Toast.makeText(context, "the book is already in the list.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "That book is already in the list.", Toast.LENGTH_SHORT).show()
             }
         },
         modifier = Modifier
