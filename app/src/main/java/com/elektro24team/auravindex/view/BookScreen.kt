@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +34,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LibraryAdd
 import androidx.compose.material.icons.filled.SettingsBackupRestore
 import androidx.compose.material3.Card
@@ -79,6 +82,7 @@ import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.ui.components.UserBookLists
 import com.elektro24team.auravindex.ui.theme.MediumPadding
 import com.elektro24team.auravindex.ui.theme.PurpleC
+import com.elektro24team.auravindex.utils.classes.bookStatusIcons
 import com.elektro24team.auravindex.utils.constants.URLs.IMG_url
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
@@ -534,14 +538,24 @@ fun BookScreen(
                                             color = Color(0xFF572365)
                                         ),
                                         modifier = Modifier.padding(bottom = 12.dp))
-                                    Text(
-                                        text = book.value?.book_status?.book_status ?: "Not available",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 18.sp,
-                                            color = Color(0xFF572365)
-                                        ),
-                                        modifier = Modifier.padding(bottom = 12.dp))
+                                    Row {
+                                        Text(
+                                            text = book.value?.book_status?.book_status ?: "Not available",
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 18.sp,
+                                                color = Color(0xFF572365)
+                                            ),
+                                            modifier = Modifier.padding(bottom = 12.dp))
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        androidx.compose.material.Icon(
+                                            imageVector = bookStatusIcons.find { it.book_status == book.value?.book_status?.book_status }?.icon
+                                                ?: Icons.Default.CheckCircle,
+                                            contentDescription = book.value?.book_status?.book_status,
+                                            tint = Color(0xFF9C27B0),
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
                                 }
                                 Divider(color = Color.LightGray, thickness = 1.dp)
                                 Row(
