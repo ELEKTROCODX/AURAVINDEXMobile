@@ -16,10 +16,9 @@ import androidx.compose.ui.unit.dp
 fun TableHeaderCell(text: String, width: Dp) {
     Text(
         text = text,
-        modifier = Modifier.run {
-            width(width)
-                .padding(8.dp)
-        },
+        modifier = Modifier
+            .width(width)
+            .padding(8.dp),
         style = TextStyle(fontWeight = FontWeight.Bold)
     )
 }

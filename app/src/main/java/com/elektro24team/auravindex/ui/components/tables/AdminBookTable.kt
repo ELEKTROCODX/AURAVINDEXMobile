@@ -6,6 +6,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
+import androidx.compose.material.DrawerDefaults.backgroundColor
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -133,6 +135,39 @@ fun AdminBookTable(
                 enabled = currentPage < totalPages - 1
             ) {
                 Text("Next")
+            }
+        }
+        Spacer(modifier = Modifier.padding(16.dp))
+        Column {
+            Row(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                    .padding(vertical = 8.dp)
+            ) {
+                TableHeaderCell("Book Status", 150.dp)
+                TableHeaderCell("Icon", 80.dp)
+            }
+            Divider(modifier = Modifier.width(230.dp))
+            bookStatusIcons.forEach { bookStatusIcon ->
+                Row(
+                    modifier = Modifier
+                        .background(backgroundColor)
+                        .padding(vertical = 6.dp)
+                ) {
+                    TableCell(bookStatusIcon.book_status, 150.dp)
+                    Row(
+                        modifier = Modifier.width(40.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = bookStatusIcon.icon,
+                            contentDescription = bookStatusIcon.book_status,
+                            tint = Color(0xFF9C27B0),
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
             }
         }
     }
