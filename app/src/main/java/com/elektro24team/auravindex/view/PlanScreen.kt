@@ -1,5 +1,7 @@
 package com.elektro24team.auravindex.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +40,7 @@ import com.elektro24team.auravindex.viewmodels.PlanViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlanScreen(
