@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.DrawerValue
@@ -154,10 +156,8 @@ fun ListsScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(16.dp)
+                                .verticalScroll(rememberScrollState())
                         ) {
-                            // Active loans
-                            // Pending loans
-
                             // Favorites
                             userLists?.forEach{ list ->
                                 if((list.title == "Favorites") && (list.owner._id == settings.value[SettingKey.ID.keySetting].toString())) {

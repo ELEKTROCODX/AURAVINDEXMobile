@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
-import com.elektro24team.auravindex.ui.NotLoggedInAlert
+import com.elektro24team.auravindex.ui.components.NotLoggedInAlert
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.ui.theme.BlackC

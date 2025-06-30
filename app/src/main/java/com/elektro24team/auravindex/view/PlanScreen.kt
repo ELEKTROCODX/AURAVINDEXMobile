@@ -19,7 +19,7 @@ import com.elektro24team.auravindex.ui.components.DrawerMenu
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.navigation.Routes
-import com.elektro24team.auravindex.ui.NotLoggedInAlert
+import com.elektro24team.auravindex.ui.components.NotLoggedInAlert
 import com.elektro24team.auravindex.ui.components.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.PlanCard
 import com.elektro24team.auravindex.ui.components.ShowExternalLinkDialog

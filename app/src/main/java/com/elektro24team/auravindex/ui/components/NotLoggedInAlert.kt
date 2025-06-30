@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.ui
+package com.elektro24team.auravindex.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
