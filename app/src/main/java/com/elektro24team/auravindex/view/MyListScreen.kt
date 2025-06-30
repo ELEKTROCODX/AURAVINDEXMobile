@@ -160,6 +160,14 @@ fun MyListScreen(
                             modifier = Modifier.padding(vertical = 8.dp)
                                 .align(Alignment.CenterHorizontally)
                         )
+                        Text(
+                            text = myList?.description.toString(),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = OrangeC,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
                         if (myList?.books?.isNotEmpty() == true) {
                             val booksInList = myList?.books ?: emptyList()
                             LazyColumn {
@@ -282,7 +290,7 @@ fun MyListScreen(
                                 }
                             }
                         } else {
-                            Text("No books yet")
+                            Text("You don't have any books in this list.")
                         }
                     }
                 }

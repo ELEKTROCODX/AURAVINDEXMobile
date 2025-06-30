@@ -89,7 +89,7 @@ fun BookListCard(
                                 fontSize = 15.sp
                             ),
                             color = BrownC,
-                            maxLines = 1
+                            maxLines = 2
                         )
                     }
 
