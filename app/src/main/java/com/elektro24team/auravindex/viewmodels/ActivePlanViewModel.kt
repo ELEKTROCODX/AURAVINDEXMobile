@@ -128,7 +128,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                     )
                 )
                 notificationViewModel.loadUserNotifications(token, userId)
-                notifySuccess("You have successfully subscribed to .")
+                notifySuccess("You have successfully subscribed to ${plan.name}.")
             } else {
                 val error = result.exceptionOrNull()
                 if (error is HttpException) {
