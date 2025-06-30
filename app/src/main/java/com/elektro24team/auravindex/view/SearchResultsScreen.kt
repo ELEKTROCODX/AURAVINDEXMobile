@@ -12,22 +12,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.ui.components.cards.BookCard
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.zIndex
 import com.elektro24team.auravindex.R
-import com.elektro24team.auravindex.ui.theme.PurpleC
-import com.elektro24team.auravindex.ui.theme.WhiteC
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,16 +35,14 @@ fun SearchResultsScreen(
     query: String
 ) {
     var currentQuery by remember { mutableStateOf(query) }
-    var currentPage by remember { mutableIntStateOf(1) }
+    var currentPage by remember { mutableIntStateOf(0) }
     val filteredBooks by bookViewModel.filteredBooks.collectAsState()
     LaunchedEffect(Unit) {
         bookViewModel.loadBooks(showDuplicates = false, showLents = true)
         bookViewModel.searchBook(query)
     }
-    val itemsPerPage = 8
-    val paginatedBooks = filteredBooks
-        ?.drop((currentPage - 1) * itemsPerPage)
-        ?.take(itemsPerPage)
+    val itemsPerPage by remember { mutableIntStateOf(8) }
+    val paginatedBooks = filteredBooks?.drop(currentPage * itemsPerPage)?.take(itemsPerPage)
     val totalPages = (filteredBooks?.size?.plus(itemsPerPage)?.minus(1))?.div(itemsPerPage)
     Scaffold(
         topBar = {
@@ -155,22 +150,29 @@ fun SearchResultsScreen(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         if(totalPages != null) {
-                            (1..totalPages).forEach { page ->
-                                Button(onClick = { currentPage = page },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = if (page == currentPage)
-                                            MaterialTheme.colorScheme.primary
-                                        else
-                                            MaterialTheme.colorScheme.secondaryContainer,
-                                        contentColor = if (page == currentPage)
-                                            MaterialTheme.colorScheme.onPrimary
-                                        else
-                                            MaterialTheme.colorScheme.onSecondaryContainer
-                                    ),
-                                    modifier = Modifier
-                                        .padding(horizontal = 4.dp)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Button(
+                                    onClick = { if (currentPage > 0) currentPage-- },
+                                    enabled = currentPage > 0
                                 ) {
-                                    Text(text = "$page")
+                                    Text("Prev")
+                                }
+
+                                Text(
+                                    text = "Page ${currentPage + 1} of $totalPages",
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
+
+                                Button(
+                                    onClick = { if (currentPage < totalPages - 1) currentPage++ },
+                                    enabled = currentPage < totalPages - 1
+                                ) {
+                                    Text("Next")
                                 }
                             }
                         }

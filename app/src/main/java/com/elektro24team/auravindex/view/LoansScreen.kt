@@ -80,9 +80,9 @@ fun LoansScreen(
     val showTeamDialog = remember { mutableStateOf(false) }
     val userLoans by loanViewModel.userLoans.collectAsState()
     val localSettings by localSettingViewModel.settings.collectAsState()
-    var currentPage by remember { mutableIntStateOf(1) }
+    var currentPage by remember { mutableIntStateOf(0) }
     val itemsPerPage by remember { mutableIntStateOf(6) }
-    val paginatedLoans = userLoans?.drop((currentPage - 1) * itemsPerPage)?.take(itemsPerPage)
+    val paginatedLoans = userLoans?.drop(currentPage * itemsPerPage)?.take(itemsPerPage)
     val totalPages = (userLoans?.size?.plus(itemsPerPage)?.minus(1))?.div(itemsPerPage)
     LaunchedEffect(Unit) {
         if(isLoggedIn(localSettings)) {
@@ -172,22 +172,29 @@ fun LoansScreen(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 if(totalPages != null) {
-                                    (1..totalPages).forEach { page ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
                                         Button(
-                                            onClick = { currentPage = page },
-                                            colors = ButtonDefaults.buttonColors(
-                                                containerColor = if (page == currentPage)
-                                                    MaterialTheme.colorScheme.primary
-                                                else
-                                                    MaterialTheme.colorScheme.secondaryContainer,
-                                                contentColor = if (page == currentPage)
-                                                    MaterialTheme.colorScheme.onPrimary
-                                                else
-                                                    MaterialTheme.colorScheme.onSecondaryContainer
-                                            ),
-                                            modifier = Modifier.padding(horizontal = 4.dp)
+                                            onClick = { if (currentPage > 0) currentPage-- },
+                                            enabled = currentPage > 0
                                         ) {
-                                            Text(text = "$page")
+                                            Text("Prev")
+                                        }
+
+                                        Text(
+                                            text = "Page ${currentPage + 1} of $totalPages",
+                                            modifier = Modifier.padding(horizontal = 16.dp)
+                                        )
+
+                                        Button(
+                                            onClick = { if (currentPage < totalPages - 1) currentPage++ },
+                                            enabled = currentPage < totalPages - 1
+                                        ) {
+                                            Text("Next")
                                         }
                                     }
                                 }
