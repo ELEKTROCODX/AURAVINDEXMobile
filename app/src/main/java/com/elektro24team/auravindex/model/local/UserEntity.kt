@@ -2,8 +2,7 @@ package com.elektro24team.auravindex.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elektro24team.auravindex.model.Gender
-import com.elektro24team.auravindex.model.Role
+
 
 @Entity(tableName = "users")
 data class UserEntity(

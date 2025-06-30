@@ -2,7 +2,6 @@ package com.elektro24team.auravindex.viewmodels
 
 import retrofit2.HttpException
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresExtension
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope

@@ -1,6 +1,5 @@
 package com.elektro24team.auravindex.data.repository
 
-import android.util.Log
 import com.elektro24team.auravindex.data.local.dao.BookCollectionDao
 import com.elektro24team.auravindex.model.BookCollection
 import com.elektro24team.auravindex.model.local.BookCollectionEntity

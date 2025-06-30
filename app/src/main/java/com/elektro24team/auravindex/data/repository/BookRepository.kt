@@ -5,9 +5,7 @@ import com.elektro24team.auravindex.data.local.dao.BookDao
 import com.elektro24team.auravindex.mapper.toDomain
 import com.elektro24team.auravindex.mapper.toEntity
 import com.elektro24team.auravindex.model.Book
-import com.elektro24team.auravindex.model.local.BookEntity
 import com.elektro24team.auravindex.retrofit.BookClient
-import com.elektro24team.auravindex.retrofit.UserClient
 
 
 class BookRepository(

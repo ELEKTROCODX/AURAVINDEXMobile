@@ -11,8 +11,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Book
@@ -38,7 +36,6 @@ import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.R
 import com.elektro24team.auravindex.navigation.Routes
 import com.elektro24team.auravindex.ui.components.*
-import com.elektro24team.auravindex.ui.NotLoggedInAlert
 import com.elektro24team.auravindex.ui.components.AdminActivePlanTable
 import com.elektro24team.auravindex.ui.components.AdminAuditLogTable
 import com.elektro24team.auravindex.ui.components.AdminBookTable
@@ -57,7 +54,6 @@ import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
-import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
 import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
@@ -66,8 +62,6 @@ import com.elektro24team.auravindex.viewmodels.UserViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.PlanViewModel
-import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
-import com.elektro24team.auravindex.viewmodels.*
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)

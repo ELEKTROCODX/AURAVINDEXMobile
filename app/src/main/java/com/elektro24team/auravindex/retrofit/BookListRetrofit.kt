@@ -4,7 +4,6 @@ import com.elektro24team.auravindex.model.ApiResponse
 import com.elektro24team.auravindex.model.BookList
 import com.elektro24team.auravindex.model.api.BookListRequest
 import com.elektro24team.auravindex.utils.constants.URLs.BASE_URL
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body

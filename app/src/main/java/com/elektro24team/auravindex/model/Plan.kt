@@ -1,6 +1,5 @@
 package com.elektro24team.auravindex.model
 
-//Plan Model
 data class Plan(
     val __v: Int,
     val _id: String,

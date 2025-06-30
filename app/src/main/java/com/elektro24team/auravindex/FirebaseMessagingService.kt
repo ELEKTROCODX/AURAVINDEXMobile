@@ -1,8 +1,6 @@
 package com.elektro24team.auravindex
 
 import android.Manifest
-import android.content.Context
-import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.elektro24team.auravindex.model.local.NotificationEntity
 import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper

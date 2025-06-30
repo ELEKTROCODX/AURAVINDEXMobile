@@ -1,10 +1,8 @@
 package com.elektro24team.auravindex.viewmodels
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.data.repository.BookRepository
 import com.elektro24team.auravindex.model.Book
-import com.elektro24team.auravindex.model.local.BookEntity
 import com.elektro24team.auravindex.retrofit.BookClient
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

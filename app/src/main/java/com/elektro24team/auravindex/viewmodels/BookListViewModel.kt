@@ -1,8 +1,5 @@
 package com.elektro24team.auravindex.viewmodels
 
-import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.viewModelScope
 import com.elektro24team.auravindex.model.BookList
 import com.elektro24team.auravindex.model.api.BookListRequest

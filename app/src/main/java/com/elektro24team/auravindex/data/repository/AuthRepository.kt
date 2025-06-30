@@ -1,6 +1,5 @@
 package com.elektro24team.auravindex.data.repository
 
-import android.util.Log
 import com.elektro24team.auravindex.retrofit.AuthClient
 import com.elektro24team.auravindex.retrofit.LoginRequest
 import com.elektro24team.auravindex.retrofit.RegisterInfo
