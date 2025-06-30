@@ -231,7 +231,7 @@ fun RegisterScreen(
                         modifier = Modifier
                             .padding(vertical = 4.dp)
                             .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         genders.forEach { gender ->
                             Row(
@@ -248,7 +248,7 @@ fun RegisterScreen(
                                         )
                                     )
                                 )
-                                Text(text = gender.name, modifier = Modifier.padding(start = 4.dp))
+                                Text(text = gender.name, modifier = Modifier.padding(start = 2.dp))
                             }
                         }
                     }
