@@ -80,10 +80,12 @@ fun ProfileScreen(
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     rememberCoroutineScope()
+    val colors = MaterialTheme.colorScheme
     val context = LocalContext.current
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
+    val showCloseAccountDialog = remember { mutableStateOf(false) }
     val user = userViewModel.myUser.observeAsState()
     val localSettings = localSettingViewModel.settings.collectAsState()
     LaunchedEffect(Unit) {
@@ -113,6 +115,7 @@ fun ProfileScreen(
         ShowExternalLinkDialog(showTermsDialog, context, "https://auravindex.me/tos/")
         ShowExternalLinkDialog(showPrivacyDialog, context, "https://auravindex.me/privacy/")
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
+        ShowExternalLinkDialog(showCloseAccountDialog, context, "https://auravindex.me/close/")
         Scaffold(
             topBar = {
                 TopBar(
@@ -184,7 +187,7 @@ fun ProfileScreen(
                                 }
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = if (isLoggedIn) "${userData?.name} ${userData?.last_name}" else "Usuario invitado",
+                                    text = if (isLoggedIn) "${userData?.name} ${userData?.last_name}" else "Guest User",
                                     fontSize = 22.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF222222),
@@ -199,12 +202,12 @@ fun ProfileScreen(
                             elevation = CardDefaults.cardElevation(6.dp)
                         ) {
                             Column(modifier = Modifier.padding(24.dp)) {
-                                ProfileInfoText("Email", userData?.email ?: "No disponible")
-                                ProfileInfoText("Genre", userData?.gender?.name ?: "No disponible")
+                                ProfileInfoText("Email", userData?.email ?: "Not available")
+                                ProfileInfoText("Gender", userData?.gender?.name ?: "Not available")
                                 ProfileInfoText("Birthday", formatUtcToLocalWithDate(userData?.birthdate))
-                                ProfileInfoText("Address", userData?.address ?: "No disponible")
-                                ProfileInfoText("Role", userData?.role?.name ?: "No disponible")
-                                ProfileInfoText("Bio", userData?.biography ?: "No disponible", longText = true)
+                                ProfileInfoText("Address", userData?.address ?: "Not available")
+                                ProfileInfoText("Role", userData?.role?.name ?: "Not available")
+                                ProfileInfoText("Biography", userData?.biography ?: "Not available", longText = true)
                             }
                         }
                         Spacer(modifier = Modifier.height(20.dp))
@@ -220,8 +223,8 @@ fun ProfileScreen(
                                     .padding(24.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Button(
-                                    onClick = { /* ir a edición */ },
+                                /*Button(
+                                    onClick = {  *//* *//*  },
                                     shape = RoundedCornerShape(20.dp),
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Color(0xFF572365),
@@ -229,7 +232,22 @@ fun ProfileScreen(
                                     )
                                 ) {
                                     Text(
-                                        text = "Edit profile",
+                                        text = "Edit profile (not available)",
+                                        style = MaterialTheme.typography.labelLarge.copy(
+                                            fontFamily = FontFamily(Font(R.font.rubik_regular))
+                                        )
+                                    )
+                                }*/
+                                Button(
+                                    onClick = { showCloseAccountDialog.value = true },
+                                    shape = RoundedCornerShape(20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = colors.error,
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text(
+                                        text = "Close account",
                                         style = MaterialTheme.typography.labelLarge.copy(
                                             fontFamily = FontFamily(Font(R.font.rubik_regular))
                                         )
