@@ -31,11 +31,9 @@ fun BookCollectionsSection(
     bookCollectionViewModel: BookCollectionViewModel
 ) {
     val bookCollections by bookCollectionViewModel.bookCollections.observeAsState(emptyList())
-
     LaunchedEffect(Unit) {
         bookCollectionViewModel.loadBookCollections()
     }
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -52,7 +50,7 @@ fun BookCollectionsSection(
                     name = name,
                     id = id,
                     onClick = {
-                        navController.navigate("collection_books/${name}/${id}")
+                        navController.navigate("search_results/${name}")
                     }
                 )
             }
@@ -65,7 +63,7 @@ fun CollectionCard(name: String, id: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp) // un poco más alta para el fondo
+            .height(140.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
@@ -73,21 +71,17 @@ fun CollectionCard(name: String, id: String, onClick: () -> Unit) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Imagen de fondo
             Image(
                 painter = painterResource(id = R.drawable.bg),
                 contentDescription = "BG",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
-
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0x1D000000)) // negro con transparencia
+                    .background(Color(0x1D000000))
             )
-
-            // Contenido sobre el fondo
             Column(
                 modifier = Modifier
                     .fillMaxSize()
