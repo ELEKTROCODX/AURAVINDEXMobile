@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.ui.components
+package com.elektro24team.auravindex.ui.components.tables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,7 +41,7 @@ fun AdminUserTable(
     Column(modifier = Modifier.fillMaxSize().padding(0.dp)) {
         Text(
             text = "Users",
-            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -48,7 +49,7 @@ fun AdminUserTable(
             Column {
                 Row(
                     modifier = Modifier
-                        .background(androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
                         .padding(vertical = 8.dp)
                 ) {
                     TableHeaderCell("Name", 160.dp)
@@ -60,9 +61,9 @@ fun AdminUserTable(
 
                 currentPageUsers.forEachIndexed { index, user ->
                     val backgroundColor = if (index % 2 == 0)
-                        androidx.compose.material3.MaterialTheme.colorScheme.surface
+                        MaterialTheme.colorScheme.surface
                     else
-                        androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant
+                        MaterialTheme.colorScheme.surfaceVariant
 
                     Row(
                         modifier = Modifier

@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.ui.components
+package com.elektro24team.auravindex.ui.components.alerts
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,27 +8,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PersonOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.elektro24team.auravindex.utils.functions.isLoggedIn
+import androidx.compose.ui.zIndex
 
 @Composable
-    fun NotLoggedInAlert(localSettings: Map<String, String>) {
+fun ConnectionAlert(isConnected: Boolean) {
     val colors = MaterialTheme.colorScheme
-    if (!isLoggedIn(localSettings)) {
+    if (!isConnected) {
         Surface(
-            color = colors.secondary,
+            color = colors.error,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp)
+                .zIndex(100f)
         ) {
             Box(
                 modifier = Modifier
@@ -40,9 +41,9 @@ import com.elektro24team.auravindex.utils.functions.isLoggedIn
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(Icons.Default.PersonOff, contentDescription = null, tint = colors.onError)
+                    Icon(Icons.Default.WifiOff, contentDescription = null, tint = colors.onError)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Not logged in", color = colors.onError)
+                    Text("No internet connection", color = colors.onError)
                 }
             }
         }

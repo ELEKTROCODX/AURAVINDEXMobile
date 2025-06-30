@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.ui.components
+package com.elektro24team.auravindex.ui.components.dialogs
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult

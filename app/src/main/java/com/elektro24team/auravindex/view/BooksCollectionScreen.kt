@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.ui.components.BookCard
+import com.elektro24team.auravindex.ui.components.cards.BookCard
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import com.elektro24team.auravindex.ui.theme.*
 import com.elektro24team.auravindex.viewmodels.BookViewModel

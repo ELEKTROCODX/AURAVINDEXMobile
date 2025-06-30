@@ -1,5 +1,6 @@
-package com.elektro24team.auravindex.ui.components
+package com.elektro24team.auravindex.ui.components.dialogs
 
+import android.Manifest
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
@@ -30,7 +31,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
-@RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+@RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
 @Composable
 fun RequestLoanDialog(
     navController: NavController,

@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.ui.components
+package com.elektro24team.auravindex.ui.components.cards
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

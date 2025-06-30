@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.ui.components
+package com.elektro24team.auravindex.ui.components.tables
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,26 +24,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.model.ActivePlan
+import com.elektro24team.auravindex.model.AuditLog
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
 import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHourAndSeconds
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AdminActivePlanTable(
+fun AdminAuditLogTable(
     navController: NavController,
-    activePlans: List<ActivePlan>
+    auditLogs: List<AuditLog>
 ) {
     var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
-    val totalPages = (activePlans.size + rowsPerPage - 1) / rowsPerPage
-    val currentPageActivePlans = activePlans.drop(currentPage * rowsPerPage).take(rowsPerPage)
+    val totalPages = (auditLogs.size + rowsPerPage - 1) / rowsPerPage
+    val currentPageAuditLogs = auditLogs.drop(currentPage * rowsPerPage).take(rowsPerPage)
 
     Column(modifier = Modifier.fillMaxSize().padding(0.dp)) {
         Text(
             text = "API Audit Logs",
-            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -50,35 +51,32 @@ fun AdminActivePlanTable(
             Column {
                 Row(
                     modifier = Modifier
-                        .background(androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
                         .padding(vertical = 8.dp)
                 ) {
                     TableHeaderCell("User", 200.dp)
-                    TableHeaderCell("Plan", 180.dp)
-                    TableHeaderCell("Status", 120.dp)
-                    TableHeaderCell("Ending Date", 180.dp)
+                    TableHeaderCell("Action", 160.dp)
+                    TableHeaderCell("Object", 180.dp)
+                    TableHeaderCell("Date", 160.dp)
                 }
 
                 Divider()
 
-                currentPageActivePlans.forEachIndexed { index, activePlan ->
+                currentPageAuditLogs.forEachIndexed { index, auditLog ->
                     val backgroundColor = if (index % 2 == 0)
-                        androidx.compose.material3.MaterialTheme.colorScheme.surface
+                        MaterialTheme.colorScheme.surface
                     else
-                        androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant
+                        MaterialTheme.colorScheme.surfaceVariant
 
                     Row(
                         modifier = Modifier
                             .background(backgroundColor)
                             .padding(vertical = 6.dp)
                     ) {
-                        TableCell(activePlan.user?.email ?: "Unknown", 200.dp)
-                        TableCell(activePlan.plan?.name ?: "Unknown", 180.dp)
-                        TableCell(activePlan.plan_status?.plan_status ?: "Unknown", 120.dp)
-                        TableCell(
-                            formatUtcToLocalWithHourAndSeconds(activePlan.ending_date),
-                            180.dp
-                        )
+                        TableCell(auditLog.user?.email ?: "Unknown", 200.dp)
+                        TableCell(auditLog.action.action_code, 160.dp)
+                        TableCell(auditLog.affected_object, 180.dp)
+                        TableCell(formatUtcToLocalWithHourAndSeconds(auditLog.createdAt), 160.dp)
                     }
 
                     Divider(thickness = 0.5.dp)

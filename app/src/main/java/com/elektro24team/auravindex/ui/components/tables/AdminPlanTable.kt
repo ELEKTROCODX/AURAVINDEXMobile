@@ -1,7 +1,5 @@
-package com.elektro24team.auravindex.ui.components
+package com.elektro24team.auravindex.ui.components.tables
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -15,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,70 +23,56 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.model.Loan
+import com.elektro24team.auravindex.model.Plan
 import com.elektro24team.auravindex.utils.functions.TableCell
 import com.elektro24team.auravindex.utils.functions.TableHeaderCell
-import com.elektro24team.auravindex.utils.functions.formatUtcToLocalWithHourAndSeconds
 
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AdminLoanTable(
+fun AdminPlanTable(
     navController: NavController,
-    loans: List<Loan>
+    plans: List<Plan>
 ) {
-    var rowsPerPage by remember { mutableStateOf(8) }
+    var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
-    val totalPages = (loans.size + rowsPerPage - 1) / rowsPerPage
-    val currentPageLoans = loans.drop(currentPage * rowsPerPage).take(rowsPerPage)
+    val totalPages = (plans.size + rowsPerPage - 1) / rowsPerPage
+    val currentPagePlans = plans.drop(currentPage * rowsPerPage).take(rowsPerPage)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(0.dp)
-    ) {
+    Column(modifier = Modifier.fillMaxSize().padding(0.dp)) {
         Text(
-            text = "Loans",
-            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+            text = "Plans",
+            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-        ) {
+        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
             Column {
                 Row(
                     modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
                         .padding(vertical = 8.dp)
-                        .background(androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
                 ) {
-                    TableHeaderCell("User", 180.dp)
-                    TableHeaderCell("Book", 180.dp)
-                    TableHeaderCell("Status", 140.dp)
-                    TableHeaderCell("Date", 160.dp)
+                    TableHeaderCell("Name", 220.dp)
+                    TableHeaderCell("Fixed Price", 120.dp)
+                    TableHeaderCell("Monthly Price", 120.dp)
                 }
 
                 Divider()
 
-                currentPageLoans.forEachIndexed { index, loan ->
+                currentPagePlans.forEachIndexed { index, plan ->
                     val backgroundColor = if (index % 2 == 0)
-                        androidx.compose.material3.MaterialTheme.colorScheme.surface
+                        MaterialTheme.colorScheme.surface
                     else
-                        androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant
+                        MaterialTheme.colorScheme.surfaceVariant
 
                     Row(
                         modifier = Modifier
                             .background(backgroundColor)
-                            .clickable {
-                                navController.navigate("book/${loan.book._id}")
-                            }
-                            .padding(vertical = 8.dp)
+                            .clickable { navController.navigate("admin_dashboard/plan/${plan._id}") }
+                            .padding(vertical = 6.dp)
                     ) {
-                        TableCell(loan.user?.email ?: "Unknown", 180.dp)
-                        TableCell(loan.book.title, 180.dp)
-                        TableCell(loan.loan_status.loan_status, 140.dp)
-                        TableCell(formatUtcToLocalWithHourAndSeconds(loan.createdAt), 160.dp)
+                        TableCell(plan.name, 220.dp)
+                        TableCell("$${plan.fixed_price}", 120.dp)
+                        TableCell("$${plan.monthly_price}", 120.dp)
                     }
 
                     Divider(thickness = 0.5.dp)

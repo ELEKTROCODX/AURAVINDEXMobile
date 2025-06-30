@@ -1,4 +1,4 @@
-package com.elektro24team.auravindex.ui.components
+package com.elektro24team.auravindex.ui.components.dialogs
 
 import android.content.Context
 import androidx.compose.material.AlertDialog

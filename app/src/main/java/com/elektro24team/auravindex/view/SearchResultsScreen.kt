@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
 import androidx.navigation.NavController
-import com.elektro24team.auravindex.ui.components.BookCard
+import com.elektro24team.auravindex.ui.components.cards.BookCard
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.graphics.Brush
