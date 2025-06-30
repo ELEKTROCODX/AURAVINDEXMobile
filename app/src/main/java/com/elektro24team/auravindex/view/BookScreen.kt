@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LibraryAdd
+import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.SettingsBackupRestore
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -935,11 +936,40 @@ fun BookScreen(
                                                             }
                                                             Divider(color = Color.LightGray, thickness = 1.dp)
                                                         }
+                                                        Row(
+                                                            modifier = Modifier
+                                                                .fillMaxWidth()
+                                                                .padding(8.dp),
+                                                            horizontalArrangement = Arrangement.Center,
+                                                            verticalAlignment = Alignment.CenterVertically,
+                                                        ) {
+                                                            Button(
+                                                                onClick = {
+                                                                    navController.navigate("admin_dashboard/loan/${bookLoan._id}")
+                                                                },
+                                                                modifier = Modifier
+                                                                    .height(48.dp),
+                                                                colors = ButtonDefaults.buttonColors(backgroundColor = PurpleC),
+                                                                shape = RoundedCornerShape(12.dp),
+                                                            ) {
+                                                                androidx.compose.material.Icon(
+                                                                    imageVector = Icons.Filled.RemoveRedEye,
+                                                                    contentDescription = "See details",
+                                                                    tint = Color.White,
+                                                                    modifier = Modifier.padding(end = 8.dp)
+                                                                )
+                                                                Text(
+                                                                    text = "See details",
+                                                                    color = Color.White,
+                                                                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                                                )
+                                                            }
+                                                        }
                                                         Divider(color = Color.LightGray, thickness = 1.dp)
                                                         Row(
                                                             modifier = Modifier
                                                                 .fillMaxWidth()
-                                                                .padding(16.dp),
+                                                                .padding(8.dp),
                                                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                                                             verticalAlignment = Alignment.CenterVertically
                                                         ) {
