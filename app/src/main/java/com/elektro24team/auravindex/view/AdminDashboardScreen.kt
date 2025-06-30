@@ -192,7 +192,7 @@ fun AdminDashboardScreen(
                                 LaunchedEffect(Unit) {
                                     bookViewModel.loadBooks(showDuplicates = true, showLents = true)
                                 }
-                                AdminBookTable(navController, books ?: emptyList())
+                                AdminBookTable(navController, books ?: emptyList(), context)
                             }
                             AdminDashboardObject.PLAN.name.lowercase() -> {
                                 ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)

@@ -1,5 +1,7 @@
 package com.elektro24team.auravindex.ui.components.tables
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -18,6 +20,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.DrawerDefaults.backgroundColor
 import androidx.compose.material.Icon
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -26,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,13 +44,13 @@ import com.elektro24team.auravindex.utils.functions.TableHeaderCell
 @Composable
 fun AdminBookTable(
     navController: NavController,
-    books: List<Book>
+    books: List<Book>,
+    context: Context
 ) {
     var rowsPerPage by remember { mutableStateOf(9) }
     var currentPage by remember { mutableStateOf(0) }
     val totalPages = (books.size + rowsPerPage - 1) / rowsPerPage
     val currentPageBooks = books.drop(currentPage * rowsPerPage).take(rowsPerPage)
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,7 +94,11 @@ fun AdminBookTable(
                         TableCell(book.classification, 120.dp)
 
                         Row(
-                            modifier = Modifier.width(80.dp),
+                            modifier = Modifier
+                                .width(80.dp)
+                                .clickable {
+                                    Toast.makeText(context, book.book_status.book_status, Toast.LENGTH_SHORT).show()
+                                },
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
@@ -138,37 +146,5 @@ fun AdminBookTable(
             }
         }
         Spacer(modifier = Modifier.padding(16.dp))
-        Column {
-            Row(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                    .padding(vertical = 8.dp)
-            ) {
-                TableHeaderCell("Book Status", 150.dp)
-                TableHeaderCell("Icon", 80.dp)
-            }
-            Divider(modifier = Modifier.width(230.dp))
-            bookStatusIcons.forEach { bookStatusIcon ->
-                Row(
-                    modifier = Modifier
-                        .background(backgroundColor)
-                        .padding(vertical = 6.dp)
-                ) {
-                    TableCell(bookStatusIcon.book_status, 150.dp)
-                    Row(
-                        modifier = Modifier.width(40.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            imageVector = bookStatusIcon.icon,
-                            contentDescription = bookStatusIcon.book_status,
-                            tint = Color(0xFF9C27B0),
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-            }
-        }
     }
 }
