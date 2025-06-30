@@ -125,7 +125,14 @@ fun AdminDashboardScreen(
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
 
         Scaffold(
-            topBar = { TopBar(navController = navController, drawerState = drawerState)},
+            topBar = {
+                TopBar(
+                    navController = navController,
+                    drawerState = drawerState,
+                    localSettingViewModel = localSettingViewModel,
+                    notificationViewModel = notificationViewModel
+                )
+            },
             bottomBar = {
                 BottomNavBar(
                     currentRoute = navController.currentBackStackEntry?.destination?.route

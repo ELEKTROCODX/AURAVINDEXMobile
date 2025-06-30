@@ -127,6 +127,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                         is_read = false
                     )
                 )
+                notificationViewModel.loadUserNotifications(token, userId)
                 notifySuccess("You have successfully subscribed to .")
             } else {
                 val error = result.exceptionOrNull()
@@ -163,6 +164,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                         is_read = false
                     )
                 )
+                notificationViewModel.loadUserNotifications(token, activePlan.user._id)
                 notifySuccess("Your plan has been successfully renewed.")
             } else {
                 val error = result.exceptionOrNull()
@@ -199,6 +201,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                         is_read = false
                     )
                 )
+                notificationViewModel.loadUserNotifications(token, activePlan.user._id)
                 notifySuccess("Your plan has been successfully finished.")
             } else {
                 val error = result.exceptionOrNull()
@@ -234,6 +237,7 @@ class ActivePlanViewModel() : BaseViewModel() {
                         is_read = false
                     )
                 )
+                notificationViewModel.loadUserNotifications(token, activePlan.user._id)
                 _activePlan.value = null
                 notifySuccess("Your plan has been successfully canceled.")
             } else {

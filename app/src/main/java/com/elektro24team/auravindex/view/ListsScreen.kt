@@ -1,5 +1,7 @@
 package com.elektro24team.auravindex.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,6 +56,7 @@ import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListsScreen(
@@ -108,7 +111,12 @@ fun ListsScreen(
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
-                TopBar(navController = navController, drawerState = drawerState)
+                TopBar(
+                    navController = navController,
+                    drawerState = drawerState,
+                    localSettingViewModel = localSettingViewModel,
+                    notificationViewModel = notificationViewModel
+                )
             },
             bottomBar = {
                 BottomNavBar(

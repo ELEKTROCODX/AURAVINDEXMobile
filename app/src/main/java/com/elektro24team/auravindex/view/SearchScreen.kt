@@ -103,7 +103,12 @@ fun SearchScreen(
         ShowExternalLinkDialog(showTeamDialog, context, "https://auravindex.me/about/")
         Scaffold(
             topBar = {
-                TopBar(navController = navController, drawerState = drawerState)
+                TopBar(
+                    navController = navController,
+                    drawerState = drawerState,
+                    localSettingViewModel = localSettingViewModel,
+                    notificationViewModel = notificationViewModel
+                )
             },
             bottomBar = {
                 BottomNavBar(

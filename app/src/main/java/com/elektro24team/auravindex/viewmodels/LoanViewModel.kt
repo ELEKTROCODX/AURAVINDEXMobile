@@ -148,6 +148,7 @@ class LoanViewModel() : BaseViewModel() {
                         is_read = false
                     )
                 )
+                notificationViewModel.loadUserNotifications(token, loan.user)
                 notifySuccess("The loan request has been sent successfully")
             } else {
                 val error = result.exceptionOrNull()
@@ -184,6 +185,7 @@ class LoanViewModel() : BaseViewModel() {
                         is_read = false
                     )
                 )
+                notificationViewModel.loadUserNotifications(token, loan.user._id)
                 notifySuccess("The loan has been approved successfully")
             } else {
                 val error = result.exceptionOrNull()
@@ -220,6 +222,7 @@ class LoanViewModel() : BaseViewModel() {
                         is_read = false
                     )
                 )
+                notificationViewModel.loadUserNotifications(token, loan.user._id)
                 notifySuccess("The loan has been renewed successfully")
             } else {
                 val error = result.exceptionOrNull()
@@ -254,6 +257,7 @@ class LoanViewModel() : BaseViewModel() {
                         is_read = false
                     )
                 )
+                notificationViewModel.loadUserNotifications(token, loan.user._id)
                 notifySuccess("The loan has been finished successfully")
             } else {
                 val error = result.exceptionOrNull()
