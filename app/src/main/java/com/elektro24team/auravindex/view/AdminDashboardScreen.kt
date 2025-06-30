@@ -49,6 +49,7 @@ import com.elektro24team.auravindex.ui.components.alerts.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.dialogs.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.ui.components.cards.AdminLoanCard
 import com.elektro24team.auravindex.utils.enums.AdminDashboardObject
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
@@ -273,6 +274,11 @@ fun AdminDashboardScreen(
                                 ObserveInsufficientPermissions(userViewModel, navController)
                                 ObserveError(userViewModel)
                                 AdminUserCard(navController, userViewModel, localSettingViewModel, objectId)
+                            }
+                            AdminDashboardObject.LOAN.name.lowercase() -> {
+                                ObserveTokenExpiration(loanViewModel, navController, localSettingViewModel)
+                                ObserveInsufficientPermissions(loanViewModel, navController)
+                                AdminLoanCard(navController, loanViewModel, localSettingViewModel, objectId)
                             }
                             AdminDashboardObject.PLAN.name.lowercase() -> {
                                 ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)

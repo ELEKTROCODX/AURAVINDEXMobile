@@ -83,7 +83,7 @@ fun AdminLoanTable(
                         modifier = Modifier
                             .background(backgroundColor)
                             .clickable {
-                                navController.navigate("book/${loan.book._id}")
+                                navController.navigate("admin_dashboard/loan/${loan._id}")
                             }
                             .padding(vertical = 8.dp)
                     ) {
