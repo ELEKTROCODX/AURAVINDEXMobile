@@ -2,12 +2,12 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.elektro24team.auravindex">
+    package="com.elektrocodx.auravindex">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
-        android:name="AuraVindexApp"
+        android:name="com.elektrocodx.auravindex.AuraVindexApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,7 +20,7 @@
 
         <!-- Activity principal de la app -->
         <activity
-            android:name=".MainActivity"
+            android:name="com.elektrocodx.auravindex.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.AURAVINDEX">
@@ -32,7 +32,7 @@
 
         <!-- FCM Service -->
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name="com.elektrocodx.auravindex.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.elektro24team.auravindex"
+    namespace = "com.elektrocodx.auravindex"
     compileSdk = 35
 
     defaultConfig {
