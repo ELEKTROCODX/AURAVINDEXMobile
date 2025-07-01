@@ -78,3 +78,14 @@
 # --- Deactivate aggressive optimizations (optional but recommended for apps with reflection) ---
 -dontoptimize
 -dontpreverify
+
+# Avoid R8 removing classes related to annotations or code generation
+-dontwarn javax.annotation.**
+-dontwarn javax.lang.model.**
+-dontwarn javax.tools.**
+-dontwarn java.sql.**
+-dontwarn com.google.j2objc.annotations.**
+-dontwarn com.google.auto.common.**
+-dontwarn com.squareup.javapoet.**
+-dontwarn com.squareup.kotlinpoet.**
+-dontwarn org.sqlite.**

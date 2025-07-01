@@ -16,15 +16,15 @@ android {
         applicationId = "com.elektro24team.auravindex"
         minSdk = 24
         targetSdk = 35
-        versionCode = 8 // Reminder: Always increment this when updating the version
-        versionName = "3.0.1" // X.Y.Z; X = Major, Y = Minor, Z = Patch level
+        versionCode = 12 // Reminder: Always increment this when updating the version
+        versionName = "4.1.0" // X.Y.Z; X = Major, Y = Minor, Z = Patch level
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -44,7 +44,6 @@ android {
 }
 
 dependencies {
-    //Arreglo del chat de lo que hizo @Efrain_Morales(AlexMarin)
     implementation(libs.androidx.room.runtime) {
         exclude(group = "com.intellij", module = "annotations")
     }

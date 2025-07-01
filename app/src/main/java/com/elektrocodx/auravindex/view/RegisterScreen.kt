@@ -51,6 +51,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -88,8 +90,6 @@ fun RegisterScreen(
     val userBiography = remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var userGender by remember { mutableStateOf<String?>(null) }
-    ObserveError(authViewModel)
-    ObserveSuccess(authViewModel)
     val showDatePicker = remember { mutableStateOf(false) }
     val formattedUserBirthdate = remember(userBirthdate.value) {
         userBirthdate.value?.let {
@@ -123,10 +123,12 @@ fun RegisterScreen(
             imageUri = it
         }
     LaunchedEffect(registerResult) {
-        if(registerResult == true) {
+        if(registerResult != null && registerResult != "") {
             navController.navigate(Routes.LOGIN)
         }
     }
+    ObserveError(authViewModel)
+    ObserveSuccess(authViewModel)
     Scaffold(
         ) { innerPadding ->
         Box(
@@ -138,8 +140,7 @@ fun RegisterScreen(
         )
         Card(
             modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .fillMaxWidth(),
+                .padding(innerPadding),
             shape = RoundedCornerShape(24.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White)
@@ -150,7 +151,7 @@ fun RegisterScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
@@ -303,6 +304,7 @@ fun RegisterScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 6.dp),
+                            visualTransformation = if(label == "Password") PasswordVisualTransformation() else VisualTransformation.None,
                             shape = RoundedCornerShape(16.dp),
                             colors = fieldColors
                         )
@@ -380,7 +382,7 @@ fun RegisterScreen(
                             if (userAge < 16) {
                                 Toast.makeText(
                                     context,
-                                    "You must be at least 16 years old",
+                                    "You must be at least 16 years old.",
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 return@Button
@@ -393,18 +395,15 @@ fun RegisterScreen(
                             }
 
                             val user = RegisterInfo(
-                                name = userName.value,
-                                last_name = userLastname.value,
-                                email = userEmail.value,
-                                biography = userBiography.value,
-                                gender = userGender.orEmpty(),
-                                birthdate = formattedUserBirthdate,
-                                user_img = imageUri.toString(),
-                                address = userAddress.value,
-                                password = userPassword.value
-                            )
-
-                            authViewModel.register(user)
+                                userName.value,
+                                userLastname.value,
+                                userEmail.value,
+                                userBiography.value,
+                                userGender.toString(),
+                                formattedUserBirthdate,
+                                userAddress.value,
+                                userPassword.value)
+                            authViewModel.register(user, imageUri,context)
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF572365)),
                         modifier = Modifier
