@@ -90,8 +90,6 @@ fun RegisterScreen(
     val userBiography = remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var userGender by remember { mutableStateOf<String?>(null) }
-    ObserveError(authViewModel)
-    ObserveSuccess(authViewModel)
     val showDatePicker = remember { mutableStateOf(false) }
     val formattedUserBirthdate = remember(userBirthdate.value) {
         userBirthdate.value?.let {
@@ -125,10 +123,12 @@ fun RegisterScreen(
             imageUri = it
         }
     LaunchedEffect(registerResult) {
-        if(registerResult == true) {
+        if(registerResult != null && registerResult != "") {
             navController.navigate(Routes.LOGIN)
         }
     }
+    ObserveError(authViewModel)
+    ObserveSuccess(authViewModel)
     Scaffold(
         ) { innerPadding ->
         Box(
@@ -395,18 +395,15 @@ fun RegisterScreen(
                             }
 
                             val user = RegisterInfo(
-                                name = userName.value,
-                                last_name = userLastname.value,
-                                email = userEmail.value,
-                                biography = userBiography.value,
-                                gender = userGender.orEmpty(),
-                                birthdate = formattedUserBirthdate,
-                                user_img = imageUri.toString(),
-                                address = userAddress.value,
-                                password = userPassword.value
-                            )
-
-                            authViewModel.register(user)
+                                userName.value,
+                                userLastname.value,
+                                userEmail.value,
+                                userBiography.value,
+                                userGender.toString(),
+                                formattedUserBirthdate,
+                                userAddress.value,
+                                userPassword.value)
+                            authViewModel.register(user, imageUri,context)
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF572365)),
                         modifier = Modifier

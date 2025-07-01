@@ -49,6 +49,7 @@ import com.elektrocodx.auravindex.navigation.Routes
 import com.elektrocodx.auravindex.ui.components.alerts.ConnectionAlert
 import com.elektrocodx.auravindex.utils.enums.SettingKey
 import com.elektrocodx.auravindex.utils.functions.APIerrorHandlers.ObserveError
+import com.elektrocodx.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
 import com.elektrocodx.auravindex.utils.objects.AuthPrefsHelper
 import com.elektrocodx.auravindex.utils.objects.FcmTokenUploader.checkAndSyncFcmToken
 import com.elektrocodx.auravindex.viewmodels.ActivePlanViewModel
@@ -73,7 +74,6 @@ fun LoginScreen(
     val isActivePlanChecked by activePlanViewModel.isActivePlanChecked.observeAsState(false)
     val userEmail = remember { mutableStateOf("") }
     val userPassword = remember { mutableStateOf("") }
-    ObserveError(authViewModel)
     LaunchedEffect(loginResult) {
         if (loginResult != null && loginResult != "") {
             localSettingViewModel.clearUserSettings()
@@ -120,6 +120,8 @@ fun LoginScreen(
             navController.navigate(Routes.MAIN)
         }
     }
+    ObserveError(authViewModel)
+    ObserveSuccess(authViewModel)
     Scaffold(
         containerColor = Color(0xFFEDE7F6),
         content = { innerPadding ->
