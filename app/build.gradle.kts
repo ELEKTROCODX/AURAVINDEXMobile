@@ -16,8 +16,8 @@ android {
         applicationId = "com.elektro24team.auravindex"
         minSdk = 24
         targetSdk = 35
-        versionCode = 11 // Reminder: Always increment this when updating the version
-        versionName = "4.0.2" // X.Y.Z; X = Major, Y = Minor, Z = Patch level
+        versionCode = 12 // Reminder: Always increment this when updating the version
+        versionName = "4.1.0" // X.Y.Z; X = Major, Y = Minor, Z = Patch level
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
