@@ -13,7 +13,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.elektro24team.auravindex"
+        applicationId = "com.elektrocodx.auravindex"
         minSdk = 24
         targetSdk = 35
         versionCode = 11 // Reminder: Always increment this when updating the version
@@ -44,7 +44,6 @@ android {
 }
 
 dependencies {
-    //Arreglo del chat de lo que hizo @Efrain_Morales(AlexMarin)
     implementation(libs.androidx.room.runtime) {
         exclude(group = "com.intellij", module = "annotations")
     }
