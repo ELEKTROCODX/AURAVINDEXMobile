@@ -16,15 +16,15 @@ android {
         applicationId = "com.elektro24team.auravindex"
         minSdk = 24
         targetSdk = 35
-        versionCode = 9 // Reminder: Always increment this when updating the version
-        versionName = "4.0.0" // X.Y.Z; X = Major, Y = Minor, Z = Patch level
+        versionCode = 10 // Reminder: Always increment this when updating the version
+        versionName = "4.0.1" // X.Y.Z; X = Major, Y = Minor, Z = Patch level
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
