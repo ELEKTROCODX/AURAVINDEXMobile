@@ -13,7 +13,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.elektrocodx.auravindex"
+        applicationId = "com.elektro24team.auravindex"
         minSdk = 24
         targetSdk = 35
         versionCode = 11 // Reminder: Always increment this when updating the version
