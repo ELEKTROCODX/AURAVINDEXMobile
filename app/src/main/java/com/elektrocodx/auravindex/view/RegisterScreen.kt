@@ -140,8 +140,7 @@ fun RegisterScreen(
         )
         Card(
             modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .fillMaxWidth(),
+                .padding(innerPadding),
             shape = RoundedCornerShape(24.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White)
@@ -152,7 +151,7 @@ fun RegisterScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
