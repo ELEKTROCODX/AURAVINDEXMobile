@@ -380,7 +380,7 @@ fun RegisterScreen(
                             if (userAge < 16) {
                                 Toast.makeText(
                                     context,
-                                    "You must be at least 16 years old",
+                                    "You must be at least 16 years old.",
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 return@Button
