@@ -1,7 +1,9 @@
 package com.elektro24team.auravindex.utils
 
 import android.app.Application
-import android.net.*
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import androidx.lifecycle.LiveData
 
 class NetworkLiveData(private val app: Application) : LiveData<Boolean>() {

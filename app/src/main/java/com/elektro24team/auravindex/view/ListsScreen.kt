@@ -37,14 +37,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
-import com.elektro24team.auravindex.ui.components.cards.BookListCard
 import com.elektro24team.auravindex.ui.components.BottomNavBar
-import com.elektro24team.auravindex.ui.components.alerts.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.DrawerMenu
 import com.elektro24team.auravindex.ui.components.ListForm
-import com.elektro24team.auravindex.ui.components.dialogs.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.ui.components.alerts.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.alerts.NotLoggedInAlert
+import com.elektro24team.auravindex.ui.components.cards.BookListCard
+import com.elektro24team.auravindex.ui.components.dialogs.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.enums.AppAction
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
@@ -54,10 +54,9 @@ import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveToke
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.utils.functions.isLoggedIn
 import com.elektro24team.auravindex.utils.functions.mustBeLoggedInToast
-import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.BookListViewModel
-import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)

@@ -1,7 +1,7 @@
 package com.elektro24team.auravindex.retrofit
 
-import com.elektro24team.auravindex.model.ApiResponse
 import com.elektro24team.auravindex.model.ActivePlan
+import com.elektro24team.auravindex.model.ApiResponse
 import com.elektro24team.auravindex.model.api.ActivePlanRequest
 import com.elektro24team.auravindex.utils.constants.URLs.BASE_URL
 import retrofit2.Retrofit

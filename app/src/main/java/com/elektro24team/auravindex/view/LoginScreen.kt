@@ -1,6 +1,7 @@
 package com.elektro24team.auravindex.view
 
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -52,8 +52,8 @@ import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveErro
 import com.elektro24team.auravindex.utils.objects.AuthPrefsHelper
 import com.elektro24team.auravindex.utils.objects.FcmTokenUploader.checkAndSyncFcmToken
 import com.elektro24team.auravindex.viewmodels.ActivePlanViewModel
-import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
+import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 
 

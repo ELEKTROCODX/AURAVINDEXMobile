@@ -1,6 +1,5 @@
 package com.elektro24team.auravindex.viewmodels
 
-import retrofit2.HttpException
 import android.os.Build
 import androidx.annotation.RequiresExtension
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +8,7 @@ import com.elektro24team.auravindex.data.repository.UserRepository
 import com.elektro24team.auravindex.model.User
 import com.elektro24team.auravindex.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class UserViewModel(
     private val repository: UserRepository

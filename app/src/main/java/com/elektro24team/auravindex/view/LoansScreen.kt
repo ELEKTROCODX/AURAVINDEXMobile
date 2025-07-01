@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -41,13 +40,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
-import com.elektro24team.auravindex.ui.components.alerts.NotLoggedInAlert
 import com.elektro24team.auravindex.ui.components.BottomNavBar
-import com.elektro24team.auravindex.ui.components.alerts.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.DrawerMenu
+import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.ui.components.alerts.ConnectionAlert
+import com.elektro24team.auravindex.ui.components.alerts.NotLoggedInAlert
 import com.elektro24team.auravindex.ui.components.cards.LoanCard
 import com.elektro24team.auravindex.ui.components.dialogs.ShowExternalLinkDialog
-import com.elektro24team.auravindex.ui.components.TopBar
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektro24team.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions

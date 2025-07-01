@@ -5,9 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.elektro24team.auravindex.model.local.UserEntity
 import com.elektro24team.auravindex.model.local.GenderEntity
 import com.elektro24team.auravindex.model.local.RoleEntity
+import com.elektro24team.auravindex.model.local.UserEntity
 import com.elektro24team.auravindex.model.local.relations.UserWithRelations
 
 

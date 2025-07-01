@@ -21,9 +21,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.model.Book
-import com.elektro24team.auravindex.model.api.LoanRequest
 import com.elektro24team.auravindex.model.LoanStatus
 import com.elektro24team.auravindex.model.Plan
+import com.elektro24team.auravindex.model.api.LoanRequest
 import com.elektro24team.auravindex.viewmodels.BookViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel

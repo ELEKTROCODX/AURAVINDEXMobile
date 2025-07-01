@@ -19,9 +19,9 @@ import com.elektro24team.auravindex.viewmodels.AuditLogViewModel
 import com.elektro24team.auravindex.viewmodels.AuthViewModel
 import com.elektro24team.auravindex.viewmodels.BookCollectionViewModel
 import com.elektro24team.auravindex.viewmodels.BookViewModel
+import com.elektro24team.auravindex.viewmodels.GenderViewModel
 import com.elektro24team.auravindex.viewmodels.LoanStatusViewModel
 import com.elektro24team.auravindex.viewmodels.LoanViewModel
-import com.elektro24team.auravindex.viewmodels.GenderViewModel
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
 import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.PlanStatusViewModel

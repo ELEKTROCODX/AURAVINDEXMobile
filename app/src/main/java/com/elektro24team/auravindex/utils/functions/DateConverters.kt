@@ -1,7 +1,8 @@
 package com.elektro24team.auravindex.utils.functions
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.TimeZone
 
 fun formatUtcToLocalWithHourAndSeconds(input: String?): String {
     if(!input.isNullOrEmpty()) {

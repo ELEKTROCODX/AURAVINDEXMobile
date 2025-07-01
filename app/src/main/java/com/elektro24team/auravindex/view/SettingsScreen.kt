@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -40,20 +42,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektro24team.auravindex.AuraVindexApp
 import com.elektro24team.auravindex.ui.components.BottomNavBar
-import com.elektro24team.auravindex.ui.components.alerts.ConnectionAlert
 import com.elektro24team.auravindex.ui.components.DrawerMenu
-import com.elektro24team.auravindex.ui.components.dialogs.ShowExternalLinkDialog
 import com.elektro24team.auravindex.ui.components.TopBar
+import com.elektro24team.auravindex.ui.components.alerts.ConnectionAlert
+import com.elektro24team.auravindex.ui.components.dialogs.ShowExternalLinkDialog
 import com.elektro24team.auravindex.utils.enums.SettingKey
 import com.elektro24team.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektro24team.auravindex.viewmodels.LocalSettingViewModel
+import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 import com.elektro24team.auravindex.viewmodels.UserViewModel
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import com.elektro24team.auravindex.viewmodels.NotificationViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)

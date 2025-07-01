@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import kotlin.collections.filter
-import kotlin.text.contains
 
 class BookViewModel(
     private val repository: BookRepository
