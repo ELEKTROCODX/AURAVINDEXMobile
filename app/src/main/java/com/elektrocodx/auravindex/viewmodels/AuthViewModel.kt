@@ -2,6 +2,7 @@ package com.elektrocodx.auravindex.viewmodels
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elektrocodx.auravindex.data.repository.AuthRepository

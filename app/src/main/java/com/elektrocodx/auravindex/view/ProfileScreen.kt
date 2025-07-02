@@ -150,8 +150,7 @@ fun ProfileScreen(
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp),
+                            .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         val app = LocalContext.current.applicationContext as AuraVindexApp
