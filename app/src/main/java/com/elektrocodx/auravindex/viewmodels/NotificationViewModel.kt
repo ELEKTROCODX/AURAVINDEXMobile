@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elektrocodx.auravindex.model.Notification
+import com.elektrocodx.auravindex.model.api.NotificationAllUsersRequest
 import com.elektrocodx.auravindex.model.api.NotificationRequest
 import com.elektrocodx.auravindex.retrofit.NotificationClient
 import com.elektrocodx.auravindex.viewmodels.base.BaseViewModel
@@ -28,7 +29,33 @@ class NotificationViewModel() : BaseViewModel() {
                 Result.failure(e)
             }
             if (result.isSuccess) {
-                //notifySuccess("You have successfully subscribed to the plan.")
+                //
+            } else {
+                val error = result.exceptionOrNull()
+                if (error is HttpException) {
+                    when (error.code()) {
+                        401 -> notifyTokenExpired()
+                        403 -> notifyInsufficentPermissions()
+                        404 -> notifyError(error.message())
+                        409 -> notifyError(error.message())
+                        else -> notifyError("HTTP error: ${error.code()}")
+                    }
+                } else {
+                    notifyError("Network error: ${error?.message}")
+                }
+            }
+        }
+    }
+    fun createNotificationForAllUsers(token: String, notification: NotificationAllUsersRequest) {
+        viewModelScope.launch {
+            val result = try {
+                val remote = NotificationClient.apiService.createNotificationForAllUsers(token = "Bearer $token", notification)
+                Result.success(remote)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+            if (result.isSuccess) {
+                notifySuccess("Notification successfully sent to all users.")
             } else {
                 val error = result.exceptionOrNull()
                 if (error is HttpException) {

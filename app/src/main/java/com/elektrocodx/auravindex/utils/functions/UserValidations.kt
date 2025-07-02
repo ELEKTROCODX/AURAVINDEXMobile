@@ -17,7 +17,14 @@ fun isAdmin(
     localSettings: Map<String, String>,
 ) : Boolean {
     return (
-            localSettings.getOrDefault(SettingKey.ROLE_NAME.keySetting, "").lowercase() == "administrator"
-            || localSettings.getOrDefault(SettingKey.ROLE_NAME.keySetting, "") == "admin"
+            (localSettings.getOrDefault(SettingKey.ROLE_NAME.keySetting, "").lowercase() == "administrator"
+                            || localSettings.getOrDefault(SettingKey.ROLE_NAME.keySetting, "").lowercase() == "admin"
+                    ) || isOwner(localSettings)
             ) && isLoggedIn(localSettings)
+}
+
+fun isOwner(
+    localSettings: Map<String, String>
+) : Boolean {
+    return localSettings.getOrDefault(SettingKey.ROLE_NAME.keySetting, "").lowercase() == "owner"
 }

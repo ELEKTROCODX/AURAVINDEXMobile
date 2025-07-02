@@ -2,6 +2,7 @@ package com.elektrocodx.auravindex.retrofit
 
 import com.elektrocodx.auravindex.model.ApiResponse
 import com.elektrocodx.auravindex.model.Notification
+import com.elektrocodx.auravindex.model.api.NotificationAllUsersRequest
 import com.elektrocodx.auravindex.model.api.NotificationRequest
 import com.elektrocodx.auravindex.utils.constants.URLs.BASE_URL
 import retrofit2.Retrofit
@@ -42,6 +43,11 @@ interface NotificationService {
     suspend fun createNotification(
         @Header("Authorization") token: String,
         @Body notification: NotificationRequest
+    )
+    @POST("notification/all")
+    suspend fun createNotificationForAllUsers(
+        @Header("Authorization") token: String,
+        @Body notification: NotificationAllUsersRequest
     )
     @PUT("notification/{id}/mark_as_read")
     suspend fun markNotificationAsRead(

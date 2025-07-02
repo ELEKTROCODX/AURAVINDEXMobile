@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.CalendarToday
@@ -27,15 +29,20 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,11 +59,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elektrocodx.auravindex.AuraVindexApp
 import com.elektrocodx.auravindex.R
+import com.elektrocodx.auravindex.model.api.NotificationAllUsersRequest
 import com.elektrocodx.auravindex.navigation.Routes
 import com.elektrocodx.auravindex.ui.components.BottomNavBar
 import com.elektrocodx.auravindex.ui.components.DrawerMenu
@@ -74,11 +83,16 @@ import com.elektrocodx.auravindex.ui.components.tables.AdminNotificationTable
 import com.elektrocodx.auravindex.ui.components.tables.AdminPlanTable
 import com.elektrocodx.auravindex.ui.components.tables.AdminUserTable
 import com.elektrocodx.auravindex.utils.enums.AdminDashboardObject
+import com.elektrocodx.auravindex.utils.enums.AppAction
 import com.elektrocodx.auravindex.utils.enums.SettingKey
 import com.elektrocodx.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektrocodx.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
+import com.elektrocodx.auravindex.utils.functions.APIerrorHandlers.ObserveSuccess
 import com.elektrocodx.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
 import com.elektrocodx.auravindex.utils.functions.hamburguerMenuNavigator
+import com.elektrocodx.auravindex.utils.functions.isLoggedIn
+import com.elektrocodx.auravindex.utils.functions.isOwner
+import com.elektrocodx.auravindex.utils.functions.mustBeLoggedInToast
 import com.elektrocodx.auravindex.viewmodels.ActivePlanViewModel
 import com.elektrocodx.auravindex.viewmodels.AuditLogViewModel
 import com.elektrocodx.auravindex.viewmodels.BookViewModel
@@ -113,6 +127,10 @@ fun AdminDashboardScreen(
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
     val localSettings by localSettingViewModel.settings.collectAsState()
+    val showForm = remember { mutableStateOf(false) }
+    val titleForm = remember { mutableStateOf("") }
+    val messageForm = remember { mutableStateOf("") }
+    val notificationTypeForm = remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         localSettingViewModel.loadSettings(
@@ -121,7 +139,7 @@ fun AdminDashboardScreen(
             SettingKey.EMAIL.keySetting
         )
     }
-
+    ObserveSuccess(notificationViewModel)
     ModalNavigationDrawer(
         drawerContent = {
             DrawerMenu(
@@ -164,6 +182,21 @@ fun AdminDashboardScreen(
                         ?: Routes.ADMIN_DASHBOARD,
                     onItemClick = { route -> navController.navigate(route) }
                 )
+            },
+            floatingActionButton = {
+                if(objectName == AdminDashboardObject.NOTIFICATION.name.lowercase() && isOwner(localSettings)) {
+                    FloatingActionButton(
+                        onClick = {
+                            if(isOwner(localSettings)) {
+                                showForm.value = true
+                            }
+                        }
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = "Create")
+                    }
+                } else {
+                    null
+                }
             }
         ) { innerPadding ->
             Column(
@@ -176,7 +209,65 @@ fun AdminDashboardScreen(
                 val app = LocalContext.current.applicationContext as AuraVindexApp
                 val isConnected by app.networkLiveData.observeAsState(true)
                 ConnectionAlert(isConnected)
-
+                if(showForm.value) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            showForm.value = false
+                            titleForm.value = ""
+                            messageForm.value = ""
+                            notificationTypeForm.value = ""
+                        },
+                        title = { Text(text = "Create notification for all users") },
+                        text = {
+                            Column {
+                                TextField(
+                                    value = titleForm.value,
+                                    onValueChange = { titleForm.value = it },
+                                    label = { Text("Title") }
+                                )
+                                TextField(
+                                    value = messageForm.value,
+                                    onValueChange = { messageForm.value = it },
+                                    label = { Text("Message") }
+                                )
+                                TextField(
+                                    value = notificationTypeForm.value,
+                                    onValueChange = { notificationTypeForm.value = it },
+                                    label = { Text("Notification type") }
+                                )
+                            }
+                        },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                notificationViewModel.createNotificationForAllUsers(
+                                    localSettings.getOrDefault(SettingKey.TOKEN.keySetting, ""),
+                                    NotificationAllUsersRequest(
+                                        title = titleForm.value,
+                                        message = messageForm.value,
+                                        notification_type = notificationTypeForm.value,
+                                        is_read = false
+                                    )
+                                )
+                                showForm.value = false
+                                titleForm.value = ""
+                                messageForm.value = ""
+                                notificationTypeForm.value = ""
+                            }) {
+                                Text("Notify")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = {
+                                showForm.value = false
+                                titleForm.value = ""
+                                messageForm.value = ""
+                                notificationTypeForm.value = ""
+                            }) {
+                                Text("Cancel")
+                            }
+                        }
+                    )
+                }
                 when {
                     objectName.isNullOrBlank() -> {
                         Text(
