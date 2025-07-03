@@ -208,7 +208,7 @@ fun ProfileScreen(
                             Column(modifier = Modifier.padding(24.dp)) {
                                 ProfileInfoText("Email", user.value?.email ?: "Not available")
                                 ProfileInfoText("Gender", user.value?.gender?.name ?: "Not available")
-                                ProfileInfoText("Birthday", formatUtcToLocalWithDate(user.value?.birthdate))
+                                ProfileInfoText("Birthdate", formatUtcToLocalWithDate(user.value?.birthdate))
                                 ProfileInfoText("Address", user.value?.address ?: "Not available")
                                 ProfileInfoText("Role", user.value?.role?.name ?: "Not available")
                                 ProfileInfoText("Biography", user.value?.biography ?: "Not available", longText = true)
