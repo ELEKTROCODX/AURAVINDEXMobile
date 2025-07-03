@@ -51,6 +51,7 @@ import com.elektrocodx.auravindex.R
 import com.elektrocodx.auravindex.ui.theme.PurpleC
 import com.elektrocodx.auravindex.utils.constants.URLs.IMG_url
 import com.elektrocodx.auravindex.utils.enums.SettingKey
+import com.elektrocodx.auravindex.utils.functions.formatApiDateFormat
 import com.elektrocodx.auravindex.utils.functions.formatUtcToLocalWithDate
 import com.elektrocodx.auravindex.viewmodels.LocalSettingViewModel
 import com.elektrocodx.auravindex.viewmodels.UserViewModel
@@ -189,7 +190,7 @@ fun AdminUserCard(
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF572365)),
                 )
                 Text(
-                    text = formatUtcToLocalWithDate(user.value?.birthdate),
+                    text = formatApiDateFormat(user.value?.birthdate),
                     style = TextStyle(fontSize = 16.sp, color = Color.Black)
                 )
             }
