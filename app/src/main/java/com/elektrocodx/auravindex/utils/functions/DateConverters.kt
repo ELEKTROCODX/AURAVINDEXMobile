@@ -45,7 +45,7 @@ fun formatApiDateFormat(input: String?): String {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
         inputFormat.timeZone = TimeZone.getTimeZone("UTC")
 
-        val outputFormat = SimpleDateFormat("YYYY-MM-DD", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         outputFormat.timeZone = TimeZone.getTimeZone("UTC-6")
 
         val date = inputFormat.parse(input)

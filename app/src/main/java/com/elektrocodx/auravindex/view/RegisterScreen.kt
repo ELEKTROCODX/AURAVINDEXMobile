@@ -95,14 +95,14 @@ fun RegisterScreen(
         userBirthdate.value?.let {
             val calendar = Calendar.getInstance().apply { timeInMillis = it }
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            sdf.timeZone = TimeZone.getTimeZone("UTC-6")
             sdf.format(calendar.time)
         } ?: ""
     }
     val userAge = remember(formattedUserBirthdate) {
         try {
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            sdf.timeZone = TimeZone.getTimeZone("UTC-6")
             val birthDate = sdf.parse(formattedUserBirthdate)
             birthDate?.let {
                 val birthCalendar = Calendar.getInstance().apply { time = it }
@@ -129,8 +129,7 @@ fun RegisterScreen(
     }
     ObserveError(authViewModel)
     ObserveSuccess(authViewModel)
-    Scaffold(
-        ) { innerPadding ->
+    Scaffold{ innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()

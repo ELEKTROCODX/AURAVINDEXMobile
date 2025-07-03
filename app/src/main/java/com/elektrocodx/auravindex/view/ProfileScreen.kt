@@ -63,6 +63,7 @@ import com.elektrocodx.auravindex.utils.enums.SettingKey
 import com.elektrocodx.auravindex.utils.functions.APIerrorHandlers.ObserveError
 import com.elektrocodx.auravindex.utils.functions.APIerrorHandlers.ObserveInsufficientPermissions
 import com.elektrocodx.auravindex.utils.functions.APIerrorHandlers.ObserveTokenExpiration
+import com.elektrocodx.auravindex.utils.functions.formatApiDateFormat
 import com.elektrocodx.auravindex.utils.functions.formatUtcToLocalWithDate
 import com.elektrocodx.auravindex.utils.functions.hamburguerMenuNavigator
 import com.elektrocodx.auravindex.utils.functions.isLoggedIn
@@ -208,7 +209,7 @@ fun ProfileScreen(
                             Column(modifier = Modifier.padding(24.dp)) {
                                 ProfileInfoText("Email", user.value?.email ?: "Not available")
                                 ProfileInfoText("Gender", user.value?.gender?.name ?: "Not available")
-                                ProfileInfoText("Birthdate", formatUtcToLocalWithDate(user.value?.birthdate))
+                                ProfileInfoText("Birthdate", formatApiDateFormat(user.value?.birthdate))
                                 ProfileInfoText("Address", user.value?.address ?: "Not available")
                                 ProfileInfoText("Role", user.value?.role?.name ?: "Not available")
                                 ProfileInfoText("Biography", user.value?.biography ?: "Not available", longText = true)
