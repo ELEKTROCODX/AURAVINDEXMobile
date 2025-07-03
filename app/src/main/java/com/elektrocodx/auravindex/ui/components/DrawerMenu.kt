@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material.icons.filled.PrivacyTip
@@ -151,11 +152,12 @@ fun DrawerMenu(
         if (isInAdminDashboard(currentRoute)) {
             val adminMenuItems = listOf(
                 AdminMenuItem("Books", Icons.AutoMirrored.Filled.MenuBook, AdminDashboardObject.BOOK),
+                AdminMenuItem("Plans", Icons.AutoMirrored.Filled.List, AdminDashboardObject.PLAN),
                 AdminMenuItem("Users", Icons.Default.Person, AdminDashboardObject.USER),
                 AdminMenuItem("Loans", Icons.AutoMirrored.Filled.ReceiptLong, AdminDashboardObject.LOAN),
-                AdminMenuItem("Plans", Icons.AutoMirrored.Filled.List, AdminDashboardObject.PLAN),
                 AdminMenuItem("Active Plans", Icons.Default.PlayCircleFilled, AdminDashboardObject.ACTIVE_PLAN),
-                AdminMenuItem("Audit Log", Icons.Default.Terminal, AdminDashboardObject.AUDIT_LOG)
+                AdminMenuItem("Audit Log", Icons.Default.Terminal, AdminDashboardObject.AUDIT_LOG),
+                AdminMenuItem("Notifications", Icons.Default.Notifications, AdminDashboardObject.NOTIFICATION)
             )
 
             CustomDrawerItem(

@@ -3,6 +3,7 @@ package com.elektrocodx.auravindex.ui.components.tables
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -78,6 +79,7 @@ fun AdminNotificationTable(
                         modifier = Modifier
                             .background(backgroundColor)
                             .padding(vertical = 6.dp)
+                            .clickable {navController.navigate("admin_dashboard/notification/${notification._id}")}
                     ) {
                         TableCell(notification.receiver?.email ?: "Unknown", 200.dp)
                         TableCell(notification.notification_type, 180.dp)

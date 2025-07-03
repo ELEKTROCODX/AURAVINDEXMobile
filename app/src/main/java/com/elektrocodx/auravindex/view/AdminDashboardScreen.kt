@@ -72,6 +72,7 @@ import com.elektrocodx.auravindex.ui.components.DrawerMenu
 import com.elektrocodx.auravindex.ui.components.TopBar
 import com.elektrocodx.auravindex.ui.components.alerts.ConnectionAlert
 import com.elektrocodx.auravindex.ui.components.cards.AdminLoanCard
+import com.elektrocodx.auravindex.ui.components.cards.AdminNotificationCard
 import com.elektrocodx.auravindex.ui.components.cards.AdminPlanCard
 import com.elektrocodx.auravindex.ui.components.cards.AdminUserCard
 import com.elektrocodx.auravindex.ui.components.dialogs.ShowExternalLinkDialog
@@ -368,7 +369,7 @@ fun AdminDashboardScreen(
                                 ObserveTokenExpiration(notificationViewModel, navController, localSettingViewModel)
                                 ObserveInsufficientPermissions(notificationViewModel, navController)
                                 ObserveError(notificationViewModel)
-                                val notifications by notificationViewModel.notifications.observeAsState()
+                                val notifications by notificationViewModel.notifications.collectAsState()
                                 LaunchedEffect(Unit) {
                                     notificationViewModel.loadNotifications(
                                         localSettings.getOrDefault(SettingKey.TOKEN.keySetting, "")
@@ -394,6 +395,11 @@ fun AdminDashboardScreen(
                                 ObserveTokenExpiration(loanViewModel, navController, localSettingViewModel)
                                 ObserveInsufficientPermissions(loanViewModel, navController)
                                 AdminLoanCard(navController, loanViewModel, localSettingViewModel, objectId)
+                            }
+                            AdminDashboardObject.NOTIFICATION.name.lowercase() -> {
+                                ObserveTokenExpiration(notificationViewModel, navController, localSettingViewModel)
+                                ObserveInsufficientPermissions(notificationViewModel, navController)
+                                AdminNotificationCard(navController, notificationViewModel, localSettingViewModel, objectId)
                             }
                             AdminDashboardObject.PLAN.name.lowercase() -> {
                                 ObserveTokenExpiration(planViewModel, navController, localSettingViewModel)

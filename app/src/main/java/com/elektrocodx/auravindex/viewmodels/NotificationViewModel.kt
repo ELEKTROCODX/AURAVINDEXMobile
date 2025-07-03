@@ -8,17 +8,19 @@ import com.elektrocodx.auravindex.model.api.NotificationAllUsersRequest
 import com.elektrocodx.auravindex.model.api.NotificationRequest
 import com.elektrocodx.auravindex.retrofit.NotificationClient
 import com.elektrocodx.auravindex.viewmodels.base.BaseViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 class NotificationViewModel() : BaseViewModel() {
 
-    private val _notifications = MutableLiveData<List<Notification>?>()
-    private val _userNotifications = MutableLiveData<List<Notification>?>()
-    private val _notification = MutableLiveData<Notification?>()
-    val notifications: LiveData<List<Notification>?> = _notifications
-    val userNotifications: LiveData<List<Notification>?> = _userNotifications
-    val notification: LiveData<Notification?> = _notification
+    private val _notifications = MutableStateFlow<List<Notification>?>(null)
+    private val _userNotifications = MutableStateFlow<List<Notification>?>(null)
+    private val _notification = MutableStateFlow<Notification?>(null)
+    val notifications: StateFlow<List<Notification>?> = _notifications
+    val userNotifications: StateFlow<List<Notification>?> = _userNotifications
+    val notification: StateFlow<Notification?> = _notification
 
     fun createNotification(token: String, notification: NotificationRequest) {
         viewModelScope.launch {

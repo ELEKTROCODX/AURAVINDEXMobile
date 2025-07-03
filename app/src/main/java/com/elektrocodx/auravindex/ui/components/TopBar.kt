@@ -68,7 +68,7 @@ fun TopBar(
 ) {
     val scope = rememberCoroutineScope()
     val localSettings by localSettingViewModel.settings.collectAsState()
-    val userNotifications by notificationViewModel.userNotifications.observeAsState()
+    val userNotifications by notificationViewModel.userNotifications.collectAsState()
     var unreadNotifications by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
         if(isLoggedIn(localSettings)) {

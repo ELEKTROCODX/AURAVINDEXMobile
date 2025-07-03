@@ -69,7 +69,7 @@ fun NotificationsScreen(
     val showTermsDialog = remember { mutableStateOf(false) }
     val showPrivacyDialog = remember { mutableStateOf(false) }
     val showTeamDialog = remember { mutableStateOf(false) }
-    val userNotifications by notificationViewModel.userNotifications.observeAsState()
+    val userNotifications by notificationViewModel.userNotifications.collectAsState()
     val localSettings by localSettingViewModel.settings.collectAsState()
     val recentNotifications = userNotifications?.filter { isNotificationRecent(it.createdAt) }
 
